@@ -16,7 +16,7 @@ staticRouteMappings.forEach(function(mapping) {
 });
 
 // From all other routes we return index.html for now... 
-app.get("/", function(request, response) {
+app.get("*", function(request, response) {
     var indexHtml = path.join(releaseDirectory, "client", "html", "index.html");
     response.sendFile(indexHtml);
 });
