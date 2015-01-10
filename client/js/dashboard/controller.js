@@ -39,7 +39,6 @@ var DashboardController = {
     templateUrl: "public/html/dashboard.html",
     
     bootstrap: bootstrap,
-                   
     controller: controller
 };
 
