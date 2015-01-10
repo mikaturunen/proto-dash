@@ -4,7 +4,7 @@
   "description": "",
   "main": "server/app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "postinstall": "bower install"
   },
   "keywords": [
     "google",
@@ -17,9 +17,6 @@
   ],
   "author": "Mika Turunen <mika.turunen@ymail.com>",
   "start": "node server/app.js",
-  "scripts": {
-    "postinstall": "bower install"
-  },
   "contributors": [
     {
       "name": "",
@@ -36,6 +33,16 @@
   },
   "engines": {
     "node": "0.10.26",
-    "npm":  "1.4.3"
+    "npm": "1.4.3"
+  },
+  "devDependencies": {
+    "vinyl-transform": "^1.0.0",
+    "gulp-uglify": "^1.0.2",
+    "browserify": "^8.1.0",
+    "gulp": "^3.8.10",
+    "vinyl-source-stream": "^1.0.0",
+    "vinyl-buffer": "^1.0.0",
+    "gulp-jade": "^0.10.0",
+    "gulp-copy": "0.0.2"
   }
 }
