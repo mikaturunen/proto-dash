@@ -1,4 +1,4 @@
 {
     "analytics": "false",
-    "directory": "client/js/bower"
+    "directory": "release/client/js/bower"
 }
