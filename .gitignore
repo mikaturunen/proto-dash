@@ -1,5 +1,6 @@
 # Folder ignores
 node_modules/
 client/js/bower/
+release/
 
 # Specific file ignores 
