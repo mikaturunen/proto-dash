@@ -2,13 +2,17 @@ var path = require("path");
 var express = require("express");
 var app = express();
 
-// heroku, please? This is rage inducing.
-process.env.PWD = process.cwd();
 
-var publicPath = path.join(process.env.PWD, "client");
+var staticRouteMappings = [
+  { directory: path.join(__dirname, "..", "client"), url: "/public" }
+];
 
 app.set("port", (process.env.PORT || 3000));
-app.use("/public", express.static(publicPath));
+staticRouteMappings.forEach(function(mapping) {
+  app.use(mapping.url, express.static(mapping.directory));                      
+});
+
+
 
 console.log("/public ==", publicPath);
 
