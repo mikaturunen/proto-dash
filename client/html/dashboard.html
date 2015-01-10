@@ -1,0 +1,13 @@
+<div ui-view>
+    <ng-analytics-view 
+        view-selector-container="view-selector-container" 
+        auth-container="embed-api-auth-container">
+        </ng-analytics-view>
+
+    <ng-analytics-chart 
+        ng-repeat="chart in charts" 
+        chart="chart" 
+        view-selector-container="view-selector-container" 
+        auth-container="embed-api-auth-container">
+        </ng-analytics-chart>
+</div>

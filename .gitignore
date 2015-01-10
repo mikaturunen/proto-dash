@@ -1,0 +1,5 @@
+# Folder ignores
+node_modules/
+client/js/bower/
+
+# Specific file ignores 

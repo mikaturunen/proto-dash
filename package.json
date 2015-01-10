@@ -1,0 +1,41 @@
+{
+  "name": "",
+  "version": "0.0.0",
+  "description": "",
+  "main": "server/app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "google",
+    "api",
+    "nodejs",
+    "client",
+    "analytics",
+    "api",
+    "oauth"
+  ],
+  "author": "Mika Turunen <mika.turunen@ymail.com>",
+  "start": "node server/app.js",
+  "scripts": {
+    "postinstall": "bower install"
+  },
+  "contributors": [
+    {
+      "name": "",
+      "email": ""
+    }
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "express": "4.10.7",
+    "bower": "1.3.12",
+    "socket.io": "^1.2.1",
+    "q": "^1.1.2",
+    "mongodb": "^1.4.26"
+  },
+  "engines": {
+    "node": "0.10.26",
+    "npm":  "1.4.3"
+  }
+}
