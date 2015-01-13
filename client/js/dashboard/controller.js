@@ -1,33 +1,45 @@
 "use strict";
 
-var name = "Dashboard";
-var moduleName = "AnalyticsDashboard.DashboardControllers";
-
-require("../dependency-map").add(moduleName);
-
 /** 
  * Controller function that will be used by angular
  */
 var controller = function($scope) {
-    console.log("Controller", name, "created.");
+    console.log("Controller", DashboardController.name, "created.");
 };
-// because of minification we'll inject our dependencies into the controller
+// because of minification we'll inject our dependnencies into the controller
 controller.$inject = [ "$scope" ];
 
-var stateName = "dashboard";
-var stateOptions = {
+/** 
+ * Bootstrapping function that initializes the controller into angular.
+ * @param {string} parentModule - Name of the module this controller belongs to
+ */ 
+var bootstrap = function(parentModule) {    
+    angular
+        .module(parentModule)
+        .controller(DashboardController.controller);
+};
+
+/** 
+ * @module DashboardController
+ */
+var DashboardController = {
+    /** 
+     * Name of the controller and at the same time name of the state it'll be attached to. 
+     */
+    name: "dashboard",
+    
+    /** 
+     * What url the state routes to
+     */
     url: "/",
+    
+    /** 
+     * What template is used with this controller
+     */
     templateUrl: "public/html/dashboard.html",
+    
+    bootstrap: bootstrap,
     controller: controller
 };
 
-var configuration = function($stateProvider) {
-    console.log("Controller", name, "setting states." , JSON.stringify(stateOptions));
-    $stateProvider.state(stateName, stateOptions);
-};
-configuration.$inject = [ "$stateProvider", "$urlRouterProvider", "$locationProvider" ];
-               
-angular
-    .module(moduleName, [ "ui.router" ])
-    .controller(name + "Controller", controller)
-    .config(configuration);
+module.exports = DashboardController;

@@ -1,28 +1,23 @@
+
 "use strict";
 
-require("./dashboard/controller");
-require("./socket/service");
-
-/**
- * Configuration block for angular module "AnalyticsDashboard"
- */
-var configuration = function($stateProvider, $urlRouterProvider, $locationProvider) {
-    $urlRouterProvider.otherwise("/")
-    // we want the fully functional html5 mode (also removes the # -sign from the URL)
-    $locationProvider.html5Mode(true);
+// starting the 'module' names with upper case to distinguish them from the rest
+var Application = {
+    name: "AnalyticsDashboard"
 };
-configuration.$inject = [ "$stateProvider", "$urlRouterProvider", "$locationProvider" ];
 
 angular
-    .module("AnalyticsDashboard", [
+    .module(Application.name, [
             // from bower or angular basic modules
             "ui.router", 
             "ui.bootstrap", 
             "btford.socket-io",
         ].concat(
-            require("./dependency-map").listDependencies
+            require("./dependency-mapping").map(function(angularModule) { return angularModule.name; })
         )
     )
-    .config(configuration);
+    .config(require("./config/analytics-dashboard"));
 
 console.log("Application bootstrapped");
+
+module.exports = Application;
