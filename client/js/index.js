@@ -1,7 +1,7 @@
 "use strict";
 
-require("./socket/socket");
-require("./dashboard/controller");
+require("./socket/socket-service");
+require("./dashboard/dashboard-controller");
 
 var configuration = function($urlRouterProvider, $locationProvider) {
     $locationProvider.html5Mode(true);

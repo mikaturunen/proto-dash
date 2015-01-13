@@ -31,9 +31,15 @@ var server = app.listen(app.get("port"), function() {
 var socket = require("socket.io");
 var io = socket(server);
 var constants = require("./utilities/constants")
+var database = require("./database/database");
 
 io.on(constants.events.socket.connected, function(socket) {
     console.log("Socket connected to server.",socket.id);
+    
+    socket.on(constants.events.socket.getDashboard, function() {
+        console.log("Received socket get.dasboard");
+        
+    });
     
     socket.on(constants.events.socket.disconnected, function() {
        console.log("Socket disconnected from server.", socket.id);

@@ -28,7 +28,7 @@ gulp.task("browserify", function () {
         return b.bundle();
     });
     
-    return gulp.src([ "./client/js/app.js" ])
+    return gulp.src([ "./client/js/index.js" ])
         .pipe(browserified)
         .pipe(uglify())
         .pipe(gulp.dest(path.join(releaseLocationClient, "js")));
