@@ -1,23 +1,23 @@
-
 "use strict";
 
-// starting the 'module' names with upper case to distinguish them from the rest
-var Application = {
-    name: "AnalyticsDashboard"
-};
+require("./socket/socket");
+require("./dashboard/controller");
+
+var configuration = function($urlRouterProvider, $locationProvider) {
+    $locationProvider.html5Mode(true);
+    $urlRouterProvider.otherwise("/");
+}
+configuration.$inject = [ "$urlRouterProvider", "$locationProvider" ];
 
 angular
-    .module(Application.name, [
+    .module("dash", [
             // from bower or angular basic modules
             "ui.router", 
-            "ui.bootstrap", 
-            "btford.socket-io",
-        ].concat(
-            require("./dependency-mapping").map(function(angularModule) { return angularModule.name; })
-        )
+            "ui.bootstrap"
+        ]
+        .concat(require("./dependency-map").dependencies)
     )
-    .config(require("./config/analytics-dashboard"));
+    .config(configuration);
 
 console.log("Application bootstrapped");
 
-module.exports = Application;

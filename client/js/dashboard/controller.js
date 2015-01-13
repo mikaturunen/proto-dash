@@ -1,45 +1,28 @@
 "use strict";
 
-/** 
- * Controller function that will be used by angular
- */
+var name = "dash.controllers";
+var dependencyMap = require("../dependency-map").add(name);
+
 var controller = function($scope) {
-    console.log("Controller", DashboardController.name, "created.");
+    console.log("CREATED");
 };
-// because of minification we'll inject our dependnencies into the controller
-controller.$inject = [ "$scope" ];
+controller.$inject = [ "$scope", "socket" ];
+controller.controllerName = "DashboardController";
 
-/** 
- * Bootstrapping function that initializes the controller into angular.
- * @param {string} parentModule - Name of the module this controller belongs to
- */ 
-var bootstrap = function(parentModule) {    
-    angular
-        .module(parentModule)
-        .controller(DashboardController.controller);
-};
-
-/** 
- * @module DashboardController
- */
-var DashboardController = {
-    /** 
-     * Name of the controller and at the same time name of the state it'll be attached to. 
-     */
-    name: "dashboard",
-    
-    /** 
-     * What url the state routes to
-     */
+var stateName = "dashboard";
+var stateOptions = {
+    templateUrl: "/public/html/dashboard.html",
     url: "/",
-    
-    /** 
-     * What template is used with this controller
-     */
-    templateUrl: "public/html/dashboard.html",
-    
-    bootstrap: bootstrap,
     controller: controller
 };
 
-module.exports = DashboardController;
+var configuration = function($stateProvider) {
+    $stateProvider.state(stateName, stateOptions);
+}
+configuration.$inject = [ "$stateProvider" ];
+
+angular
+    .module(name)
+    .controller(controller.controllerName, controller)
+    .config(configuration);
+

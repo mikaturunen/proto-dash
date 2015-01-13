@@ -1,14 +1,14 @@
 
 doctype html
 
-html(ng-app="AnalyticsDashboard")
+html(ng-app="dash")
     head
         base(href="/")
         //- Go through the dependnencies and check all of them 
         script(src="/public/js/bower/angular/angular.min.js")
         script(src="/public/js/bower/angular-ui-router/release/angular-ui-router.min.js")
         script(src="/public/js/bower/angular-bootstrap/ui-bootstrap-tpls.min.js")
-        script(src="/public/js/bower/angular-socket-io/socket.min.js")
+        script(src="/socket.io/socket.io.js")
         script(src="/public/js/bower/nganalytics/src/ng-analytics.min.js")
 
         //- <script src="/socket.io/socket.io.js"> </script>
@@ -18,4 +18,4 @@ html(ng-app="AnalyticsDashboard")
         //- ng-analytics-auth(label="Hello: &nbsp;" hide-on-auth="true" auth-container="embed-api-auth-container")
         div
             //- Renders the state related HTML here - for example the dashboard.html
-            div(ui-view())
+            div(ui-view)
