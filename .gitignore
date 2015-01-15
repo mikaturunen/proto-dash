@@ -2,6 +2,6 @@
 node_modules/
 client/js/bower/
 release/
-config.json
+server/config/config.json
 
 # Specific file ignores 
