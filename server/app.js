@@ -3,45 +3,91 @@
 var path = require("path");
 var express = require("express");
 var app = express();
-
-var releaseDirectory = path.join(__dirname, "..");
-
-// creating a iterable list of static url we can safely use from the browser without express involving itself 
-// with them too much
-var staticRouteMappings = [
-  { directory: path.join(releaseDirectory, "client"), url: "/public" }
-];
-
-app.set("port", (process.env.PORT || 3000));
-staticRouteMappings.forEach(function(mapping) {
-  app.use(mapping.url, express.static(mapping.directory));                      
-});
-
-// From all other routes we return index.html for now... 
-app.get("*", function(request, response) {
-    var indexHtml = path.join(releaseDirectory, "client", "html", "index.html");
-    response.sendFile(indexHtml);
-});
-
-var server = app.listen(app.get("port"), function() {
-    console.log("Node app is running at localhost:" + app.get('port'));
-});
-
-// TODO mode the socket initialization into its own place
-var socket = require("socket.io");
-var io = socket(server);
-var constants = require("./utilities/constants")
 var database = require("./database/database");
+var Q = require("q");
 
-io.on(constants.events.socket.connected, function(socket) {
-    console.log("Socket connected to server.",socket.id);
+var initRoutes = function() {
+    var deferred = Q.defer();
+    var releaseDirectory = path.join(__dirname, "..");
     
-    socket.on(constants.events.socket.getDashboard, function() {
-        console.log("Received socket get.dasboard");
-        
+    // NOTE this is not async function, we just use it through promise to allow clean and readable promise chain
+    
+    // creating a iterable list of static url we can safely use from the browser without express involving itself 
+    // with them too much
+    var staticRouteMappings = [
+        { directory: path.join(releaseDirectory, "client"), url: "/public" },
+        { directory: path.join(releaseDirectory, "../node_modules/socket.io-client/socket.io.js"), url: "/socket.io.js" }
+    ];
+
+    app.set("port", (process.env.PORT || 3000));
+    staticRouteMappings.forEach(function(mapping) {
+        app.use(mapping.url, express.static(mapping.directory));                      
+    });
+
+    // From all other routes we return index.html for now... 
+    app.get("*", function(request, response) {
+        var indexHtml = path.join(releaseDirectory, "client", "html", "index.html");
+        response.sendFile(indexHtml);
+    });
+    deferred.resolve(true);
+    
+    return deferred.promise;
+};
+
+var initServer = function() {
+    var deferred = Q.defer();
+    
+    var server = app.listen(app.get("port"), function() {
+        console.log("Node app is running at localhost:" + app.get('port'));
+        deferred.resolve(server);
     });
     
-    socket.on(constants.events.socket.disconnected, function() {
-       console.log("Socket disconnected from server.", socket.id);
+    return deferred.promise;
+};
+
+var initSockets = function(server) {
+    var deferred = Q.defer();
+    
+    // TODO move the socket initialization into its own place
+    var socket = require("socket.io");
+    var io = socket(server);
+    var constants = require("./utilities/constants")
+    var database = require("./database/database");
+
+    io.on(constants.events.socket.connected, function(socket) {
+        console.log("Socket connected to server.",socket.id);
+
+        socket.on("dash.get.dashboard", function(parameters, resultHandler) {
+            console.log("Received socket get.dasboard");
+            var dashboard = database.getCollection("dashboard")();
+            
+            dashboard
+                .find({})
+                .toArray(function(error, documents) {
+                    if (error) {
+                        console.log("Error getting documents for collection.", error);
+                        resultHandler(error);
+                        return;
+                    }
+                    
+                    resultHandler(null, documents);
+                });
+        });
+
+        socket.on(constants.events.socket.disconnected, function() {
+            console.log("Socket disconnected from server.", socket.id);
+        });
     });
-});
+    
+    return deferred.promise;
+};
+
+initRoutes()
+    .then(function() { return database.init(); })
+    .then(function() { return initServer(); })
+    .then(function(server) { return initSockets(server); })
+    .catch(function(error) { 
+        console.log(error);
+        process.exit(6);
+    })
+    .done();
