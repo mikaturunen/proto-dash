@@ -8,7 +8,7 @@ var constants = require("../../server/utilities/constants")
 var controller = function($scope, socket) {
     console.log("CREATED");
     
-    socket.emit("dash.get.dashboard", {}, function(result) {
+    socket.emit("dash.get.dashboard", {}, function(socket, result) {
         console.log("JSON dashboard", JSON.stringify(result));
     });
 };

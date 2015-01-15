@@ -54,6 +54,7 @@ var initSockets = function(server) {
     var constants = require("./utilities/constants")
     var database = require("./database/database");
 
+    // TODO move the socket code and hooks into a separate file
     io.on(constants.events.socket.connected, function(socket) {
         console.log("Socket connected to server.",socket.id);
 
@@ -62,7 +63,7 @@ var initSockets = function(server) {
             var dashboard = database.getCollection("dashboard")();
             
             dashboard
-                .find({})
+                .find()
                 .toArray(function(error, documents) {
                     if (error) {
                         console.log("Error getting documents for collection.", error);
@@ -70,6 +71,7 @@ var initSockets = function(server) {
                         return;
                     }
                     
+                    console.log("documents:", documents);
                     resultHandler(null, documents);
                 });
         });
