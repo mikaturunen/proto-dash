@@ -60,20 +60,15 @@ var initSockets = function(server) {
 
         socket.on("dash.get.dashboard", function(parameters, resultHandler) {
             console.log("Received socket get.dasboard");
-            var dashboard = database.getCollection("dashboard")();
-            
-            dashboard
-                .find()
-                .toArray(function(error, documents) {
-                    if (error) {
-                        console.log("Error getting documents for collection.", error);
-                        resultHandler(error);
-                        return;
-                    }
-                    
-                    console.log("documents:", documents);
-                    resultHandler(null, documents);
-                });
+            database
+                .findDashboardsForEmail("mika.turunen@ymail.com")
+                .then(function(results) {
+                    resultHandler(null, results);
+                })
+                .catch(function(error) {
+                    resultHandler(error);
+                })
+                .done();
         });
 
         socket.on(constants.events.socket.disconnected, function() {
