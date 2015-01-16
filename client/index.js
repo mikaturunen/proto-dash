@@ -3,6 +3,10 @@
 require("./socket/socket-service");
 require("./dashboard/dashboard-controller");
 
+require("./widgets/widget-analytics-directive");
+require("./widgets/widget-frame-directive");
+require("./widgets/widget-image-directive");
+
 var configuration = function($urlRouterProvider, $locationProvider) {
     $locationProvider.html5Mode(true);
     $urlRouterProvider.otherwise("/");
