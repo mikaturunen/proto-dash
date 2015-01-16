@@ -1,3 +1,5 @@
 //- The dashboard itself will be placed under the div, this is where we'll build the content 
 div(ui-view)
     //- start smashing stuff here 
+    div(ng-repeat="component in components")
+        span(ng-bind="component.name")

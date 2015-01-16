@@ -30,7 +30,8 @@
     "socket.io": "^1.2.1",
     "q": "^1.1.2",
     "mongodb": "^1.4.26",
-    "socket.io-client": "^1.2.1"
+    "socket.io-client": "^1.2.1",
+    "lodash": "^2.4.1"
   },
   "engines": {
     "node": "0.10.26",
