@@ -1,3 +1,3 @@
-div.widget-image
-    span IFRAME
-    img(src="component.source")
+div(ng-if="isActive").widget-image.widget
+    span IMAGE
+    img(ng-src="{{ component.source }}")

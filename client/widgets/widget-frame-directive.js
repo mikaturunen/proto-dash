@@ -4,18 +4,31 @@ var name = "dash.widgets";
 var dependencyMap = require("../dependency-map").add(name);
 var constants = require("../../server/utilities/constants");
 
-var directive = function() {
+var link = function($sce) {
+    return function(scope, element, attributes) {
+        if (!(scope.isActive = scope.component.type === "IFRAME")) {
+            return;
+        }
+
+        scope.component.source = $sce.trustAsResourceUrl(scope.component.source);
+        console.log("widgetAnalytics working.");
+    };
+};
+
+var directive = function($sce) {
     return {
         restrict: "E",
         scope: {
             component: "="
         },
-        templateUrl: "/public/html/widgets/widget-frame-template.html"
+        templateUrl: "/public/html/widgets/widget-frame-template.html",
+        link: link($sce)
     };
 };
-directive.directiveName = "WidgetFrame";
+directive.$inject = [ "$sce" ];
+directive.directiveName = "widgetFrame";
 
 angular
     .module(name)
-    .controller(directive.directiveName, directive);
+    .directive(directive.directiveName, directive);
 
