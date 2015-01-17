@@ -59,7 +59,6 @@ var find = function(collection, query) {
                 return;
             }
 
-            console.log("documents:", documents);
             deferred.resolve(documents);
         });
 
