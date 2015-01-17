@@ -1,5 +1,11 @@
 //- The dashboard itself will be placed under the div, this is where we'll build the content 
 div(ui-view)
-    //- start smashing stuff here 
-    div(ng-repeat="component in components")
-        span(ng-bind="component.name")
+    //- Start smashing stuff here 
+    div(ng-repeat="rows in dashboardComponents")
+        //- Dynamically defining the col-md from the column objects size
+        div(ng-repeat="column in rows", class="col-md-{{ column.size }}")
+            //- Widgets get removed from the DOM completely when the type does not match, per column one widget 
+            //- is active
+            widget-image(component="column") 
+            widget-frame(component="column")
+            widget-analytics(component="column")

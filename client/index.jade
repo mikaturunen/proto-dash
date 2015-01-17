@@ -4,6 +4,8 @@ doctype html
 html(ng-app="dash")
     head
         base(href="/")
+        link(rel="stylesheet", href="/public/bower/bootstrap/dist/css/bootstrap.min.css")
+        
         //- Go through the dependnencies and check all of them 
         //- TODO Shim the external modules into the browserify build? Hmmh.. yeah, why not.
         script(src="/public/bower/angular/angular.min.js")
