@@ -45,15 +45,12 @@ var controller = function($scope, socket) {
 controller.$inject = [ "$scope", "socket" ];
 controller.controllerName = "DashboardController";
 
-var stateName = "dashboard";
-var stateOptions = {
-    templateUrl: "/public/html/dashboard/dashboard-view.html",
-    url: "/",
-    controller: controller
-};
-
 var configuration = function($stateProvider) {
-    $stateProvider.state(stateName, stateOptions);
+    $stateProvider.state("dashboard", {
+        templateUrl: "/public/html/dashboard/dashboard-view.html",
+        url: "/dashboard",
+        controller: controller
+    });
 }
 configuration.$inject = [ "$stateProvider" ];
 

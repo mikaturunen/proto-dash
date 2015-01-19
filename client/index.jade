@@ -11,14 +11,15 @@ html(ng-app="dash")
         //- Go through the dependnencies and check all of them 
         //- TODO Shim the external modules into the browserify build? Hmmh.. yeah, why not.
         script(src="/public/bower/angular/angular.min.js")
+        script(src="/public/bower/fly-analytics/src/ng-analytics.js")
+        script(src="/public/bower/angular-google-gapi/angular-google-gapi.js")
         script(src="/public/bower/angular-ui-router/release/angular-ui-router.min.js")
         script(src="/public/bower/angular-bootstrap/ui-bootstrap-tpls.min.js")
         script(src="/socket.io.js")
-        script(src="/public/bower/nganalytics/src/ng-analytics.min.js")
         script(src="/public/js/index.js")
 
     body
-        //- ng-analytics-auth(label="Hello: &nbsp;" hide-on-auth="true" auth-container="embed-api-auth-container")
+        ng-analytics-auth
         div
             //- Renders the state related HTML here - for example the dashboard.html
             div(ui-view)
