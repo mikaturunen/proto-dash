@@ -3,6 +3,8 @@ doctype html
 
 html(ng-app="dash")
     head
+        meta(name="viewport", content="width=device-width", initial-scale="1.0")
+        meta(charset="utf-8")
         base(href="/")
         link(rel="stylesheet", href="/public/bower/bootstrap/dist/css/bootstrap.min.css")
         //- TODO create build step for minifying the css and drop it in place
@@ -19,7 +21,6 @@ html(ng-app="dash")
         script(src="/public/js/index.js")
 
     body
-        ng-analytics-auth
         div
             //- Renders the state related HTML here - for example the dashboard.html
             div(ui-view)
