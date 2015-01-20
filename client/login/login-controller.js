@@ -1,20 +1,17 @@
+/* global gapi, console, require, angular, document */
+
 "use strict";
 
 var name = "dash.login";
-var dependencyMap = require("../dependency-map").add(name, [ "angular-google-gapi" ]);
+var dependencyMap = require("../dependency-map").add(name, [ "dash.gapi" ]);
 
-var controller = function($rootScope, $scope, GAuth) {
+var controller = function($rootScope, $scope, gapi) {
     console.log("Creating login controller");
-    
     $scope.login = function() {
-        console.log("login woo");
-        GAuth
-            .login()
-            .then(function() { console.log("YES"); })
-            .catch(function() { console.log("NOPE"); });
+        gapi.auth();
     };
 };
-controller.$inject = [ "$rootScope", "$scope", "GAuth" ];
+controller.$inject = [ "$rootScope", "$scope", "gapi"];
 controller.controllerName = "LoginController";
 
 var configuration = function($stateProvider) {
@@ -26,7 +23,7 @@ var configuration = function($stateProvider) {
 }
 configuration.$inject = [ "$stateProvider" ];
 
-angular
+angular    
     .module(name)
     .controller(controller.controllerName, controller)
     .config(configuration);
