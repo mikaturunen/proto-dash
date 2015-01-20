@@ -1,3 +1,4 @@
+/* global gapi, console, require, angular, document */
 "use strict";
 
 var name = "dash.socket";
