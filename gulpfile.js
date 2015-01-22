@@ -9,6 +9,7 @@ var path = require("path");
 var copy = require("gulp-copy");
 var stylish = require("jshint-stylish");
 var jshint = require("gulp-jshint");
+var minifyCSS = require("gulp-minify-css");
 
 var releaseLocationClient = "./release/client/";
 var releaseLocationServer = "./release/server/";
@@ -38,13 +39,18 @@ gulp.task("browserify", function () {
 });
 
 gulp.task("jslint", function() {
-    gulp.src([ "server/**/*.js", "client/**/*.js" ])
+    return gulp.src([ "server/**/*.js", "client/**/*.js" ])
         .pipe(jshint())
         .pipe(jshint.reporter(stylish))
         .pipe(jshint.reporter("fail")); 
 });
 
-// TODO jslint
+gulp.task("css", function() {
+    return gulp.src([ "client/**/*.css" ])
+        .pipe(minifyCSS({ keepBreaks: true }))
+        .pipe(gulp.dest(releaseLocationClient));
+});
+
 // TODO css minify + copy
 
 gulp.task("default", function() {
@@ -52,6 +58,6 @@ gulp.task("default", function() {
     sequence(
         // holy hell.. that got ugly.. let's first fix the issues :,D
         // "jslint",
-        [ "jade", "copy", "browserify" ]
+        [ "jade", "copy", "browserify", "css" ]
     ); 
 });
