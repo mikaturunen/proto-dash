@@ -57,7 +57,7 @@ gulp.task("default", function() {
     // with sequence we parallelize all the operations we can 
     sequence(
         // holy hell.. that got ugly.. let's first fix the issues :,D
-        // "jslint",
+         "jslint",
         [ "jade", "copy", "browserify", "css" ]
     ); 
 });

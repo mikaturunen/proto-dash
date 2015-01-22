@@ -1,3 +1,6 @@
+/* global console, require, __dirname, process, module */
+/* jshint node: true */
+
 "use strict";
 
 var path = require("path");
@@ -80,7 +83,7 @@ var initSockets = function(server) {
     // TODO move the socket initialization into its own place
     var socket = require("socket.io");
     var io = socket(server);
-    var constants = require("./utilities/constants")
+    var constants = require("./utilities/constants");
     var database = require("./database/database");
 
     // TODO move the socket code and hooks into a separate file

@@ -1,4 +1,6 @@
 /* global gapi, console, require, angular, document */
+/* jslint node: true */
+
 "use strict";
 
 var name = "dash.controllers";
@@ -52,7 +54,7 @@ var configuration = function($stateProvider) {
         url: "/dashboard",
         controller: controller
     });
-}
+};
 configuration.$inject = [ "$stateProvider" ];
 
 angular

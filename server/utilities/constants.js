@@ -1,3 +1,5 @@
+/* global console, require, __dirname, process, module */
+/* jshint node: true */
 "use strict";
 
 module.exports = {

@@ -1,4 +1,6 @@
 /* global gapi, console, require, angular, document */
+/* jslint node: true */
+
 "use strict";
 
 var name = "dash.widgets";

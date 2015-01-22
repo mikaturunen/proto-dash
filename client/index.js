@@ -1,4 +1,5 @@
 /* global gapi, console, require, angular, document */
+/* jshint node: true */
 "use strict";
 
 require("./gapi/gapi");

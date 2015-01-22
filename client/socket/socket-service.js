@@ -1,4 +1,6 @@
-/* global gapi, console, require, angular, document */
+/* global gapi, console, require, angular, document, io */
+/* jslint node: true */
+
 "use strict";
 
 var name = "dash.socket";
@@ -31,7 +33,7 @@ var factory = function($rootScope) {
                         callback.apply(socket, args);
                     }
                 });
-            })
+            });
         }
     };
 };

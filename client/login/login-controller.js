@@ -1,4 +1,5 @@
 /* global gapi, console, require, angular, document */
+/* jslint node: true */
 
 "use strict";
 
@@ -25,7 +26,7 @@ var configuration = function($stateProvider) {
         url: "/",
         controller: controller
     });
-}
+};
 configuration.$inject = [ "$stateProvider" ];
 
 var run = function(gapi) {
