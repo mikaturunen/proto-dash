@@ -7,6 +7,8 @@ var uglify = require("gulp-uglify");
 var jade = require("gulp-jade");
 var path = require("path");
 var copy = require("gulp-copy");
+var stylish = require("jshint-stylish");
+var jshint = require("gulp-jshint");
 
 var releaseLocationClient = "./release/client/";
 var releaseLocationServer = "./release/server/";
@@ -35,9 +37,21 @@ gulp.task("browserify", function () {
         .pipe(gulp.dest(path.join(releaseLocationClient, "js")));
 });
 
+gulp.task("jslint", function() {
+    gulp.src([ "server/**/*.js", "client/**/*.js" ])
+        .pipe(jshint())
+        .pipe(jshint.reporter(stylish))
+        .pipe(jshint.reporter("fail")); 
+});
+
 // TODO jslint
 // TODO css minify + copy
 
 gulp.task("default", function() {
-    sequence([ "jade", "copy", "browserify" ]); 
+    // with sequence we parallelize all the operations we can 
+    sequence(
+        // holy hell.. that got ugly.. let's first fix the issues :,D
+        // "jslint",
+        [ "jade", "copy", "browserify" ]
+    ); 
 });
