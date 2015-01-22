@@ -1,5 +1,6 @@
 var gulp = require("gulp");
-var browserify = require('browserify');
+var browserify = require("browserify");
+var sequence = require("run-sequence");
 var transform = require("vinyl-transform");
 var source = require("vinyl-source-stream");
 var uglify = require("gulp-uglify");
@@ -32,4 +33,11 @@ gulp.task("browserify", function () {
         .pipe(browserified)
         .pipe(uglify())
         .pipe(gulp.dest(path.join(releaseLocationClient, "js")));
+});
+
+// TODO jslint
+// TODO css minify + copy
+
+gulp.task("default", function() {
+    sequence([ "jade", "copy", "browserify" ]); 
 });
