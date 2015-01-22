@@ -10,35 +10,69 @@ var Q = require("q");
 
 var gapiIsReadyDeferred = Q.defer();
 var gapiIsReadyPromise = gapiIsReadyDeferred.promise;
+var loginScopes = [
+    "https://www.googleapis.com/auth/analytics.readonly",
+    "https://www.googleapis.com/auth/plus.login", 
+    "https://www.googleapis.com/auth/userinfo.email"
+];
+
+var get = function() {
+    return gapiIsReadyPromise;
+};
+
+var loadApi = function(gapi, api, version) {
+    var deferred = Q.defer();
+    
+    gapi.client.load(api, version, function() {
+        deferred.resolve(true);
+    });
+    
+    return deferred.promise;
+};
 
 var service = function() {
     return {
+        get: get,
         auth: function() {
-            gapi.auth.authorize({
-                // EXCUSE ME GOOGLE, REALLY? space-delimited? WHAT? ... Wow, thanks.
-                immediate: false,
-                client_id: "182467596451-qubeiec3osp7iqhuqqp4sb3jrdgpk8ah.apps.googleusercontent.com",
-                scope: "https://www.googleapis.com/auth/analytics.readonly https://www.googleapis.com/auth/plus.login https://www.googleapis.com/auth/userinfo.email"
-            }).then(function() {
-                console.log("signed in + accepted >:]");
-                // TODO LOAD ALL REQUIRED GAPIS HERE!
-            });
+            var deferred = Q.defer();
+            console.log("Getting");
             
-            // this way actual popup blockers do not intervene with the signin process - yatta!
-            gapi.auth.init()
+            get().then(function(gapi) {
+                console.log("Got");
+                gapi.auth.authorize({
+                    immediate: false,
+                    client_id: "182467596451-qubeiec3osp7iqhuqqp4sb3jrdgpk8ah.apps.googleusercontent.com",
+                    scope: loginScopes.join(" ")
+                })
+                .then(function() {
+                    console.log("User has signed in. Starting to load the required API's");
+                    Q.all([
+                        loadApi(gapi, "oauth2", "v2") 
+                    ])
+                    .then(function() { 
+                        console.log("Loaded all APIs");
+                        deferred.resolve(true); 
+                    })
+                    .catch(deferred.reject);
+                });
+                
+                gapi.auth.init();
+            })
+            .done();
+            
+            return deferred.promise;
         },
         
-        get: function() {
-            return gapiIsReadyPromise;
-        },
-        
-        authorized: function() {
+        isAuthorized: function() {
             var deferred = Q.defer();
             
-            gapiIsReadyPromise
-                .then(function(gapi) {
-                    
-                })
+            get().then(function(gapi) {
+              
+                gapi.client.oauth2.userinfo.get().execute(function(response) {
+                    console.log(response);
+                    deferred.resolve(true);
+                });
+            });
             
             return deferred.promise;
         }

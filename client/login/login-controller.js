@@ -23,8 +23,21 @@ var configuration = function($stateProvider) {
 }
 configuration.$inject = [ "$stateProvider" ];
 
+var run = function(gapi) {
+    gapi.isAuthorized().then(function() {
+        console.log("User is authorized. Moving to dashboard.");
+       // state.go("dashboard");
+    })
+    .catch(function(error) {
+        // TODO remove
+        console.error("error " + error);
+    });
+};
+run.$inject = [ "gapi" ];
+
 angular    
     .module(name)
     .controller(controller.controllerName, controller)
-    .config(configuration);
+    .config(configuration)
+    .run(run);
 
