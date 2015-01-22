@@ -5,13 +5,18 @@
 var name = "dash.login";
 var dependencyMap = require("../dependency-map").add(name, [ "dash.gapi" ]);
 
-var controller = function($rootScope, $scope, gapi) {
+var controller = function($rootScope, $scope, gapi, $state) {
     console.log("Creating login controller");
     $scope.login = function() {
-        gapi.auth();
+        gapi
+            .auth()
+            .then(function() {
+                console.log("Forwarding to dashboard");
+                $state.go("dashboard");
+            });
     };
 };
-controller.$inject = [ "$rootScope", "$scope", "gapi"];
+controller.$inject = [ "$rootScope", "$scope", "gapi", "$state" ];
 controller.controllerName = "LoginController";
 
 var configuration = function($stateProvider) {

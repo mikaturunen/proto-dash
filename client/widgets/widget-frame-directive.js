@@ -11,8 +11,15 @@ var link = function($sce) {
             return;
         }
 
-        scope.component.source = $sce.trustAsResourceUrl(scope.component.source);
-        console.log("widgetAnalytics working.");
+        if (scope.component.source.indexOf("docs.google.com") !== -1 && 
+            scope.component.source.slice(-13) !== "&output=embed") {
+            // TODO fix the if statement and apply for a proper embed option
+        }
+        
+        var url = (scope.component.source + "&embedded=true");
+      
+        scope.component.source = $sce.trustAsResourceUrl(url);
+        console.log("widgetAnalytics working.", url);
     };
 };
 

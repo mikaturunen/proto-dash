@@ -1,3 +1,7 @@
 div(ng-if="isActive").widget-iframe.widget
-    span IFRAME
-    iframe(ng-src="{{ component.source }}")
+    div
+        span(ng-bind="component.title")
+    div
+        iframe(ng-src="{{ component.source }}")
+    div
+        span(ng-bind="component.label")
