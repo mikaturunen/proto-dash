@@ -11,11 +11,16 @@ var Q = require("q");
 
 var gapiIsReadyDeferred = Q.defer();
 var gapiIsReadyPromise = gapiIsReadyDeferred.promise;
+var gapiLoadedApisDeferred = Q.defer();
+var gapiLoadedApisPromise = gapiLoadedApisDeferred.promise;
+
 var loginScopes = [
     "https://www.googleapis.com/auth/analytics.readonly",
     "https://www.googleapis.com/auth/plus.login", 
     "https://www.googleapis.com/auth/userinfo.email"
 ];
+
+// TODO COMMENTS!
 
 var get = function() {
     return gapiIsReadyPromise;
@@ -31,48 +36,79 @@ var loadApi = function(gapi, api, version) {
     return deferred.promise;
 };
 
+var auth = function(immediate) {
+    var deferred = Q.defer();
+    console.log("Getting");
+
+    immediate = immediate === undefined ? false : immediate;
+
+    gapiIsReadyPromise.then(function(gapi) {
+        console.log("Got");
+        gapi.auth.authorize({
+            immediate: immediate,
+            client_id: "182467596451-qubeiec3osp7iqhuqqp4sb3jrdgpk8ah.apps.googleusercontent.com",
+            scope: loginScopes.join(" ")
+        })
+        .then(function() {
+            console.log("User has signed in. Starting to load the required API's");
+            Q.all([
+                loadApi(gapi, "oauth2", "v2") 
+            ])
+            .then(function() { 
+                console.log("Loaded all APIs");
+                gapiLoadedApisDeferred.resolve(gapi);
+                console.log("returning true");
+                deferred.resolve(true); 
+            })
+            .catch(deferred.reject);
+        }, deferred.reject);
+
+        gapi.auth.init();
+    })
+    .done();
+
+    return deferred.promise;
+};
+
+var readAuthUser = function(gapi) {
+    var deferred = Q.defer();
+    
+    try {
+        gapi.client.oauth2.userinfo.get().execute(function(response) {
+            console.log(response);
+            deferred.resolve(response.email);
+        });
+    } catch (error) {
+        console.error(error);
+        deferred.reject(error);
+    }
+    
+    return deferred.promise;
+};
+
 var service = function() {
     return {
         get: get,
-        auth: function() {
-            var deferred = Q.defer();
-            console.log("Getting");
-            
-            get().then(function(gapi) {
-                console.log("Got");
-                gapi.auth.authorize({
-                    immediate: false,
-                    client_id: "182467596451-qubeiec3osp7iqhuqqp4sb3jrdgpk8ah.apps.googleusercontent.com",
-                    scope: loginScopes.join(" ")
-                })
-                .then(function() {
-                    console.log("User has signed in. Starting to load the required API's");
-                    Q.all([
-                        loadApi(gapi, "oauth2", "v2") 
-                    ])
-                    .then(function() { 
-                        console.log("Loaded all APIs");
-                        deferred.resolve(true); 
-                    })
-                    .catch(deferred.reject);
-                });
-                
-                gapi.auth.init();
-            })
-            .done();
-            
-            return deferred.promise;
-        },
+        auth: auth,
         
         isAuthorized: function() {
             var deferred = Q.defer();
-            
+            console.log("1");
             get().then(function(gapi) {
-              
-                gapi.client.oauth2.userinfo.get().execute(function(response) {
-                    console.log(response);
-                    deferred.resolve(true);
-                });
+                console.log("2");
+                if (!gapi.client.oauth2) {
+                    // api not loaded but user might still be logged in; try logging in to see what happens behind the 
+                    // scene
+                    console.log("Attempting to log in again..");
+                    auth(true)
+                        .then(function() {
+                            readAuthUser(gapi).done(deferred.resolve, deferred.reject);
+                        })
+                        .catch(deferred.reject)
+                        .done();
+                } else {
+                    readAuthUser(gapi).done(deferred.resolve, deferred.reject);
+                }
             });
             
             return deferred.promise;
