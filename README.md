@@ -1,8 +1,5 @@
-require 'github/markup'
-
-
 # proto-dash
 Prototype of a widget based dashboard
 
 # TODOs
-GitHub::Markup.render(file, File.read("TODO.md"))
+<a href="TODO.md">Link to TODO</a>
