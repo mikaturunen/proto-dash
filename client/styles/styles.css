@@ -1,3 +1,7 @@
+.dash-header {
+    background: lightgrey; 
+}
+
 .widget {
     display: overflow;
 }
