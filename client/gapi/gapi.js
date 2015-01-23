@@ -91,6 +91,7 @@ var service = function() {
         get: get,
         auth: auth,
         
+        // yeah what ever.. I hate working with gapi.. *punch punch*
         isAuthorized: function() {
             var deferred = Q.defer();
             console.log("1");

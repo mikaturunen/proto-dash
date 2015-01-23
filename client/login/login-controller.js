@@ -6,27 +6,20 @@
 var name = "dash.login";
 var dependencyMap = require("../dependency-map").add(name, [ "dash.gapi" ]);
 
-var run = function(gapi, $state) {
-    gapi.isAuthorized()
-        .then(function() {
-            console.log("User is authorized. Moving to dashboard.");
-            $state.go("dashboard");
-        })
-        .catch(function() {
-             console.log("User not logged in. Requires logging in.");   
-        })
-        .done();
+var resolve = function(redirector) {
+    // when user is authorized to googles services, we redirect to dashboard
+    console.log("resolving login");
+    return redirector.redirect("dashboard", true);
 };
-run.$inject = [ "gapi", "$state" ];
+resolve.$inject = [ "login-redirector" ];
 
 var controller = function($rootScope, $scope, gapi, $state) {
     console.log("Creating login controller");
-    run(gapi, $state);
     
     $scope.login = function() {
         gapi
             .auth()
-            .then(function() {
+            .done(function() {
                 console.log("Forwarding to dashboard");
                 $state.go("dashboard");
             });
@@ -39,7 +32,10 @@ var configuration = function($stateProvider) {
     $stateProvider.state("login", {
         templateUrl: "/public/html/login/login-view.html",
         url: "/",
-        controller: controller
+        controller: controller,
+        resolve: {
+            authorized: resolve
+        }
     });
 };
 configuration.$inject = [ "$stateProvider" ];
