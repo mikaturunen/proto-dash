@@ -21,7 +21,6 @@ var link = function($sce) {
         var url = (scope.component.source + "&embedded=true");
       
         scope.component.source = $sce.trustAsResourceUrl(url);
-        console.log("widgetAnalytics working.", url);
     };
 };
 

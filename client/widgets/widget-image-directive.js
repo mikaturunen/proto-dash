@@ -11,8 +11,6 @@ var link = function(scope, element, attributes) {
     if (!(scope.isActive = scope.component.type === "IMAGE")) {
         return;
     }
-    
-    console.log("widgetImage working.");
 };
 
 var directive = function() {
