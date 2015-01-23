@@ -1,5 +1,8 @@
+require 'github/markup'
+
+
 # proto-dash
 Prototype of a widget based dashboard
 
 # TODOs
-{{md  'TODO.md'}} 
+GitHub::Markup.render(file, File.read("TODO.md"))
