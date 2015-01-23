@@ -9,6 +9,13 @@ var constants = require("../../server/utilities/constants");
 
 var _ = require("lodash");
 
+var resolve = function(redirector) {
+    // when user is not authorized, we redirect to login for authorization
+    console.log("resolving dash");
+    return redirector.redirect("login");
+};
+resolve.$inject = [ "login-redirector" ];
+
 var controller = function($scope, socket) {
     $scope.dashboards = [];
     $scope.dashboard = undefined;
@@ -52,7 +59,10 @@ var configuration = function($stateProvider) {
     $stateProvider.state("dashboard", {
         templateUrl: "/public/html/dashboard/dashboard-view.html",
         url: "/dashboard",
-        controller: controller
+        controller: controller,
+        resolve: {
+            authorized: resolve
+        }
     });
 };
 configuration.$inject = [ "$stateProvider" ];
