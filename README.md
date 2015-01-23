@@ -2,4 +2,4 @@
 Prototype of a widget based dashboard
 
 # TODOs
-{{ md  "./TODO.md" }} 
+{{md  'TODO.md'}} 
