@@ -1,0 +1,15 @@
+div.dash-header
+    //- I'm pretty sure we are not going to use the bootstrap colums here but I used em for now for place holding 
+    //- Logo / info area
+    div.col-md-8
+        span COMPANY_NAME_LOGO 
+    
+    //- Displaying the dropdown for the dashboards only in the situations where there are more than one of them
+    div.col-md-2
+        span List of dashboards
+                        
+    //- logout
+    div.col-md-2
+        //- TODO call gapi.auth.blah.blah to logout the user 
+        button(type="button").btn.btn-default
+            span Logout
