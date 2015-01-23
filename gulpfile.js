@@ -10,6 +10,7 @@ var copy = require("gulp-copy");
 var stylish = require("jshint-stylish");
 var jshint = require("gulp-jshint");
 var minifyCSS = require("gulp-minify-css");
+var todo = require("gulp-todo");
 
 var releaseLocationClient = "./release/client/";
 var releaseLocationServer = "./release/server/";
@@ -51,6 +52,14 @@ gulp.task("css", function() {
         .pipe(gulp.dest(releaseLocationClient));
 });
 
+// generate a todo.md from your javascript files
+gulp.task("todo", function() {
+    return gulp.src([ "./server/*.*", "./client/*.*" ])
+        .pipe(todo())
+        .pipe(gulp.dest("."));
+});
+
+
 // TODO css minify + copy
 
 gulp.task("default", function() {
@@ -58,6 +67,7 @@ gulp.task("default", function() {
     sequence(
         // holy hell.. that got ugly.. let's first fix the issues :,D
          "jslint",
-        [ "jade", "copy", "browserify", "css" ]
+        [ "jade", "copy", "browserify", "css" ],
+        "todo"
     ); 
 });
