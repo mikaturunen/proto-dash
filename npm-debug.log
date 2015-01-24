@@ -1,0 +1,113 @@
+0 info it worked if it ends with ok
+1 verbose cli [ '/home/action/.parts/bin/node',
+1 verbose cli   '/home/action/.parts/bin/npm',
+1 verbose cli   'install' ]
+2 info using npm@1.4.3
+3 info using node@v0.10.26
+4 verbose node symlink /home/action/.parts/bin/node
+5 warn package.json proto-dash@0.0.1 No repository field.
+6 verbose readDependencies using package.json deps
+7 verbose install where, deps [ '/home/action/proto-dash',
+7 verbose install   [ 'express',
+7 verbose install     'bower',
+7 verbose install     'socket.io',
+7 verbose install     'q',
+7 verbose install     'mongodb',
+7 verbose install     'socket.io-client',
+7 verbose install     'lodash',
+7 verbose install     'vinyl-transform',
+7 verbose install     'gulp-uglify',
+7 verbose install     'browserify',
+7 verbose install     'gulp',
+7 verbose install     'vinyl-source-stream',
+7 verbose install     'vinyl-buffer',
+7 verbose install     'gulp-jade',
+7 verbose install     'gulp-copy',
+7 verbose install     'run-sequence',
+7 verbose install     'jshint-stylish',
+7 verbose install     'gulp-jshint',
+7 verbose install     'gulp-minify-css',
+7 verbose install     'gulp-todo' ] ]
+8 info preinstall proto-dash@0.0.1
+9 verbose readDependencies using package.json deps
+10 verbose already installed skipping socket.io@^1.2.1 /home/action/proto-dash
+11 verbose already installed skipping bower@1.3.12 /home/action/proto-dash
+12 verbose already installed skipping q@^1.1.2 /home/action/proto-dash
+13 verbose already installed skipping mongodb@^1.4.26 /home/action/proto-dash
+14 verbose already installed skipping socket.io-client@^1.2.1 /home/action/proto-dash
+15 verbose already installed skipping lodash@^2.4.1 /home/action/proto-dash
+16 verbose already installed skipping vinyl-transform@^1.0.0 /home/action/proto-dash
+17 verbose already installed skipping gulp-uglify@^1.0.2 /home/action/proto-dash
+18 verbose already installed skipping browserify@^8.1.0 /home/action/proto-dash
+19 verbose already installed skipping gulp@^3.8.10 /home/action/proto-dash
+20 verbose already installed skipping vinyl-source-stream@^1.0.0 /home/action/proto-dash
+21 verbose already installed skipping vinyl-buffer@^1.0.0 /home/action/proto-dash
+22 verbose already installed skipping gulp-jade@^0.10.0 /home/action/proto-dash
+23 verbose already installed skipping gulp-copy@0.0.2 /home/action/proto-dash
+24 verbose already installed skipping run-sequence@^1.0.2 /home/action/proto-dash
+25 verbose already installed skipping jshint-stylish@^1.0.0 /home/action/proto-dash
+26 verbose already installed skipping gulp-jshint@^1.9.0 /home/action/proto-dash
+27 verbose already installed skipping gulp-minify-css@^0.4.2 /home/action/proto-dash
+28 verbose already installed skipping gulp-todo@^2.3.1 /home/action/proto-dash
+29 verbose already installed skipping express@4.10.7 /home/action/proto-dash
+30 silly resolved []
+31 info build /home/action/proto-dash
+32 verbose linkStuff [ false, false, false, '/home/action' ]
+33 info linkStuff proto-dash@0.0.1
+34 verbose linkBins proto-dash@0.0.1
+35 verbose linkMans proto-dash@0.0.1
+36 verbose rebuildBundles proto-dash@0.0.1
+37 verbose rebuildBundles [ '.bin',
+37 verbose rebuildBundles   'bower',
+37 verbose rebuildBundles   'browserify',
+37 verbose rebuildBundles   'express',
+37 verbose rebuildBundles   'gulp',
+37 verbose rebuildBundles   'gulp-copy',
+37 verbose rebuildBundles   'gulp-jade',
+37 verbose rebuildBundles   'gulp-jshint',
+37 verbose rebuildBundles   'gulp-jslint',
+37 verbose rebuildBundles   'gulp-minify-css',
+37 verbose rebuildBundles   'gulp-todo',
+37 verbose rebuildBundles   'gulp-uglify',
+37 verbose rebuildBundles   'jshint-stylish',
+37 verbose rebuildBundles   'lodash',
+37 verbose rebuildBundles   'mongodb',
+37 verbose rebuildBundles   'q',
+37 verbose rebuildBundles   'run-sequence',
+37 verbose rebuildBundles   'socket.io',
+37 verbose rebuildBundles   'socket.io-client',
+37 verbose rebuildBundles   'vinyl-buffer',
+37 verbose rebuildBundles   'vinyl-source-stream',
+37 verbose rebuildBundles   'vinyl-transform' ]
+38 verbose rebuild bundle /home/action/proto-dash/node_modules/gulp-jslint
+39 info build /home/action/proto-dash/node_modules/gulp-jslint
+40 info preinstall gulp-jslint@0.2.2
+41 verbose linkStuff [ false, false, false, '/home/action/proto-dash/node_modules' ]
+42 info linkStuff gulp-jslint@0.2.2
+43 verbose linkBins gulp-jslint@0.2.2
+44 verbose linkMans gulp-jslint@0.2.2
+45 verbose rebuildBundles gulp-jslint@0.2.2
+46 verbose rebuildBundles [ '.bin', 'colors', 'event-stream', 'gulp-util', 'jslint' ]
+47 info install gulp-jslint@0.2.2
+48 info postinstall gulp-jslint@0.2.2
+49 info install proto-dash@0.0.1
+50 info postinstall proto-dash@0.0.1
+51 verbose unsafe-perm in lifecycle true
+52 info proto-dash@0.0.1 Failed to exec postinstall script
+53 error proto-dash@0.0.1 postinstall: `bower install && node server/generate-config.js && gulp`
+53 error Exit status 1
+54 error Failed at the proto-dash@0.0.1 postinstall script.
+54 error This is most likely a problem with the proto-dash package,
+54 error not with npm itself.
+54 error Tell the author that this fails on your system:
+54 error     bower install && node server/generate-config.js && gulp
+54 error You can get their info via:
+54 error     npm owner ls proto-dash
+54 error There is likely additional logging output above.
+55 error System Linux 3.13.4
+56 error command "/home/action/.parts/bin/node" "/home/action/.parts/bin/npm" "install"
+57 error cwd /home/action/proto-dash
+58 error node -v v0.10.26
+59 error npm -v 1.4.3
+60 error code ELIFECYCLE
+61 verbose exit [ 1, true ]

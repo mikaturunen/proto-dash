@@ -10,9 +10,11 @@
  */
 
 var Q = require("q");
-var fs = require("fs")
+var fs = require("fs");
 var path = require("path");
-var config = require(path.join(__dirname,"./config/config.json"));
+
+// CircleCI wanted with direct path reference the config.json... :/
+var config = require(path.join(__dirname, "./config/config.json"));
 
 // either CD environment variable or cloud environments configuration file - it's in .gitignore for a reason and a 
 // place-holder lays in github - Let us hope that by accident we don't push our details to github ;)
