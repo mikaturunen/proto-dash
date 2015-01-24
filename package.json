@@ -4,7 +4,7 @@
     "description": "",
     "main": "release/server/app.js",
     "scripts": {
-        "postinstall-note": "Thanks heroku .. thanks..."
+        "postinstall-note": "Thanks heroku .. thanks...",
         "postinstall": "node node_modules/bower/bin/bower install && node node_modules/gulp/bin/gulp"
     },
     "keywords": [
