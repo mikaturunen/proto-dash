@@ -12,31 +12,42 @@
 var Q = require("q");
 var fs = require("fs");
 var path = require("path");
+var configPath = path.join(__dirname, "./config/config.json");
 
-// CircleCI wanted with direct path reference the config.json... :/
-var config = require(path.join(__dirname, "./config/config.json"));
+var fileExists = function(exists) {
+    var config;
+    
+    if (!exists) {
+        config = { };
+    } else {
+        config = require(configPath);
+    }
+    
+    // either CD environment variable or cloud environments configuration file - it's in .gitignore for a reason and a 
+    // place-holder lays in github - Let us hope that by accident we don't push our details to github ;)
+    var configuration = {
+        databaseUser: process.env.DATABASE_USER || config.databaseUser,
+        databasePassword: process.env.DATABASE_PASSWORD || config.databasePassword,
+        databaseUrl: process.env.DATABASE_URL || config.databaseUrl,
+        database: process.env.DATABASE || config.database,
+        databasePort: process.env.DATABASE_PORT || config.databasePort
+    };
+    var configurationPath = path.join(__dirname, "./config/configuration.json");
 
-// either CD environment variable or cloud environments configuration file - it's in .gitignore for a reason and a 
-// place-holder lays in github - Let us hope that by accident we don't push our details to github ;)
-var configuration = {
-    databaseUser: process.env.DATABASE_USER || config.databaseUser,
-    databasePassword: process.env.DATABASE_PASSWORD || config.databasePassword,
-    databaseUrl: process.env.DATABASE_URL || config.databaseUrl,
-    database: process.env.DATABASE || config.database,
-    databasePort: process.env.DATABASE_PORT || config.databasePort
+    Q.ninvoke(    
+            fs, 
+            "writeFile", 
+            configurationPath, 
+            JSON.stringify(configuration, null, 4)
+         )
+        .then(function() {
+            console.log(configurationPath, "written and ready for use in release.");
+        })
+        .catch(function(error) {
+            console.log(error);
+        })
+        .done();
 };
-var configurationPath = path.join(__dirname, "./config/configuration.json");
 
-Q.ninvoke(    
-        fs, 
-        "writeFile", 
-        configurationPath, 
-        JSON.stringify(configuration, null, 4)
-     )
-    .then(function() {
-        console.log(configurationPath, "written and ready for use in release.");
-    })
-    .catch(function(error) {
-        console.log(error);
-    })
-    .done();
+// If the file exists throw error we assume it's not there and use env variables 
+Q.ninvoke(fs, "exists", configPath).done(fileExists, fileExists);
