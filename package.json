@@ -4,7 +4,7 @@
   "description": "",
   "main": "release/server/app.js",
   "scripts": {
-    "postinstall": "bower install"
+    "postinstall": "bower install && node server/generate-config.js && gulp"
   },
   "keywords": [
     "google",
