@@ -43,7 +43,7 @@ var auth = function(immediate) {
     immediate = immediate === undefined ? false : immediate;
 
     gapiIsReadyPromise.then(function(gapi) {
-        console.log("Got");
+        console.log("Got");        
         gapi.auth.authorize({
             immediate: immediate,
             client_id: "182467596451-qubeiec3osp7iqhuqqp4sb3jrdgpk8ah.apps.googleusercontent.com",
@@ -62,6 +62,10 @@ var auth = function(immediate) {
             })
             .catch(deferred.reject);
         }, deferred.reject);
+        
+        if (immediate === false) {
+            gapi.auth.init();
+        }
     })
     .done();
 
@@ -126,7 +130,7 @@ angular
                 "g=w.gapi||(w.gapi={});g.analytics={q:[],ready:function(cb){this.q.push(cb)}};" +
                 "js=d.createElement(s);fjs=d.getElementsByTagName(s)[0];" +
                 "js.src='https://apis.google.com/js/platform.js';" +
-                "fjs.parentNode.insertBefore(js,fjs);js.onload=function(){g.load('analytics')};" +
+                "fjs.parentNode.insertBefore(js,fjs);js.onload=function(){g.load('analytics');};" +
             "}(window,document,'script'));";
         
         var gaCode = document.createTextNode(scriptText);
