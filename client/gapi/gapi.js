@@ -37,34 +37,72 @@ var loadApi = function(gapi, api, version) {
 };
 
 var options = function(immediate) {
-    return {
-        immediate: immediate,
-        client_id: "182467596451-qubeiec3osp7iqhuqqp4sb3jrdgpk8ah.apps.googleusercontent.com",
-        scope: loginScopes.join(" "),
-        cookie_policy: "single_host_origin",
-        response_type: "code"    
-    };
+    var clientId = "182467596451-qubeiec3osp7iqhuqqp4sb3jrdgpk8ah.apps.googleusercontent.com";
+    if (immediate === true) {
+         return {
+             immediate: immediate,
+             client_id: clientId,
+             scope: loginScopes.join(" ")
+         };
+    } else {
+       // When not explicitly in immediate mode we try to hook up the actual container
+       return {
+           container: "embed-api-auth-container",
+           clientid:  clientId,
+           scope: loginScopes.join(" ")
+       };
+    }
+};
+
+var calledOnce = false;
+var apisInPlace = false;
+
+var apiLoader = function(gapi) {
+    var deferred = Q.defer();
+    
+    Q.all([
+        loadApi(gapi, "oauth2", "v2") 
+    ])
+    .done(function() { 
+        console.log("Loaded all APIs");
+        gapiLoadedApisDeferred.resolve(gapi);
+        apisInPlace = true;
+        deferred.resolve(true); 
+    }, deferred.reject);
+    
+    return deferred.promise;
 };
 
 var auth = function(immediate) {
     var deferred = Q.defer();
-    immediate = immediate === undefined ? false : immediate;
 
     gapiIsReadyPromise.then(function(gapi) {   
-        gapi.auth.authorize(options(immediate))
-            .then(function() {
-                Q.all([
-                    loadApi(gapi, "oauth2", "v2") 
-                ])
-                .then(function() { 
-                    console.log("Loaded all APIs");
-                    gapiLoadedApisDeferred.resolve(gapi);
-                    deferred.resolve(true); 
-                })
-                .catch(deferred.reject);
-            }, function(error) { 
-                return auth(false);
-            });
+        gapi.analytics.auth.on("success", function(response) { 
+            apiLoader(gapi).done(deferred.resolve, deferred.reject);
+        });
+        
+        // TODO sort out this awful mess of a gapi magic..
+        try {
+            if (calledOnce === false) {
+                // NOTE message: "gapi.analytics.auth.authorize should not be invoked multipletimes"
+                console.log("Calling analytics auth for authorization", immediate);
+                calledOnce = true;
+                gapi.analytics.auth.authorize(options(immediate)); 
+            } else if (gapi.analytics.auth.isAuthorized() === true) {
+                deferred.resolve(true); 
+            } else {
+                deferred.reject("not authorized :3");
+            }
+        } catch (error) {
+            if (immediate && gapi.analytics.auth.isAuthorized() === true) {
+                deferred.resolve(true);
+                return;
+            }
+            
+            // digesting the error - shaddap gapi!
+            console.log(error);
+            deferred.reject(error);
+        }
     })
     .done();
 
@@ -75,9 +113,20 @@ var readAuthUser = function(gapi) {
     var deferred = Q.defer();
     
     try {
-        gapi.client.oauth2.userinfo.get().execute(function(response) {
-            console.log(response);
-            deferred.resolve(response.email);
+        if (!apisInPlace) {
+            // No need to wait here as the below gapiLoaded promise will take care of that
+            gapiIsReadyPromise.done(function(gapi) { 
+                gapi.auth.authorize(options(true)).then(function() {
+                    apiLoader(gapi).done();
+                });
+            });
+        }
+        
+        gapiLoadedApisPromise.done(function(gapi) {
+            gapi.client.oauth2.userinfo.get().execute(function(response) {
+                console.log(response);
+                deferred.resolve(response.email);
+            });
         });
     } catch (error) {
         console.error(error);
@@ -91,27 +140,7 @@ var service = function() {
     return {
         get: get,
         auth: auth,
-        
-        // yeah what ever.. I hate working with gapi.. *punch punch*
-        isAuthorized: function() {
-            var deferred = Q.defer();
-            get().then(function(gapi) {
-                if (!gapi.client.oauth2) {
-                    // api not loaded but user might still be logged in; try logging in to see what happens behind the 
-                    // scene
-                    auth(true)
-                        .then(function() {
-                            readAuthUser(gapi).done(deferred.resolve, deferred.reject);
-                        })
-                        .catch(deferred.reject)
-                        .done();
-                } else {
-                    readAuthUser(gapi).done(deferred.resolve, deferred.reject);
-                }
-            });
-            
-            return deferred.promise;
-        }
+        isAuthorized: readAuthUser
     };
 };
 service.serviceName = "gapi";
@@ -126,11 +155,7 @@ angular
                 "js=d.createElement(s);fs=d.getElementsByTagName(s)[0]; " +
                 "js.src='https://apis.google.com/js/platform.js'; " +
                 "fs.parentNode.insertBefore(js,fs);js.onload=function(){g.load('analytics');}; " +
-           "}(window,document,'script'));  " +
-           "gapi.analytics.ready(function() { " +
-           "    console.log('DONE');  " +
-           "    " +
-           "}); ";
+           "}(window,document,'script'));  ";
         
         var gaCode = document.createTextNode(scriptText);
         var scriptTag = document.createElement("script");

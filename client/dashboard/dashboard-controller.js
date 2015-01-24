@@ -9,14 +9,19 @@ var constants = require("../../server/utilities/constants");
 
 var _ = require("lodash");
 
-var resolve = function(redirector) {
-    // when user is not authorized, we redirect to login for authorization
-    console.log("resolving dash");
-    return redirector.redirect("login");
-};
-resolve.$inject = [ "login-redirector" ];
-
-var controller = function($scope, socket) {
+var controller = function($scope, socket, $state, gapi) {
+    gapi.isAuthorized()
+        .done(
+            function(response) {
+                console.log("authed:", response);
+            },
+            function(error) {
+                // not authed; rock and roll!
+                console.log("to login", error); 
+                $state.go("login");
+            }
+        );
+    
     $scope.dashboards = [];
     $scope.dashboard = undefined;
     $scope.dashboardComponents = [];
@@ -52,17 +57,14 @@ var controller = function($scope, socket) {
     
    $scope.getDashboards();
 };
-controller.$inject = [ "$scope", "socket" ];
+controller.$inject = [ "$scope", "socket", "$state", "gapi" ];
 controller.controllerName = "DashboardController";
 
 var configuration = function($stateProvider) {
     $stateProvider.state("dashboard", {
         templateUrl: "/public/html/dashboard/dashboard-view.html",
         url: "/dashboard",
-        controller: controller,
-        resolve: {
-            authorized: resolve
-        }
+        controller: controller
     });
 };
 configuration.$inject = [ "$stateProvider" ];
