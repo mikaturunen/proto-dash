@@ -9,7 +9,8 @@ var dependencyMap = require("../dependency-map").add(name, [ "dash.gapi" ]);
 var resolve = function(redirector) {
     // when user is authorized to googles services, we redirect to dashboard
     console.log("resolving login");
-    return redirector.redirect("dashboard", true);
+    return ""; //redirector.redirect("dashboard", true);
+    
 };
 resolve.$inject = [ "login-redirector" ];
 

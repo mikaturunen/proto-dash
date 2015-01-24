@@ -63,9 +63,9 @@ var auth = function(immediate) {
             .catch(deferred.reject);
         }, deferred.reject);
         
-        if (immediate === false) {
-            gapi.auth.init();
-        }
+      //  if (immediate === false) {
+      //      gapi.auth.init();
+      //  }
     })
     .done();
 
@@ -130,7 +130,7 @@ angular
                 "g=w.gapi||(w.gapi={});g.analytics={q:[],ready:function(cb){this.q.push(cb)}};" +
                 "js=d.createElement(s);fjs=d.getElementsByTagName(s)[0];" +
                 "js.src='https://apis.google.com/js/platform.js';" +
-                "fjs.parentNode.insertBefore(js,fjs);js.onload=function(){g.load('analytics');};" +
+                "fjs.parentNode.insertBefore(js,fjs);js.onload=function(){g.load('analytics'); g.analytics.ready(function() {gapi.auth.init();});};" +
             "}(window,document,'script'));";
         
         var gaCode = document.createTextNode(scriptText);
@@ -143,10 +143,10 @@ angular
 
         // now somewhat normalized behavior, quickly wrap the beast into promise 
         gapi.analytics.ready(function () {
-            gapi.auth.init(function() {
+          //  gapi.auth.init(function() {
                 console.log("gapi.analytics is ready for use.");
                 gapiIsReadyDeferred.resolve(gapi); 
-            });
+          //  });
         });
     })
     .service(service.serviceName, service);
