@@ -7,8 +7,7 @@ var mongo = require("mongodb");
 var ObjectID = mongo.ObjectID;
 var MongoClient = mongo.MongoClient;
 var _ = require("lodash");
-var config = require("../config/configuration.json");
-// TODO replace the default values in the configuration file (and please, do not push them into github :))
+var config = require("../config/config");
 var connectionString = "mongodb://" + config.user + ":" + config.password + "@" + config.url + ":" + config.databasePort + "/" + config.database;
 var database;
 
