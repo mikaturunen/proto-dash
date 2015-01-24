@@ -8,7 +8,11 @@ var ObjectID = mongo.ObjectID;
 var MongoClient = mongo.MongoClient;
 var _ = require("lodash");
 var config = require("../config/config");
-var connectionString = "mongodb://" + config.user + ":" + config.password + "@" + config.url + ":" + config.databasePort + "/" + config.database;
+var connectionString = "mongodb://" + config.databaseUser + ":" + 
+    config.databasePassword + "@" + 
+    config.databaseUrl + ":" + 
+    config.databasePort + "/" + 
+    config.database;
 var database;
 
 // Collections 
