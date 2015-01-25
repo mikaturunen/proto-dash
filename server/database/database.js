@@ -20,7 +20,7 @@ var database;
 var dashboard;
 var components;
 
-var init = function() {
+var init = () => {
     var deferred = Q.defer();
 
     Q.ninvoke(MongoClient, "connect", connectionString)
@@ -36,7 +36,7 @@ var init = function() {
     return deferred.promise;
 };
 
-var getCollection = function(collection) {
+var getCollection = collection => {
     if (!database) {
         throw "No connection to database.";
     } 
@@ -47,7 +47,7 @@ var getCollection = function(collection) {
     };
 };
 
-var find = function(collection, query) {
+var find = (collection, query) => {
    var deferred = Q.defer();
         
     if (collection.find === undefined) {
@@ -70,7 +70,7 @@ var find = function(collection, query) {
     return deferred.promise;  
 };
 
-var collectComponentsFromRows = function(rows) {
+var collectComponentsFromRows = rows => {
     // the columns are built of components (columns, single column = single component)
     
     var component_ids = _.flatten(rows.map(function(rowColumns) {
@@ -87,7 +87,7 @@ module.exports = {
     init: init,
     getCollection: getCollection,
 
-    findComponentsForDashboard: function(rows_component_ids, transformer) {
+    findComponentsForDashboard: (rows_component_ids, transformer) => {
         if (transformer !== undefined) {
             var deferred = Q.defer();
             
@@ -109,7 +109,7 @@ module.exports = {
         }
     },
     
-    findDashboardsForEmail: function(email) {
+    findDashboardsForEmail: email => {
         return find(dashboard, { for_emails: { $in: [ email ] }});
     }
 };

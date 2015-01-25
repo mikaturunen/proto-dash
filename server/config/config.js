@@ -20,7 +20,7 @@ try {
 /** 
  * Selects a value: either left-hand side or right-hand side. When LHS is undefined or "" it's skipped and RHG is used.
  */
-var selectValue = function(lhs, rhs) {
+var selectValue = (lhs, rhs) => {
     if (lhs !== undefined && lhs.trim() !== "") {
         return lhs;
     }

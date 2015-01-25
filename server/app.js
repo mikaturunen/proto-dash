@@ -9,7 +9,7 @@ var app = express();
 var database = require("./database/database");
 var Q = require("q");
 
-var initRoutes = function() {
+var initRoutes = () => {
     var deferred = Q.defer();
     var releaseDirectory = path.join(__dirname, "..");
     
@@ -23,12 +23,12 @@ var initRoutes = function() {
     ];
 
     app.set("port", (process.env.PORT || 3000));
-    staticRouteMappings.forEach(function(mapping) {
+    staticRouteMappings.forEach(mapping => {
         app.use(mapping.url, express.static(mapping.directory));                      
     });
 
     // From all other routes we return index.html for now... 
-    app.get("*", function(request, response) {
+    app.get("*", (request, response) => {
         var indexHtml = path.join(releaseDirectory, "client", "html", "index.html");
         response.sendFile(indexHtml);
     });
@@ -37,10 +37,10 @@ var initRoutes = function() {
     return deferred.promise;
 };
 
-var initServer = function() {
+var initServer = () => {
     var deferred = Q.defer();
     
-    var server = app.listen(app.get("port"), function() {
+    var server = app.listen(app.get("port"), () => {
         console.log("Node app is running at localhost:" + app.get('port'));
         deferred.resolve(server);
     });
@@ -58,17 +58,17 @@ var ObjectID = mongo.ObjectID;
  * @param {string[][]} rows_component_ids 2d array with the first layer being rows and the second dimension being columns
  * @returns Components transformed into the replica of rows_component_ids but instead of id's, the actual objects
  */
-var arrangeComponentsIntoRowsTransformer = function(rows_component_ids) {
-    return function(results) {
+var arrangeComponentsIntoRowsTransformer = (rows_component_ids) => {
+    return (results) => {
         // don't ask, I'm just throwing some map magic at it. Basically what is being done is I want the actual objects
         // to represent the rows in the exact same format as rows_component_ids are. So rows_component_ids describe
         // the format for us and we just fill in the details with the map magic and store the component objects in the 
         // exactly same format as the rows_component_ids is: Array<Array<Object>>, number or rows and colums is dynamic
         
-        return rows_component_ids.map(function(rowColumns) {
-            return rowColumns.map(function(component_id) { 
+        return rows_component_ids.map(rowColumns => {
+            return rowColumns.map(component_id => { 
                 // we make sure that we never get undefined into the collection. Makes our life a little easier on front
-                var component = _.find(results, function(componentDocument) {
+                var component = _.find(results, componentDocument => {
                     return componentDocument._id.equals(component_id);
                 }) || { }; 
                return component;
@@ -77,7 +77,7 @@ var arrangeComponentsIntoRowsTransformer = function(rows_component_ids) {
     };
 };
 
-var initSockets = function(server) {
+var initSockets = server => {
     var deferred = Q.defer();
     
     // TODO move the socket initialization into its own place
@@ -87,40 +87,40 @@ var initSockets = function(server) {
     var database = require("./database/database");
 
     // TODO move the socket code and hooks into a separate file
-    io.on(constants.events.socket.connected, function(socket) {
+    io.on(constants.events.socket.connected, socket => {
         console.log("Socket connected to server.",socket.id);
 
-        socket.on("dash.get.dashboard", function(parameters, resultHandler) {
+        socket.on("dash.get.dashboard", (parameters, resultHandler) => {
             console.log("Received socket get.dasboard");
             database
                 .findDashboardsForEmail(parameters)
-                .then(function(results) {
+                .then(results => {
                     if (!results || results.length <= 0) {
                         socket.emit("dash.get.dashboard.empty");
                     } else {
                         resultHandler(null, results);    
                     }
                 })
-                .catch(function(error) {
+                .catch(error => {
                     resultHandler(error);
                 })
                 .done();
         });
         
-        socket.on("dash.get.dashboard.components", function(parameters, resultHandler) {
+        socket.on("dash.get.dashboard.components", (parameters, resultHandler) => {
             console.log("Received socket get.dasboard.components");
             database
                 .findComponentsForDashboard(parameters, arrangeComponentsIntoRowsTransformer(parameters))
-                .then(function(results) {
+                .then(results => {
                     resultHandler(null, results);
                 })
-                .catch(function(error) {
+                .catch(error => {
                     resultHandler(error);
                 })
                 .done();
         });
 
-        socket.on(constants.events.socket.disconnected, function() {
+        socket.on(constants.events.socket.disconnected, () => {
             console.log("Socket disconnected from server.", socket.id);
         });
     });
@@ -129,10 +129,10 @@ var initSockets = function(server) {
 };
 
 initRoutes()
-    .then(function() { return database.init(); })
-    .then(function() { return initServer(); })
-    .then(function(server) { return initSockets(server); })
-    .catch(function(error) { 
+    .then(() => { return database.init(); })
+    .then(() => { return initServer(); })
+    .then(server => { return initSockets(server); })
+    .catch(error => { 
         console.log(error);
         process.exit(6);
     })
