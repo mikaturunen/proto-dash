@@ -4,7 +4,6 @@
 
 require("./gapi/gapi");
 require("./login/login-controller");
-require("./login/login-service");
 require("./socket/socket-service");
 require("./header/header-navigation-directive");
 require("./dashboard/dashboard-controller");

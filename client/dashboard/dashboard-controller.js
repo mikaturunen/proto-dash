@@ -3,6 +3,8 @@
 
 "use strict";
 
+// TODO comment the functions
+
 var name = "dash.controllers";
 var dependencyMap = require("../dependency-map").add(name);
 var constants = require("../../server/utilities/constants");
@@ -14,7 +16,7 @@ var controller = ($rootScope, $scope, socket, $state, gapi) => {
     $scope.dashboard = undefined;
     $scope.dashboardComponents = [];
     
-    $scope.getComponentsForDashboard = (dashboard) => {
+    $scope.getComponentsForDashboard = dashboard => {
         if (dashboard === undefined) {
             console.error("No dashboard provided. Cannot fetch components for board that is not present.");
             return;
@@ -43,23 +45,26 @@ var controller = ($rootScope, $scope, socket, $state, gapi) => {
         });
     };
 
-    var removeEmptyListener = socket.on("dash.get.dashboard.empty", () => {
-        // TODO show message to the user that they should contact their contact person about this
-        console.log("No dashboards available for user");
+    var listeners = [{
+        eventName: "dash.get.dashboard.empty",
+        callback: () => { console.log("No dashboard available for user."); }
+    }]
+    .forEach(listener => {
+        socket.on(listener.eventName, listener.callback);
     });
     
     $rootScope.$on('$stateChangeStart', (event, toState, toParams, fromState, fromParams) => {
-        console.log("Removing socket.on listeners..");
-        removeEmptyListener();
+        // TODO remove listeners from socket.
     });
 
     gapi.isAuthorized()
-        .done(user => {
+        .then(user => {
             console.log("authed:", user);
             $scope.getDashboards(user);
-        },
-        error => {
+        })
+        .catch(error => {
             // The user has not logged in
+            console.log("Not logged in, sending to login screen.", error);
             $state.go("login");
         });
 };
