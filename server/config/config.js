@@ -1,5 +1,6 @@
 /* global console, require, __dirname, process, module */
 /* jslint node: true */
+/* jshint esnext: true */
 
 var Q = require("q");
 var fs = require("fs");

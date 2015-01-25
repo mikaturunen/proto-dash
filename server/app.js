@@ -1,5 +1,6 @@
 /* global console, require, __dirname, process, module */
 /* jshint node: true */
+/* jshint esnext: true */
 
 "use strict";
 

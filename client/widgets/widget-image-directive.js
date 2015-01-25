@@ -1,5 +1,6 @@
 /* global gapi, console, require, angular, document */
 /* jslint node: true */
+/* jshint esnext: true */
 
 "use strict";
 

@@ -1,3 +1,5 @@
+var Q = require("q");
+var mkdirp = require("mkdirp");
 var gulp = require("gulp");
 var browserify = require("browserify");
 var sequence = require("run-sequence");
@@ -72,16 +74,51 @@ gulp.task("todo", function() {
         .pipe(gulp.dest("."));
 });
 
-gulp.task("debug", function() {
+var driveSequence = function(isDebug) {
+    var browser = isDebug ? "browserify-debug" : "browserify";
+
     sequence(
-        [ "node-es6to5", "jade", "copy", "browserify-debug", "css" ],
+        "jslint",
+        [ "node-es6to5", "jade", "copy", browser, "css" ],
         "todo"
     ); 
+}
+
+var makeDir = function(path) {
+    var deferred = Q.defer();
+
+    mkdirp(path, function(error) {
+        if (error) {
+            deferred.reject(error);
+        } else {
+            deferred.resolve(error);
+        }
+
+    });
+
+    return deferred.promise;
+}
+
+gulp.task("debug", function() {
+    Q.all([
+        makeDir(path.join(releaseLocationClient, "js"))
+    ])
+    .done(function() {
+        driveSequence(false);
+    }, 
+    function() {
+        driveSequence(true);
+    });
 });
 
 gulp.task("default", function() {
-    sequence(
-        [ "node-es6to5", "jade", "copy", "browserify", "css" ],
-        "todo"
-    ); 
+    Q.all([
+        makeDir(path.join(releaseLocationClient, "js"))
+    ])
+    .done(function() {
+        driveSequence(false);
+    }, 
+    function() {
+        driveSequence(true);
+    });
 });
