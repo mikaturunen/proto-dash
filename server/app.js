@@ -93,9 +93,13 @@ var initSockets = function(server) {
         socket.on("dash.get.dashboard", function(parameters, resultHandler) {
             console.log("Received socket get.dasboard");
             database
-                .findDashboardsForEmail("mika.turunen@ymail.com")
+                .findDashboardsForEmail(parameters)
                 .then(function(results) {
-                    resultHandler(null, results);
+                    if (!results || results.length <= 0) {
+                        socket.emit("dash.get.dashboard.empty");
+                    } else {
+                        resultHandler(null, results);    
+                    }
                 })
                 .catch(function(error) {
                     resultHandler(error);

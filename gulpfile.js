@@ -13,6 +13,7 @@ var minifyCSS = require("gulp-minify-css");
 var todo = require("gulp-todo");
 var to5ify = require("6to5ify");
 var fs = require("fs");
+var to5 = require("gulp-6to5");
 
 var releaseLocationClient = "./release/client/";
 var releaseLocationServer = "./release/server/";
@@ -32,8 +33,14 @@ gulp.task("jade", function() {
         .pipe(gulp.dest(path.join(releaseLocationClient, "html")));
 });
 
+gulp.task("node-es6to5", function() {
+    return gulp.src([ "./server/**/*.js" ])
+        .pipe(to5())
+        .pipe(gulp.dest(path.join(releaseLocationServer)));
+});
+
 gulp.task("copy", function() {
-    return gulp.src([ "./server/**/*.js", "./server/**/*.json" ])
+    return gulp.src([ "./server/**/*.json" ])
         .pipe(copy(path.join(releaseLocationServer, "..")));
 });
 
@@ -67,14 +74,14 @@ gulp.task("todo", function() {
 
 gulp.task("debug", function() {
     sequence(
-        [ "jade", "copy", "browserify-debug", "css" ],
+        [ "node-es6to5", "jade", "copy", "browserify-debug", "css" ],
         "todo"
     ); 
 });
 
 gulp.task("default", function() {
     sequence(
-        [ "jade", "copy", "browserify", "css" ],
+        [ "node-es6to5", "jade", "copy", "browserify", "css" ],
         "todo"
     ); 
 });
