@@ -9,19 +9,7 @@ var constants = require("../../server/utilities/constants");
 
 var _ = require("lodash");
 
-var controller = ($scope, socket, $state, gapi) => {
-    gapi.isAuthorized()
-        .done(
-            (response) => {
-                console.log("authed:", response);
-            },
-            (error) => {
-                // not authed; rock and roll!
-                console.log("to login", error); 
-                $state.go("login");
-            }
-        );
-    
+var controller = ($rootScope, $scope, socket, $state, gapi) => {   
     $scope.dashboards = [];
     $scope.dashboard = undefined;
     $scope.dashboardComponents = [];
@@ -44,9 +32,9 @@ var controller = ($scope, socket, $state, gapi) => {
                 $scope.dashboardComponents = resultingComponents;
             });   
     };
-    
-    $scope.getDashboards = () => {
-        socket.emit("dash.get.dashboard", {}, (socket, result) => {    
+
+    $scope.getDashboards = user => {
+        socket.emit("dash.get.dashboard", user, (socket, result) => {    
             $scope.dashboards = result;
 
             if ($scope.dashboards.length > 0) {
@@ -54,10 +42,28 @@ var controller = ($scope, socket, $state, gapi) => {
             }
         });
     };
+
+    var removeEmptyListener = socket.on("dash.get.dashboard.empty", () => {
+        // TODO show message to the user that they should contact their contact person about this
+        console.log("No dashboards available for user");
+    });
     
-   $scope.getDashboards();
+    $rootScope.$on('$stateChangeStart', (event, toState, toParams, fromState, fromParams) => {
+        console.log("Removing socket.on listeners..");
+        removeEmptyListener();
+    });
+
+    gapi.isAuthorized()
+        .done(user => {
+            console.log("authed:", user);
+            $scope.getDashboards(user);
+        },
+        error => {
+            // The user has not logged in
+            $state.go("login");
+        });
 };
-controller.$inject = [ "$scope", "socket", "$state", "gapi" ];
+controller.$inject = [ "$rootScope", "$scope", "socket", "$state", "gapi" ];
 controller.controllerName = "DashboardController";
 
 var configuration = ($stateProvider) => {
