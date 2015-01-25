@@ -41,6 +41,12 @@ gulp.task("node-es6to5", function() {
         .pipe(gulp.dest(path.join(releaseLocationServer)));
 });
 
+gulp.task("uglify", function() {
+   gulp.src([ path.join(releaseLocationClient, "js", "index.min.js") ])
+       .pipe(uglify())
+       .pipe(gulp.dest(path.join(releaseLocationClient, "js")))
+});
+
 gulp.task("copy", function() {
     return gulp.src([ "./server/**/*.json" ])
         .pipe(copy(path.join(releaseLocationServer, "..")));
@@ -76,11 +82,12 @@ gulp.task("todo", function() {
 
 var driveSequence = function(isDebug) {
     var browser = isDebug ? "browserify-debug" : "browserify";
-
+    var lastStep = isDebug ? [ "todo" ] : [ "todo", "uglify" ];
+    
     sequence(
-        "jslint",
+        [ "jslint" ],
         [ "node-es6to5", "jade", "copy", browser, "css" ],
-        "todo"
+        lastStep
     ); 
 }
 
@@ -104,7 +111,7 @@ gulp.task("debug", function() {
         makeDir(path.join(releaseLocationClient, "js"))
     ])
     .done(function() {
-        driveSequence(false);
+        driveSequence(true);
     }, 
     function() {
         driveSequence(true);
@@ -119,6 +126,6 @@ gulp.task("default", function() {
         driveSequence(false);
     }, 
     function() {
-        driveSequence(true);
+        driveSequence(false);
     });
 });
