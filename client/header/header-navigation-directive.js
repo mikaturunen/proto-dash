@@ -6,12 +6,12 @@
 var name = "dash.header";
 var dependencyMap = require("../dependency-map").add(name);
 
-var link = function(scope, element, attributes) {
+var link = (scope, element, attributes) => {
     console.log("dashboard");
     console.log("dashboards: " + scope.dashboards.lenght);
 };
 
-var directive = function() {
+var directive = () => {
     return {
         restrict: "E",
         scope: {

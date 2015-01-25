@@ -9,13 +9,13 @@ var constants = require("../../server/utilities/constants");
 
 var _ = require("lodash");
 
-var controller = function($scope, socket, $state, gapi) {
+var controller = ($scope, socket, $state, gapi) => {
     gapi.isAuthorized()
         .done(
-            function(response) {
+            (response) => {
                 console.log("authed:", response);
             },
-            function(error) {
+            (error) => {
                 // not authed; rock and roll!
                 console.log("to login", error); 
                 $state.go("login");
@@ -26,7 +26,7 @@ var controller = function($scope, socket, $state, gapi) {
     $scope.dashboard = undefined;
     $scope.dashboardComponents = [];
     
-    $scope.getComponentsForDashboard = function(dashboard) {
+    $scope.getComponentsForDashboard = (dashboard) => {
         if (dashboard === undefined) {
             console.error("No dashboard provided. Cannot fetch components for board that is not present.");
             return;
@@ -38,15 +38,15 @@ var controller = function($scope, socket, $state, gapi) {
         socket.emit(
             "dash.get.dashboard.components", 
             dashboard.rows_component_ids, 
-            function(socket, resultingComponents) {
+            (socket, resultingComponents) => {
                 console.log("Components for Active dashboard", resultingComponents);
                 // backend sorts and makes sure the resulting components are already ready for use
                 $scope.dashboardComponents = resultingComponents;
             });   
     };
     
-    $scope.getDashboards = function() {
-        socket.emit("dash.get.dashboard", {}, function(socket, result) {    
+    $scope.getDashboards = () => {
+        socket.emit("dash.get.dashboard", {}, (socket, result) => {    
             $scope.dashboards = result;
 
             if ($scope.dashboards.length > 0) {
@@ -60,7 +60,7 @@ var controller = function($scope, socket, $state, gapi) {
 controller.$inject = [ "$scope", "socket", "$state", "gapi" ];
 controller.controllerName = "DashboardController";
 
-var configuration = function($stateProvider) {
+var configuration = ($stateProvider) => {
     $stateProvider.state("dashboard", {
         templateUrl: "/public/html/dashboard/dashboard-view.html",
         url: "/dashboard",

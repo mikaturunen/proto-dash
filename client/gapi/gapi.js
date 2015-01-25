@@ -22,21 +22,21 @@ var loginScopes = [
 
 // TODO COMMENTS!
 
-var get = function() {
+var get = () => {
     return gapiIsReadyPromise;
 };
 
-var loadApi = function(gapi, api, version) {
+var loadApi = (gapi, api, version) => {
     var deferred = Q.defer();
     
-    gapi.client.load(api, version, function() {
+    gapi.client.load(api, version, () => {
         deferred.resolve(true);
     });
     
     return deferred.promise;
 };
 
-var options = function(immediate) {
+var options = (immediate) => {
     var clientId = "182467596451-qubeiec3osp7iqhuqqp4sb3jrdgpk8ah.apps.googleusercontent.com";
     if (immediate === true) {
          return {
@@ -57,13 +57,13 @@ var options = function(immediate) {
 var calledOnce = false;
 var apisInPlace = false;
 
-var apiLoader = function(gapi) {
+var apiLoader = (gapi) => {
     var deferred = Q.defer();
     
     Q.all([
         loadApi(gapi, "oauth2", "v2") 
     ])
-    .done(function() { 
+    .done(() => { 
         console.log("Loaded all APIs");
         gapiLoadedApisDeferred.resolve(gapi);
         apisInPlace = true;
@@ -73,11 +73,11 @@ var apiLoader = function(gapi) {
     return deferred.promise;
 };
 
-var auth = function(immediate) {
+var auth = (immediate) => {
     var deferred = Q.defer();
 
-    gapiIsReadyPromise.then(function(gapi) {   
-        gapi.analytics.auth.on("success", function(response) { 
+    gapiIsReadyPromise.then((gapi) => {   
+        gapi.analytics.auth.on("success", (response) => { 
             apiLoader(gapi).done(deferred.resolve, deferred.reject);
         });
         
@@ -109,12 +109,13 @@ var auth = function(immediate) {
     return deferred.promise;
 };
 
-var readAuthUser = function(gapi) {
+var readAuthUser = (gapi) => {
     var deferred = Q.defer();
     
     try {
         if (!apisInPlace) {
-            // No need to wait here as the below gapiLoaded promise will take care of that
+            // No need to wait here as the below gapiLoaded promise will take care of that.
+            // We have to auth the client again in immediate mode for it to work properly
             gapiIsReadyPromise.done(function(gapi) { 
                 gapi.auth.authorize(options(true)).then(function() {
                     apiLoader(gapi).done();
@@ -136,7 +137,7 @@ var readAuthUser = function(gapi) {
     return deferred.promise;
 };
 
-var service = function() {
+var service = () => {
     return {
         get: get,
         auth: auth,
@@ -147,7 +148,7 @@ service.serviceName = "gapi";
 
 angular
     .module(name)
-    .run(function($timeout) {
+    .run(($timeout) => {
         // Wow, I'm surprised there's no really clean way of doing this.. I hate myself for this
         var scriptText = ""+
            "(function(w,d,s,g,js,fs){ " +

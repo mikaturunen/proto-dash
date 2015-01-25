@@ -7,8 +7,8 @@ var name = "dash.widgets";
 var dependencyMap = require("../dependency-map").add(name);
 var constants = require("../../server/utilities/constants");
 
-var link = function($sce) {
-    return function(scope, element, attributes) {
+var link = ($sce) => {
+    return (scope, element, attributes) => {
         if (!(scope.isActive = scope.component.type === "IFRAME")) {
             return;
         }
@@ -24,7 +24,7 @@ var link = function($sce) {
     };
 };
 
-var directive = function($sce) {
+var directive = ($sce) => {
     return {
         restrict: "E",
         scope: {

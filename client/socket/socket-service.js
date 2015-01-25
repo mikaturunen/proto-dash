@@ -6,11 +6,11 @@
 var name = "dash.socket";
 var dependencyMap = require("../dependency-map").add(name);
 
-var factory = function($rootScope) {
+var factory = ($rootScope) => {
     var socket = io.connect();
     
     return {
-        on: function (eventName, callback) {
+        on: (eventName, callback) => {
             socket.on(eventName, function () {  
                 var args = arguments;
                 

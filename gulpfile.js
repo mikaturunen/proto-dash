@@ -11,9 +11,20 @@ var stylish = require("jshint-stylish");
 var jshint = require("gulp-jshint");
 var minifyCSS = require("gulp-minify-css");
 var todo = require("gulp-todo");
+var to5ify = require("6to5ify");
+var fs = require("fs");
 
 var releaseLocationClient = "./release/client/";
 var releaseLocationServer = "./release/server/";
+
+var createBrowserifyTask = function(debug) {
+    return browserify({ debug: debug })
+        .transform(to5ify)
+        .require( "./client/index.js", { entry: true })
+        .bundle()
+        .on("error", function(error) { console.log("Error: " + error.message); })
+        .pipe(fs.createWriteStream(path.join(releaseLocationClient, "js", "index.min.js")));
+}
 
 gulp.task("jade", function() {
     return gulp.src("./client/**/*.jade")
@@ -26,17 +37,12 @@ gulp.task("copy", function() {
         .pipe(copy(path.join(releaseLocationServer, "..")));
 });
 
-// default task that basically bundles all the client side js files into one 
 gulp.task("browserify", function () {
-    var browserified = transform(function(filename) {
-        var b = browserify(filename);
-        return b.bundle();
-    });
-    
-    return gulp.src([ "./client/index.js" ])
-        .pipe(browserified)
-        .pipe(uglify())
-        .pipe(gulp.dest(path.join(releaseLocationClient, "js")));
+    return createBrowserifyTask(false);
+});
+
+gulp.task("browserify-debug", function () {
+    return createBrowserifyTask(true);
 });
 
 gulp.task("jslint", function() {
@@ -59,14 +65,15 @@ gulp.task("todo", function() {
         .pipe(gulp.dest("."));
 });
 
-
-// TODO css minify + copy
+gulp.task("debug", function() {
+    sequence(
+        [ "jade", "copy", "browserify-debug", "css" ],
+        "todo"
+    ); 
+});
 
 gulp.task("default", function() {
-    // with sequence we parallelize all the operations we can 
     sequence(
-        // holy hell.. that got ugly.. let's first fix the issues :,D
-         "jslint",
         [ "jade", "copy", "browserify", "css" ],
         "todo"
     ); 

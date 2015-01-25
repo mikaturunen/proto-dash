@@ -1,56 +1,58 @@
 {
-    "name": "proto-dash",
-    "version": "0.0.1",
-    "description": "",
-    "main": "release/server/app.js",
-    "scripts": {
-        "postinstall-note": "Thanks heroku .. thanks...",
-        "postinstall": "node node_modules/bower/bin/bower install && node node_modules/gulp/bin/gulp"
-    },
-    "keywords": [
-        "google",
-        "api",
-        "nodejs",
-        "client",
-        "analytics",
-        "api",
-        "oauth"
-    ],
-    "author": "Mika Turunen <mika.turunen@ymail.com>",
-    "start": "node server/app.js",
-    "contributors": [
-        {
-            "name": "",
-            "email": ""
-        }
-    ],
-    "license": "MIT",
-    "dependencies": {
-        "express": "4.10.7",
-        "bower": "1.3.12",
-        "socket.io": "^1.2.1",
-        "q": "^1.1.2",
-        "mongodb": "^1.4.26",
-        "socket.io-client": "^1.2.1",
-        "lodash": "^2.4.1"
-    },
-    "engines": {
-        "node": "0.10.26",
-        "npm": "2.1.x"
-    },
-    "devDependencies": {
-        "vinyl-transform": "^1.0.0",
-        "gulp-uglify": "^1.0.2",
-        "browserify": "^8.1.0",
-        "gulp": "^3.8.10",
-        "vinyl-source-stream": "^1.0.0",
-        "vinyl-buffer": "^1.0.0",
-        "gulp-jade": "^0.10.0",
-        "gulp-copy": "0.0.2",
-        "run-sequence": "^1.0.2",
-        "jshint-stylish": "^1.0.0",
-        "gulp-jshint": "^1.9.0",
-        "gulp-minify-css": "^0.4.2",
-        "gulp-todo": "^2.3.1"
+  "name": "proto-dash",
+  "version": "0.0.1",
+  "description": "",
+  "main": "release/server/app.js",
+  "scripts": {
+    "postinstall-note": "Thanks heroku .. thanks...",
+    "postinstall": "node node_modules/bower/bin/bower install && node node_modules/gulp/bin/gulp"
+  },
+  "keywords": [
+    "google",
+    "api",
+    "nodejs",
+    "client",
+    "analytics",
+    "api",
+    "oauth"
+  ],
+  "author": "Mika Turunen <mika.turunen@ymail.com>",
+  "start": "node server/app.js",
+  "contributors": [
+    {
+      "name": "",
+      "email": ""
     }
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "express": "4.10.7",
+    "bower": "1.3.12",
+    "socket.io": "^1.2.1",
+    "q": "^1.1.2",
+    "mongodb": "^1.4.26",
+    "socket.io-client": "^1.2.1",
+    "lodash": "^2.4.1"
+  },
+  "engines": {
+    "node": "0.10.26",
+    "npm": "2.1.x"
+  },
+  "devDependencies": {
+    "vinyl-transform": "^1.0.0",
+    "gulp-uglify": "^1.0.2",
+    "browserify": "^8.1.0",
+    "gulp": "^3.8.10",
+    "vinyl-source-stream": "^1.0.0",
+    "vinyl-buffer": "^1.0.0",
+    "gulp-jade": "^0.10.0",
+    "gulp-copy": "0.0.2",
+    "run-sequence": "^1.0.2",
+    "jshint-stylish": "^1.0.0",
+    "gulp-jshint": "^1.9.0",
+    "gulp-minify-css": "^0.4.2",
+    "gulp-todo": "^2.3.1",
+    "6to5": "^2.13.7",
+    "6to5ify": "^3.1.2"
+  }
 }

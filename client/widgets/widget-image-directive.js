@@ -7,13 +7,13 @@ var name = "dash.widgets";
 var dependencyMap = require("../dependency-map").add(name);
 var constants = require("../../server/utilities/constants");
 
-var link = function(scope, element, attributes) {
+var link = (scope, element, attributes) => {
     if (!(scope.isActive = scope.component.type === "IMAGE")) {
         return;
     }
 };
 
-var directive = function() {
+var directive = () => {
     return {
         restrict: "E",
         scope: {
