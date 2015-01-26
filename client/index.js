@@ -4,6 +4,7 @@
 
 "use strict";
 
+require("./gapi/gapi-service");
 require("./gapi/gapi");
 require("./login/login-controller");
 require("./socket/socket-service");

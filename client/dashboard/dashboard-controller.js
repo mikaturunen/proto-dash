@@ -1,4 +1,4 @@
-/* global gapi, console, require, angular, document */
+/* global gapi, console, require, angular, document, window */
 /* jslint node: true */
 /* jshint esnext: true */
 
@@ -12,7 +12,7 @@ var constants = require("../../server/utilities/constants");
 
 var _ = require("lodash");
 
-var controller = ($rootScope, $scope, socket, $state, gapi) => {   
+var controller = ($rootScope, $scope, socket, $state, gapi, $window, $q) => {   
     $scope.dashboards = [];
     $scope.dashboard = undefined;
     $scope.dashboardComponents = [];
@@ -58,18 +58,25 @@ var controller = ($rootScope, $scope, socket, $state, gapi) => {
         // TODO remove listeners from socket.
     });
 
-    gapi.isAuthorized()
-        .then(user => {
-            console.log("authed:", user);
-            $scope.getDashboards(user);
-        })
-        .catch(error => {
-            // The user has not logged in
-            console.log("Not logged in, sending to login screen.", error);
-            $state.go("login");
-        });
+    gapi.auth().then((response) => {
+        console.log("response", response);
+        gapi.isAuthorized()
+            .then(response => {
+                console.log("authed:", response, response.email);
+                $scope.getDashboards(response.email);
+            })
+            .catch(error => { 
+                console.log("error", error); 
+                // because we know GAPI misbehaves; we actually do a refresh to the front page instead of state.go to it
+                $window.location.href = "/";
+            });
+    })
+    .catch(error => {
+        console.log("auth error", error);
+        $window.location.href = "/";
+    });
 };
-controller.$inject = [ "$rootScope", "$scope", "socket", "$state", "gapi" ];
+controller.$inject = [ "$rootScope", "$scope", "socket", "$state", "gapi", "$window", "$q" ];
 controller.controllerName = "DashboardController";
 
 var configuration = ($stateProvider) => {
