@@ -8,7 +8,13 @@ var name = "dash.gapi";
 var dependencyMap = require("../dependency-map").add(name);
 var constants = require("../../server/utilities/constants");
 
-// TODO COMMENTS!
+/**
+ * Service for easing the use of GAPI client with Angular. 
+ * @param  {ng-service} $q     
+ * @param  {ng-service} $window 
+ * @param  {ng-service} $state  
+ * @return {Object} The service object.
+ */
 var service = ($q, $window, $state) => {
     var scopes = [
                 "https://www.googleapis.com/auth/analytics.readonly",
@@ -18,6 +24,11 @@ var service = ($q, $window, $state) => {
 
     var clientId = "182467596451-qubeiec3osp7iqhuqqp4sb3jrdgpk8ah.apps.googleusercontent.com";
 
+    /**
+     * Generates a single component through GAPI
+     * @param  {Object} gapiQuery Object that represents the content that gapi DataChart digests
+     * @return {Promise} Promise that resolves to the generated component. Rejects on error.
+     */
     var generate = gapiQuery => {
         var deferred = $q.defer();
 
@@ -33,26 +44,26 @@ var service = ($q, $window, $state) => {
             gapiQuery.ids = "ga:" + gapiQuery.ids;
         }
 
-        gapi.get()
-            .then(gapi => {
-              /*  var chart = gapi.analytics.googleCharts.DataChart(gapiQuery);
-                chart.on("success", (opt1, opt2) => {
-                    console.log("SUCCESS:", opt1, opt2);
-                    deferred.resolve(true);
-                });
-                chart.on("error", (opt1, opt2) => {
-                    console.log("ERROR:", opt1, opt2);
-                    deferred.reject();
-                });
-                chart.execute();
-                */
-                deferred.resolve(true);
-            })
-            .catch(deferred.reject);
+        var chart = new $window.gapi.analytics.googleCharts.DataChart(gapiQuery);
+        chart.on("success", (opt1, opt2) => {
+            console.log("SUCCESS:", opt1, opt2);
+            deferred.resolve(true);
+        });
+        chart.on("error", (opt1, opt2) => {
+            console.log("ERROR:", opt1, opt2);
+            deferred.reject(opt1);
+        });
+        chart.execute();
 
         return deferred.promise;
     };
 
+    /** 
+     * Wrapper for loading specific apis onto GAPI. Generates promise for the loading operation.
+     * @param  {string} api     gapi api to load
+     * @param  {string} version gapi api version to load
+     * @return {Promise}        resolves true ton success
+     */
     var generateLoadPromise = (api, version) => {
         var deferred = $q.defer();
         
@@ -68,6 +79,12 @@ var service = ($q, $window, $state) => {
     };
 
     var isCalledOnce = false;
+    /**
+     * Calls the gapi.analytics.auth once and makes sure following calls do not call it again. Gapi explodes if it's 
+     * called multiple times and it's required behavior for login / authenticating the interfaces
+     * @param  {{ success: string; failed: string; }} redirectOptions Containing potential $state.go targets for auth events
+     * @return {Promise} Resolves to true on authenticated
+     */
     var callAnalyticsAuthOnce = (redirectOptions) => {
         var deferred = $q.defer();
 
@@ -113,6 +130,10 @@ var service = ($q, $window, $state) => {
         return deferred.promise;
     };
 
+    /** 
+     * Loads all specified APIs into gapi as part of the initial procedure of hooking up gapi into $window.
+     * @return {Promise} True when all apis are loaded
+     */
     var loader = () => {
         var deferred = $q.defer();
 
