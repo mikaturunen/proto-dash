@@ -2,7 +2,8 @@ div(ng-if="isActive").widget-analytics.widget
     div
         span(ng-bind="component.title")
     div
-        //- TODO START WORKING ON THIS MONSTER >:(
+        div(id="chart-container")
+        //-ng-attr-id="{{ component.gapi.chart.container }}")
     div
         span(ng-bind="component.label")
     

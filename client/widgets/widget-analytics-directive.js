@@ -8,13 +8,15 @@ var name = "dash.widgets";
 var dependencyMap = require("../dependency-map").add(name);
 var constants = require("../../server/utilities/constants");
 
-var link = (scope, element, attributes) => {
-    if (!(scope.isActive = scope.component.type === "GOOGLE_ANALYTICS")) {
-        return;
-    }
-};
+var directive = (gapiservice) => {
+    var link = (scope, element, attributes) => {
+        if (!(scope.isActive = scope.component.type === "GOOGLE_ANALYTICS")) {
+            return;
+        }
 
-var directive = () => {
+        gapiservice.generate(scope.component.gapi);
+    };
+
     return {
         restrict: "E",
         scope: {
@@ -24,6 +26,7 @@ var directive = () => {
         link: link
     };
 };
+directive.$inject = [ "gapiservice" ];
 directive.directiveName = "widgetAnalytics";
 
 angular
