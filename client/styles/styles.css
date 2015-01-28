@@ -12,7 +12,11 @@ img {
 }
 
 .dash-header {
-    background: lightgrey; 
+    height: 40px;
+    line-height: 40px;
+    vertical-align: middle;
+    color: #FFFFFF;
+    background-color: #444;
 }
 
 .widget-container {
