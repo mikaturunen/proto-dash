@@ -16,12 +16,19 @@ var constants = require("../../server/utilities/constants");
  * @return {Object} The service object.
  */
 var service = ($q, $window, $state) => {
+    /**
+     * Scopes for the GAPI we are using.
+     */
     var scopes = [
                 "https://www.googleapis.com/auth/analytics.readonly",
                 "https://www.googleapis.com/auth/plus.login", 
                 "https://www.googleapis.com/auth/userinfo.email" 
             ].join(" ");
 
+    /** 
+     * Specific client ID - could be debated is it wise to release this into github but for now
+     * it is; as it's not for real use and later it'll be populated through env variables.
+     */
     var clientId = "182467596451-qubeiec3osp7iqhuqqp4sb3jrdgpk8ah.apps.googleusercontent.com";
 
     /**
@@ -62,7 +69,7 @@ var service = ($q, $window, $state) => {
      * Wrapper for loading specific apis onto GAPI. Generates promise for the loading operation.
      * @param  {string} api     gapi api to load
      * @param  {string} version gapi api version to load
-     * @return {Promise}        resolves true ton success
+     * @return {Promise}        resolves true on success
      */
     var generateLoadPromise = (api, version) => {
         var deferred = $q.defer();
@@ -78,7 +85,11 @@ var service = ($q, $window, $state) => {
         return deferred.promise;     
     };
 
+    /**
+     * Follows have we called gapi.analytics.auth.authorize already
+     */
     var isCalledOnce = false;
+
     /**
      * Calls the gapi.analytics.auth once and makes sure following calls do not call it again. Gapi explodes if it's 
      * called multiple times and it's required behavior for login / authenticating the interfaces
@@ -144,6 +155,9 @@ var service = ($q, $window, $state) => {
         return deferred.promise;
     };
 
+    /**
+     * The actual service we are returning
+     */
     return {
         generate: generate,
         loadApis: loader,

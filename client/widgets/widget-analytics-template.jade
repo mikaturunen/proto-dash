@@ -2,8 +2,8 @@ div(ng-if="isActive").widget-analytics.widget
     div
         span(ng-bind="component.title")
     div
-        div(id="chart-container")
-        //-ng-attr-id="{{ component.gapi.chart.container }}")
+        div(id="{{ component.gapi.chart.container }}") 
+        span {{ component.gapi.chart.container }}
     div
         span(ng-bind="component.label")
     
