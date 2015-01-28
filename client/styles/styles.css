@@ -1,17 +1,37 @@
+body {
+    background-color: #F2F2F2;
+
+}
+
+iframe {
+    width: 100%;
+}
+
+img {
+    width: 150px;
+}
+
 .dash-header {
     background: lightgrey; 
 }
 
+.widget-container {
+    border: 1px solid #EDEDED;
+    border-radius: 5px;
+    background-color: #FFFFFF;
+}
+
 .widget {
-    display: overflow;
+    min-height: 200px;
+    width: 100%;
 }
 
 .widget-iframe {
-    
+    height: 100%;
 }
 
 .widget-image {
-    
+
 }
 
 .widget-analytics {

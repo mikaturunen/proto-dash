@@ -1,9 +1,8 @@
 div(ng-if="isActive").widget-analytics.widget
     div
-        span(ng-bind="component.title")
+        h4(ng-bind="component.title")
     div
         div(id="{{ component.gapi.chart.container }}") 
-        span {{ component.gapi.chart.container }}
     div
         span(ng-bind="component.label")
     
