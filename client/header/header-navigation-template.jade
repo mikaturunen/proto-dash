@@ -6,8 +6,14 @@ div.dash-header
     
     //- Displaying the dropdown for the dashboards only in the situations where there are more than one of them
     div.col-md-2
-        span List of dashboards [{{ dashboards.length }}]
-                        
+        div(dropdown).btn-group
+            button(type="button", dropdown-toggle).btn.btn-primary.dropdown-toggle
+                span Dashboard
+                span.caret
+            ul(role="menu").dropdown-menu
+                li(ng-repeat="dashboard in dashboards")
+                    a(href="#", ng-bind="dashboard.name")
+
     //- logout
     div.col-md-2
         //- TODO call gapi.auth.blah.blah to logout the user 
