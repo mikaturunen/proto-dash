@@ -21,6 +21,12 @@ var controller = ($rootScope, $scope, $state, gapi, dashService, $q, $window) =>
     $scope.getComponentsForDashboard = dashService.getComponentsForDashboard($scope);
     $scope.getDashboards = dashService.getDashboards($scope);
 
+    $scope.logout = () => {
+        console.log("Logging user out..");
+        $window.gapi.auth.signOut();
+        $window.location.href = "/";
+    };
+
     /**
      * After authorization starts working on getting all the required dashboards and information to the client.
      * @param  {string} user users email

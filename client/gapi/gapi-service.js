@@ -128,7 +128,8 @@ var service = ($q, $window, $state) => {
                 $window.gapi.analytics.auth.authorize({
                     clientid: clientId,
                     scope: scopes,
-                    container: "embed-api-auth-container"
+                    container: "embed-api-auth-container", 
+                    cookie_policy: "single_host_origin"
                 }); 
             } catch (error) {
                 console.log("Error in callAnalyticsAuthOnce:", error);
