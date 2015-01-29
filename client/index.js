@@ -24,7 +24,8 @@ angular
     .module("dash", [
             // from bower or angular basic modules
             "ui.router", 
-            "ui.bootstrap"
+            "ui.bootstrap",
+            "ngCookies"
         ]
         .concat(require("./dependency-map").dependencies)
     )

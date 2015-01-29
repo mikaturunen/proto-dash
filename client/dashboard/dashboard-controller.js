@@ -20,12 +20,7 @@ var controller = ($rootScope, $scope, $state, gapi, dashService, $q, $window) =>
     $scope.dashboardComponents = [];
     $scope.getComponentsForDashboard = dashService.getComponentsForDashboard($scope);
     $scope.getDashboards = dashService.getDashboards($scope);
-
-    $scope.logout = () => {
-        console.log("Logging user out..");
-        $window.gapi.auth.signOut();
-        $window.location.href = "/";
-    };
+    $scope.logout = gapi.logout;
 
     /**
      * After authorization starts working on getting all the required dashboards and information to the client.
@@ -57,7 +52,7 @@ var controller = ($rootScope, $scope, $state, gapi, dashService, $q, $window) =>
             });
     };
 
-    gapi.auth().then((response) => {
+    gapi.auth().then(response => {
         console.log("response", response);
         gapi.isAuthorized()
             .then(response => {

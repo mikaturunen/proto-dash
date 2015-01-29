@@ -15,12 +15,8 @@ var gapiIsReadyPromise;
  * Service for immediate GAPI usage; commonly one would use it through the $window service but 
  * this service abstracts few behaviors such as the more or less broken authentication/authorization of gapi. I'm not even
  * kidding.
- * @param  {ng-service} $q          
- * @param  {ng-service} $window     
- * @param  {ng-service} $state      
- * @param  {ng-service} gapiservice 
  */
-var service = ($q, $window, $state, gapiservice) => {
+var service = ($q, $window, $state, gapiservice, $location) => {
     /**
      * Attempts to authenticate the provided client.
      * @param  {{ success: string; failed: string; }}} redirectOptions Options for redirecting the user if necessary. 
@@ -72,12 +68,34 @@ var service = ($q, $window, $state, gapiservice) => {
         return deferred.promise;
     };
 
+    /** 
+     * Logs out the current active user and clears the related cookies from the cookie store.
+     */
+    var logout = () => {
+        console.log("Logging user out..");
+
+        // Simply calling the signout() is not enough as the same user with the same browser can instantly log back in 
+        // without confirmation or password. We need to make sure the cookies are dead with the help of Google.
+        $window.gapi.auth.signOut();
+
+        // Redirecting the user to google for logout -> google app engine as middleman and back to -> application.
+        // Honestly.. I didn't think I would be doing something like this in the 2015.. 
+        var applicationLoginPage = $location.protocol() + "://" + $location.host() + ":" + $location.port();
+        var logoutGoogleAccount = "https://www.google.com/accounts/Logout?continue=";
+        var usingAppEngineAsMiddleMan = "https://appengine.google.com/_ah/logout?continue=";
+        var completeURL = logoutGoogleAccount + usingAppEngineAsMiddleMan + applicationLoginPage;
+
+        // Start the whole redirect chain of events.
+        $window.location.href = completeURL;
+    };
+
     return {
         auth: auth,
-        isAuthorized: isAuthorized
+        isAuthorized: isAuthorized,
+        logout: logout
     };
 };
-service.$inject = [ "$q", "$window", "$state", "gapiservice" ];
+service.$inject = [ "$q", "$window", "$state", "gapiservice", "$location" ];
 service.serviceName = "gapi";
 
 /** 
