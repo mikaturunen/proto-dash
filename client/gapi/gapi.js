@@ -79,6 +79,9 @@ var service = ($q, $window, $state, gapiservice, $location) => {
         $window.gapi.auth.signOut();
 
         // Redirecting the user to google for logout -> google app engine as middleman and back to -> application.
+        // You cannot redirect user back to custom domain / application from google directly so you'll have to use 
+        // appEngine as the middle-man in doing this.
+        
         // Honestly.. I didn't think I would be doing something like this in the 2015.. 
         var applicationLoginPage = $location.protocol() + "://" + $location.host() + ":" + $location.port();
         var logoutGoogleAccount = "https://www.google.com/accounts/Logout?continue=";
