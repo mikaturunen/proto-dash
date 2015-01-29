@@ -8,7 +8,6 @@ var name = "dash.gapi";
 var dependencyMap = require("../dependency-map").add(name);
 var constants = require("../../server/utilities/constants");
 
-
 var gapiIsReadyDeferred;
 var gapiIsReadyPromise;
 
@@ -74,7 +73,6 @@ var service = ($q, $window, $state, gapiservice) => {
     };
 
     return {
-        get: get,
         auth: auth,
         isAuthorized: isAuthorized
     };
@@ -92,7 +90,7 @@ var run = ($q, gapiservice) => {
     gapiIsReadyDeferred = $q.defer();
     gapiIsReadyPromise = gapiIsReadyDeferred.promise;
 
-    // NOTE I don't agree at all with the gay GAPI operates and how it has been designed to 'dynamically' be injected
+    // NOTE I don't agree at all with the way GAPI operates and how it has been designed to 'dynamically' be injected
     //      into the website. I think it breaks too many princibles of a modern web application. This is not a good thing.
     //      This is a quick attempt to just try and go ahead in wrapping the horrible implementation of gapi into a more
     //      decent usage case and to make sure it would behave nicely with the Angular applications life cycle.

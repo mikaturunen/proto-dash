@@ -96,11 +96,7 @@ var initSockets = server => {
             database
                 .findDashboardsForEmail(parameters)
                 .then(results => {
-                    if (!results || results.length <= 0) {
-                        socket.emit("dash.get.dashboard.empty");
-                    } else {
-                        resultHandler(null, results);    
-                    }
+                    resultHandler(null, !results || results.length <= 0 ? [] : results);
                 })
                 .catch(error => {
                     resultHandler(error);
@@ -109,7 +105,13 @@ var initSockets = server => {
         });
         
         socket.on("dash.get.dashboard.components", (parameters, resultHandler) => {
-            console.log("Received socket get.dasboard.components");
+            console.log("Received socket get.dasboard.components", JSON.stringify(parameters, null, 2));
+
+            if (!parameters) {
+                resultHandler("No components");
+                return;
+            }
+
             database
                 .findComponentsForDashboard(parameters, arrangeComponentsIntoRowsTransformer(parameters))
                 .then(results => {
