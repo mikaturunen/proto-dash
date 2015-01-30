@@ -12,11 +12,38 @@ img {
 }
 
 .dash-header {
+    position: fixed;
+    width: 100%;
+    left: 0;
+    top: 0;
+    z-index: 100;
+    border-top: 0;
+
     height: 40px;
     line-height: 40px;
     vertical-align: middle;
     color: #FFFFFF;
     background-color: #444;
+}
+
+.dash-content {
+    position: relative;
+    top: 40px;
+}
+
+.dash-footer {
+    position: fixed;
+    left: 0px;
+    bottom: 0px;
+    height: 40px;
+    width: 100%;
+    line-height: 40px;
+    background-color: #444;
+    color: #FFFFFF;
+}
+
+.text-footer {
+    margin-left: 10px;
 }
 
 .widget-container {
