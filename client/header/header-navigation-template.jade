@@ -12,7 +12,7 @@ div.dash-header
                 span.caret
             ul(role="menu").dropdown-menu
                 li(ng-repeat="dashboard in dashboards")
-                    a(href="#", ng-bind="dashboard.name")
+                    a(href="#", ng-bind="dashboard.name", ng-click="select(dashboard);")
 
     //- logout
     div.col-md-2

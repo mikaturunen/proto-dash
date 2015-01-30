@@ -17,7 +17,8 @@ var directive = () => {
         restrict: "E",
         scope: {
             dashboards: "=",
-            logout: "="
+            logout: "=",
+            select: "="
         },
         templateUrl: "/public/html/header/header-navigation-template.html",
         link: link
