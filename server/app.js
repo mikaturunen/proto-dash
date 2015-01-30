@@ -105,7 +105,7 @@ var initSockets = server => {
         });
         
         socket.on("dash.get.dashboard.components", (parameters, resultHandler) => {
-            console.log("Received socket get.dasboard.components", JSON.stringify(parameters, null, 2));
+            console.log("Received socket get.dasboard.components", JSON.stringify(parameters));
 
             if (!parameters) {
                 resultHandler("No components");
