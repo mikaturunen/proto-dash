@@ -23,6 +23,22 @@ var controller = ($rootScope, $scope, $state, gapi, dashService, $q, $window) =>
     $scope.logout = gapi.logout;
 
     /**
+     * Selects a given dashboard into active use and fetches the components for the dashboard.
+     * @param  {DashboardModel} dashboard Dashboard object
+     */
+    $scope.selectDashboard = dashboard => {
+        $scope.getComponentsForDashboard(dashboard)
+            .then(components => {
+                // TODO store selection into local storage
+                console.log("Wookie woo, selected new dashboard");
+            })
+            .catch(error => {
+                console.log("Could not fetch dashboard");
+                console.error(error);
+            });
+    };
+
+    /**
      * After authorization starts working on getting all the required dashboards and information to the client.
      * @param  {string} user users email
      */
@@ -31,6 +47,9 @@ var controller = ($rootScope, $scope, $state, gapi, dashService, $q, $window) =>
             .getDashboards(user)
             .then(dashboards => {
                 var deferred = $q.defer();
+
+                // TODO read selected dashboard from local storage and open based on it
+
                 // Temp development time fix as the database might contain all sorts of old mush before clean up :)
                 var index = _.findIndex(dashboards, (dash) => { return dash.rows_component_ids !== undefined; });
 
