@@ -2,6 +2,6 @@ div(ng-if="isActive").widget-iframe.widget
     div
         h4(ng-bind="component.title")
     div
-        iframe(ng-src="{{ component.source }}")
+        iframe(ng-src="{{ component.source }}", element-onload="dynamicResize()")
     div
         span(ng-bind="component.label")
