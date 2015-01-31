@@ -53,7 +53,7 @@ img {
 }
 
 .widget {
-    min-height: 200px;
+    min-height: 333px;
     width: 100%;
     padding: 3px;
 }
@@ -68,4 +68,18 @@ img {
 
 .widget-analytics {
     
+}
+
+.float-left {
+    float: left;
+}
+
+.float-right {
+    float: right;
+}
+
+.header-columns {
+    display: inline-block;
+    margin-right: 10px;
+    margin-left: 10px;
 }
