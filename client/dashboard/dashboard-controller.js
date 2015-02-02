@@ -57,16 +57,15 @@ var controller = ($rootScope, $scope, $state, gapi, dashService, $q, $window) =>
                     console.log("Received dashboards", JSON.stringify(dashboards));
                     $scope.getComponentsForDashboard(dashboards[index]).then(deferred.resolve, deferred.reject);
                 } else {
-                    deferred.reject(new Error(1, "User has no dashboards."));
+                    deferred.reject(new Error("User has no dashboards.", 1));
                 }
 
                 return deferred.promise;
             })
             .catch(error => {
-                if (error.code === 1) {
-                    // TODO show some sort of error to the user about it
-                }
-                
+                // TODO show some sort of error to the user about it
+                $scope.dashboards = [ ];
+                console.log("No dashboards available for user");
                 console.error(error);
             });
     };

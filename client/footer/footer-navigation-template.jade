@@ -1,11 +1,12 @@
 div.dash-footer
     div.text-footer
-        span(ng-bind="dashboard.customer_representive.last_name") 
-        span &nbsp;
-        span(ng-bind="dashboard.customer_representive.first_name") 
-        span &nbsp;-&nbsp;
-        span
-            a(href="mailto:{{ dashboard.customer_representive.email }}", target="_top") {{ dashboard.customer_representive.email }}
-        span &nbsp;-&nbsp;
-        span
-            a(href="tel:{{ dashboard.customer_representive.phone_number }}") {{ dashboard.customer_representive.phone_number  }}
+        div(ng-show="dashboard")
+            span(ng-bind="dashboard.customer_representive.last_name") 
+            span &nbsp;
+            span(ng-bind="dashboard.customer_representive.first_name") 
+            span &nbsp;-&nbsp;
+            span
+                a(href="mailto:{{ dashboard.customer_representive.email }}", target="_top") {{ dashboard.customer_representive.email }}
+            span &nbsp;-&nbsp;
+            span
+                a(href="tel:{{ dashboard.customer_representive.phone_number }}") {{ dashboard.customer_representive.phone_number  }}

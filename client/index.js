@@ -6,6 +6,7 @@
 
 require("./gapi/gapi-service");
 require("./gapi/gapi");
+require("./company/company-directive");
 require("./login/login-controller");
 require("./socket/socket-service");
 require("./header/header-navigation-directive");
