@@ -10,6 +10,10 @@ var app = express();
 var database = require("./database/database");
 var Q = require("q");
 
+/** 
+ * Initializes all the express HTTP specific routes. 
+ * @return {Q.Promise} Resolves on success.
+ */ 
 var initRoutes = () => {
     var deferred = Q.defer();
     var releaseDirectory = path.join(__dirname, "..");
@@ -38,6 +42,10 @@ var initRoutes = () => {
     return deferred.promise;
 };
 
+/** 
+ * Initializes the express server itself.
+ * @returns {Q.Promise} Resolves on success.
+ */ 
 var initServer = () => {
     var deferred = Q.defer();
     
@@ -78,6 +86,10 @@ var arrangeComponentsIntoRowsTransformer = (rows_component_ids) => {
     };
 };
 
+/** 
+ * Initializes all the Socket.io connections and messages available in the application.
+ * @returns {Q.Promise} Resolves on success.
+ */
 var initSockets = server => {
     var deferred = Q.defer();
     
@@ -131,6 +143,7 @@ var initSockets = server => {
     return deferred.promise;
 };
 
+// Start the application through the Promise-chain
 initRoutes()
     .then(() => { return database.init(); })
     .then(() => { return initServer(); })
