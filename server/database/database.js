@@ -22,6 +22,10 @@ var database;
 var dashboard;
 var components;
 
+/**
+ * Initializes the Mongo database connection. Opens the connection to the database and to the associated collections.
+ * @returns {Q.Promise} Resolves on success.
+ */
 var init = () => {
     var deferred = Q.defer();
 
@@ -38,6 +42,10 @@ var init = () => {
     return deferred.promise;
 };
 
+/**
+ * Gets a specific connection to a Collection in the MongoDb
+ * @returns {Object} Returns mongodb collection.
+ */
 var getCollection = collection => {
     if (!database) {
         throw "No connection to database.";
@@ -49,6 +57,12 @@ var getCollection = collection => {
     };
 };
 
+/** 
+ * Performs a specific find-query into a given Collection in the Mongo database.
+ * @collection {Object} collection MongoDb collection
+ * @query {Object} Mongoclient query.
+ * @returns {Q.Promise} Resolves on success.
+ */
 var find = (collection, query) => {
    var deferred = Q.defer();
         
@@ -89,6 +103,12 @@ module.exports = {
     init: init,
     getCollection: getCollection,
 
+    /** 
+     * Finds Components for a specific Dashboard based on its component_ids and row order.
+     * @param {Object} rows_component_ids double dimension array containing the order and document_ids of Components.
+     * @param {Function} transformer (Optional) Transformer function that is applied to the data before it's resolved.
+     * @returns {Q.Promise} Resolves on success.
+     */
     findComponentsForDashboard: (rows_component_ids, transformer) => {
         if (transformer !== undefined) {
             var deferred = Q.defer();
@@ -111,6 +131,11 @@ module.exports = {
         }
     },
     
+    /** 
+     * Gets all Dashboards for specific Email address.
+     * @param {string} email email to look for
+     * @returns {Q.Promise} Resolves on success.
+     */
     findDashboardsForEmail: email => {
         return find(dashboard, { for_emails: { $in: [ email ] }});
     }
