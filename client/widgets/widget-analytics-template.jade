@@ -1,6 +1,26 @@
 div(ng-if="isActive").widget-analytics.widget
     div
+        //- TODO have the title (h4), start popup + end popup on the same row nicely!
         h4(ng-bind="component.title")
+        //- Start date popup
+        div.row
+            p.input-group
+                input(type="text", ng-model="startDate", datepicker-options="dateOptions", is-open="startOpened",
+                    date-disabled="disabled(date, mode)", ng-required="true", close-text="Close", 
+                    datepicker-popup).form-control
+                span.input-group-btn
+                    button(type="button", ng-click="openStart($event)").btn.btn-default
+                        i.glyphicon.glyphicon-calendar
+        //- End date popup
+        div.row
+            p.input-group
+                input(type="text", ng-model="endDate", datepicker-options="dateOptions", is-open="endOpened",
+                    date-disabled="disabled(date, mode)", ng-required="true", close-text="Close", 
+                    datepicker-popup).form-control
+                span.input-group-btn
+                    button(type="button", ng-click="openEnd($event)").btn.btn-default
+                        i.glyphicon.glyphicon-calendar
+                        
     div
         div(id="{{ component.gapi.chart.container }}") 
     div
