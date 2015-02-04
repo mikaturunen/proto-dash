@@ -9,6 +9,7 @@ var path = require("path");
 // I could write fs.exists, go through the hassle of checking it and all but I thought I'd just do it this way for now,
 // potential refactor target in the near future.
 var config;
+
 try {
     config = require("./config.json");
 } catch (error) {
@@ -20,6 +21,9 @@ try {
 
 /** 
  * Selects a value: either left-hand side or right-hand side. When LHS is undefined or "" it's skipped and RHG is used.
+ * @param {string} lhs Left-hand side variable,
+ * @param {string} rhg Right-hande side variable.
+ * @returns {string} Lhs when it's defined and rhs otherwise.
  */
 var selectValue = (lhs, rhs) => {
     if (lhs !== undefined && lhs.trim() !== "") {

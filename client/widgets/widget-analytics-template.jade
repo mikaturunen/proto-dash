@@ -1,26 +1,38 @@
-div(ng-if="isActive").widget-analytics.widget
+div(ng-if="isActive", ng-controller="WidgetAnalyticsController").widget-analytics.widget
     div
         //- TODO have the title (h4), start popup + end popup on the same row nicely!
         h4(ng-bind="component.title")
-        //- Start date popup
+        //- START DATE DATEPICKER POPUP
         div.row
             p.input-group
-                input(type="text", ng-model="startDate", datepicker-options="dateOptions", is-open="startOpened",
-                    date-disabled="disabled(date, mode)", ng-required="true", close-text="Close", 
-                    datepicker-popup).form-control
+                input(
+                        class="form-control",
+                        type="text", 
+                        datepicker-popup="yyyy-mm-dd",
+                        ng-model="startDate", 
+                        is-open="opened",
+                        ng-required="true",
+                        close-text="Close"
+                    )
                 span.input-group-btn
-                    button(type="button", ng-click="openStart($event)").btn.btn-default
+                    button(type="button", ng-click="open()").btn.btn-default
                         i.glyphicon.glyphicon-calendar
-        //- End date popup
-        div.row
+       //- END DATE DATEPICKER POPUP
+       div.row
             p.input-group
-                input(type="text", ng-model="endDate", datepicker-options="dateOptions", is-open="endOpened",
-                    date-disabled="disabled(date, mode)", ng-required="true", close-text="Close", 
-                    datepicker-popup).form-control
+                input(
+                        class="form-control",
+                        type="text", 
+                        datepicker-popup="yyyy-mm-dd",
+                        ng-model="endDate", 
+                        is-open="openedEnd",
+                        ng-required="true",
+                        close-text="Close"
+                    )
                 span.input-group-btn
-                    button(type="button", ng-click="openEnd($event)").btn.btn-default
+                    button(type="button", ng-click="openEnd()").btn.btn-default
                         i.glyphicon.glyphicon-calendar
-                        
+
     div
         div(id="{{ component.gapi.chart.container }}") 
     div

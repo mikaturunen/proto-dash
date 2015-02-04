@@ -12,7 +12,7 @@ require("./socket/socket-service");
 require("./header/header-navigation-directive");
 require("./footer/footer-navigation-directive");
 require("./dashboard/dashboard-controller");
-require("./widgets/widget-analytics-directive");
+require("./widgets/widget-analytics-controller");
 require("./widgets/widget-frame-directive");
 require("./widgets/widget-image-directive");
 
