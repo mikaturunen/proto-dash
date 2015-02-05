@@ -21,10 +21,11 @@ div(ui-view)
                 widget-image(component="column") 
                 widget-frame(component="column")
                 widget-analytics(component="column")
-        
+      
+    //- TODO cannot be bound to 'dashboards' as they are always empty in start before they are received -> this directive blinks
     //- Showing the advert when user is logged in and has zero dasboards
-    div(ng-hide="dashboards.length >= 1").dash-content
-        company()
+    //div(ng-hide="dashboards.length >= 1").dash-content
+    //    company()
 
     div
         footer-navigation(dashboard="dashboard")
