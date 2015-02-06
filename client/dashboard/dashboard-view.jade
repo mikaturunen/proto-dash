@@ -11,7 +11,7 @@ div(ui-view)
         //- header with the navigation
         header-navigation(dashboards="dashboards", logout="logout", select="selectDashboard")
 
-    div(ng-show="dashboards.length >= 1").dash-content
+    div(ng-hide="userHasNoDashboards").dash-content
         //- Dashoard - the actual content area -- I start building it from the dashboard parts the minute we get on it
         div(ng-repeat="rows in dashboardComponents")
             //- Dynamically defining the col-md from the column objects size
@@ -21,11 +21,9 @@ div(ui-view)
                 widget-image(component="column") 
                 widget-frame(component="column")
                 widget-analytics(component="column")
-      
-    //- TODO cannot be bound to 'dashboards' as they are always empty in start before they are received -> this directive blinks
-    //- Showing the advert when user is logged in and has zero dasboards
-    //div(ng-hide="dashboards.length >= 1").dash-content
-    //    company()
+
+    div(ng-show="userHasNoDashboards").dash-content
+        company()
 
     div
         footer-navigation(dashboard="dashboard")

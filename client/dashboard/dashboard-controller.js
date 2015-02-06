@@ -17,6 +17,7 @@ var _ = require("lodash");
 var controller = ($rootScope, $scope, $state, gapi, dashService, $q, $window) => {   
     $scope.dashboards = [];
     $scope.dashboard = undefined;
+    $scope.userHasNoDashboards = false;
     $scope.dashboardComponents = [];
     $scope.getComponentsForDashboard = dashService.getComponentsForDashboard($scope);
     $scope.getDashboards = dashService.getDashboards($scope);
@@ -58,6 +59,7 @@ var controller = ($rootScope, $scope, $state, gapi, dashService, $q, $window) =>
                     $scope.getComponentsForDashboard(dashboards[index]).then(deferred.resolve, deferred.reject);
                 } else {
                     deferred.reject(new Error("User has no dashboards.", 1));
+                    $scope.userHasNoDashboards = true;
                 }
 
                 return deferred.promise;
