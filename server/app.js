@@ -9,7 +9,6 @@ var express = require("express");
 var app = express();
 var database = require("./database/database");
 var Q = require("q");
-var rowTransformer = require("./transformers/row-transformer");
 var socket = require("./socket/socket");
 
 /** 
@@ -31,6 +30,11 @@ var initRoutes = () => {
 
     // This custom variable overwrites all other port variables
     var port = process.env.DEV_PORT ? process.env.DEV_PORT : (process.env.PORT || 3000);
+    
+    if (process.argv.length >= 3) {
+        console.log("Argument for port given, using port number", process.argv[2]);
+        port = parseInt(process.argv[2]);
+    }
     app.set("port", port);
     
     staticRouteMappings.forEach(mapping => {

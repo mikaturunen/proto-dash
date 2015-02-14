@@ -3,8 +3,10 @@
 /* jshint esnext: true */
 
 var socket = require("socket.io");
-var database = require("./database/database");
+var database = require("../database/database");
 var Q = require("q");
+var constants = require("../utilities/constants");
+var rowTransformer = require("../transformers/row-transformer");
 var io;
 
 /**
