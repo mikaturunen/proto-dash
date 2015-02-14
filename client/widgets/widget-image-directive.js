@@ -8,12 +8,18 @@ var name = "dash.widgets";
 var dependencyMap = require("../dependency-map").add(name);
 var constants = require("../../server/utilities/constants");
 
+/** 
+ * Linker function for Image Widget.
+ */
 var link = (scope, element, attributes) => {
     if (!(scope.isActive = scope.component.type === "IMAGE")) {
         return;
     }
 };
 
+/** 
+ * Directive for Image Widget.
+ */
 var directive = () => {
     return {
         restrict: "E",

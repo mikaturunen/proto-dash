@@ -10,6 +10,9 @@ var dependencyMap = require("../dependency-map").add(name);
 var link = (scope, element, attributes) => {
 };
 
+/** 
+ * Directive for the Footer template.
+ */ 
 var directive = () => {
     return {
         restrict: "E",

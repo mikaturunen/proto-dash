@@ -10,6 +10,9 @@ var directive = require("./widget-analytics-directive");
 
 var _ = require("lodash");
 
+/** 
+ * Controller for Analytics Widget
+ */
 var controller = ($rootScope, $scope, $window, $timeout) => {   
     $scope.opened = false;
     $scope.open = () => {

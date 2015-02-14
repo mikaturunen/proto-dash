@@ -7,10 +7,19 @@
 var name = "dash.socket";
 var dependencyMap = require("../dependency-map").add(name);
 
+/** 
+ * Factory for WebSocket events.
+ * Allows emitting and listening for events.
+ */
 var factory = ($rootScope) => {
     var socket = io.connect();
     
     return {
+        /** 
+         * On -event function for socket events.
+         * @param {string} eventName Name of the event to listen for
+         * @param {Function} Callback to trigger once the event fires.
+         */
         on: (eventName, callback) => {
             socket.on(eventName, function () {  
                 var args = arguments;
@@ -22,6 +31,12 @@ var factory = ($rootScope) => {
             });
         },
         
+         /** 
+         * event -event function for socket events.
+         * @param {string} eventName Name of the event to send.
+         * @param {Object} data What is being sent to server.
+         * @param {Function} callback Potential callback the server might trigger
+         */
         emit: function (eventName, data, callback) {
             console.log("socket-service.emit", eventName, data, callback);
             
