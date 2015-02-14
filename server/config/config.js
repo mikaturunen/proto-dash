@@ -32,6 +32,8 @@ var selectValue = (lhs, rhs) => {
     return rhs;
 };
 
+// Setup all the configurations based on the environmental of configuration given variables. 
+// NOTE: configuration files are never populated into GitHub for more or less obvious reasons :)
 var configuration = {
     databaseUser:     selectValue(process.env.DATABASE_USER, config.databaseUser),
     databasePassword: selectValue(process.env.DATABASE_PASSWORD, config.databasePassword),
