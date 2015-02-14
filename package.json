@@ -1,7 +1,8 @@
 {
   "name": "proto-dash",
   "version": "0.0.1",
-  "description": "",
+  "description": "Prototype for more or less wild analytics board idea, allowing companies to define analytics dashboards for other users",
+  "repository": "mikaturunen/proto-dash",
   "main": "release/server/app.js",
   "scripts": {
     "postinstall-note": "Thanks heroku .. thanks...",
@@ -55,6 +56,7 @@
     "gulp-todo": "^2.3.1",
     "6to5": "^2.13.7",
     "6to5ify": "^3.1.2",
-    "gulp-6to5": "^2.0.2"
+    "gulp-6to5": "^2.0.2",
+    "gulp-jsdoc": "^0.1.4"
   }
 }
