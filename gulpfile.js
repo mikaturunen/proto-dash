@@ -16,7 +16,7 @@ var todo = require("gulp-todo");
 var to5ify = require("6to5ify");
 var fs = require("fs");
 var to5 = require("gulp-6to5");
-var jsdoc = require("gulp-jsdoc");
+var docco = require("gulp-docco");
 
 var releaseLocationClient = "./release/client/";
 var releaseLocationServer = "./release/server/";
@@ -74,7 +74,7 @@ gulp.task("css", function() {
         .pipe(gulp.dest(releaseLocationClient));
 });
 
-// generate a todo.md from your javascript files
+// generate a todo.md from javascript files
 gulp.task("todo", function() {
     return gulp.src([ "./server/*.*", "./client/*.*" ])
         .pipe(todo())
@@ -82,7 +82,9 @@ gulp.task("todo", function() {
 });
 
 gulp.task("jsdoc", function() {
-    //return gulp.src("./");
+    return gulp.src([ "./server/**/*.js", "./client/**/*.js" ])
+        .pipe(docco())
+        .pipe(gulp.dest("./jsdoc/"))
 });
 
 var driveSequence = function(isDebug) {
