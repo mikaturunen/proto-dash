@@ -10,6 +10,7 @@ var ObjectID = mongo.ObjectID;
 var MongoClient = mongo.MongoClient;
 var _ = require("lodash");
 var config = require("../config/config");
+// Building the 'nnngh' mongodb connection string from the values :)
 var connectionString = "mongodb://" + config.databaseUser + ":" + 
     config.databasePassword + "@" + 
     config.databaseUrl + ":" + 
@@ -86,6 +87,11 @@ var find = (collection, query) => {
     return deferred.promise;  
 };
 
+/** 
+ * Flattens the row structure and concantenates everything into one row for easier consumption and database querying.
+ * @param {Array<Array<string>>} rows - Rows to flatten.
+ * @returns {Array<string>} Array of strings with the component_ids inside
+ */
 var collectComponentsFromRows = rows => {
     // the columns are built of components (columns, single column = single component)
     
