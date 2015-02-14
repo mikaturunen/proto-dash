@@ -31,4 +31,4 @@ var componentsIntoRows = (rows_component_ids) => {
     };
 };
 
-module.exports = componentsIntoRows
+module.exports = componentsIntoRows;
