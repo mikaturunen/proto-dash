@@ -1,28 +1,26 @@
 //- landing page for the dashboard 
-div(ui-view)
-    //- TODO do we want / need localization or are we good to go with N language?
-    div
-        //- logo
-        div.col-md-12
-            h1 LOGO
-    
-    div
-        div.col-md-8
-            h3 Dashboard
-        
-        div.col-md-4
-            h3 Login
-            div(id="embed-api-auth-container")
+div(ui-view).container-fluid
+nav.dash-header.navbar.navbar-inverse
+  div.container-fluid
+    div.navbar-header
 
-    div
-        div.col-md-4
-            h3 Plan
-            Bacon ipsum dolor amet bacon doner bresaola landjaeger tail meatloaf sirloin. Bacon flank ham, pork brisket leberkas ribeye. Turducken kielbasa filet mignon, cupim strip steak chicken biltong rump short loin leberkas ball tip andouille ham hock chuck drumstick. Salami spare ribs turducken venison ham.
+      //- Logo
+      a(href="#").navbar-brand
+        span Berlytics Dashboard
+      
+    div.collapse.navbar-collapse.navbar-right  
+      button(type="button", ng-click="logout()").btn.btn-primary.navbar-btn
+        span Kirjaudu ulos
+
+div.row
+  div.col-md-4
+  
+  div.col-md-4
+    div.panel.panel-default.login-panel
+      div.panel-heading
+        h1.panel-title Kirjaudu
+      div.panel-body
+        p Kirjaudu sisään Berlytics Dashboardiin Google Analytics tunnuksillasi.
+        div(id="embed-api-auth-container")
         
-        div.col-md-4
-            h3 Follow
-            Leberkas beef shank landjaeger filet mignon. Pork strip steak leberkas chicken brisket. Leberkas bresaola short ribs cow pastrami rump. Brisket sirloin biltong pastrami kielbasa short ribs ham hock t-bone filet mignon porchetta, pork ball tip. Tail cow fatback pork ball tip leberkas meatloaf capicola porchetta drumstick. Meatball leberkas beef, jowl tenderloin bresaola andouille.
-            
-        div.col-md-4
-            h3 Invest
-            Ribeye sirloin beef rump bresaola. Pork belly spare ribs hamburger short loin alcatra jerky short ribs. Short ribs drumstick venison hamburger. Picanha chuck biltong alcatra, turkey turducken filet mignon pork chop pork kevin strip steak jowl doner. Bresaola ball tip pastrami cupim, chicken shankle leberkas pork loin swine prosciutto. Hamburger ground round doner meatloaf venison bresaola.
+  div.col-md-4

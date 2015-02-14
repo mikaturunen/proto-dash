@@ -1,5 +1,5 @@
 //- The dashboard itself will be placed under the div, this is where we'll build the content 
-div(ui-view)
+div(ui-view).container-fluid
     div(ng-hide="true") 
         //- Leave the hidden login here. Saves lives with gapi, believe me... it doesn't like angular + angular-ui-routers
         //- way of handling the DOM and gets all angry about it. What a douche. Geesh..
@@ -13,7 +13,7 @@ div(ui-view)
 
     div(ng-hide="userHasNoDashboards").dash-content
         //- Dashoard - the actual content area -- I start building it from the dashboard parts the minute we get on it
-        div(ng-repeat="rows in dashboardComponents")
+        div(ng-repeat="rows in dashboardComponents").row
             //- Dynamically defining the col-md from the column objects size
             div(ng-repeat="column in rows", class="col-md-{{ column.size }}").widget-container
                 //- Widgets get removed from the DOM completely when the type does not match, per column one widget 

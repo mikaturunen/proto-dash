@@ -4,38 +4,16 @@ nav.dash-header.navbar.navbar-inverse.navbar-fixed-top
       //- Logo
       a(href="#").navbar-brand
         span Berlytics Dashboard
-    div(dropdown).btn-group
-        button(type="button", dropdown-toggle).btn.btn-primary.dropdown-toggle
-            span Dashboard
-            span.caret
-        ul(role="menu").dropdown-menu
-            li(ng-repeat="dashboard in dashboards")
-                a(href="#", ng-bind="dashboard.name", ng-click="select(dashboard);")
                 
-    div(dropdown).btn-group
-        button(type="button").btn.btn-primary.dropdown-toggle
-            span Dashboard
-            span.caret
-        ul(role="menu").dropdown-menu
-            li(ng-repeat="dashboard in dashboards")
-                a(href="#", ng-bind="dashboard.name", ng-click="select(dashboard);")
-                
-    div.collapse.navbar-collapse
-      ul.nav.navbar-nav.navbar-right        
-        //- Displaying the dropdown for the dashboards only in the situations where there are more than one of them
-        li.dropdown
-          button(type="button", data-toggle="dropdown", role="button", id="dropdownMenu1").btn.btn-default.dropdown-toggle
-            span Kissa
-            span.caret
-          ul(role="menu",aria-labelledby="dropdownMenu1").dropdown-menu
-            li
-              a(href="#") Kissa 2                
+    div.collapse.navbar-collapse.navbar-right  
+      ul.nav.navbar-nav      
+        //- Displaying the dropdown for the dashboards only in the situations where there are more than one of them             
             
         li(dropdown).dropdown
-          a(role="button", data-toggle="dropdown", data-target="#", href="#", aria-expanded="false", id="dashboard-menu").dropdown-toggle 
+          a(href, dropdown-toggle).dropdown-toggle 
             span Valitse dashboard
             span.caret
-          ul(role="menu", aria-labelledby="dashboard-menu").dropdown-menu
+          ul(role="menu").dropdown-menu
             li(ng-repeat="dashboard in dashboards")
               a(href="#", ng-bind="dashboard.name", ng-click="select(dashboard);")
         
