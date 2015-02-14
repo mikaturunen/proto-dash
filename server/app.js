@@ -30,7 +30,7 @@ var initRoutes = () => {
 
     // This custom variable overwrites all other port variables
     var port = process.env.DEV_PORT ? process.env.DEV_PORT : (process.env.PORT || 3000);
-    
+    // Another specific hook for development environment easing
     if (process.argv.length >= 3) {
         console.log("Argument for port given, using port number", process.argv[2]);
         port = parseInt(process.argv[2]);
