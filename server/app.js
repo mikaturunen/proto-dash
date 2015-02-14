@@ -10,6 +10,7 @@ var app = express();
 var database = require("./database/database");
 var Q = require("q");
 var rowTransformer = require("./transformers/row-transformer");
+var socket = require("./socket/socket");
 
 /** 
  * Initializes all the express HTTP specific routes. 
@@ -62,68 +63,12 @@ var initServer = () => {
     return deferred.promise;
 };
 
-/** 
- * Initializes all the Socket.io connections and messages available in the application.
- * @returns {Q.Promise} Resolves on success.
- */
-var initSockets = server => {
-    var deferred = Q.defer();
-    
-    // TODO move the socket initialization into its own place
-    var socket = require("socket.io");
-    var io = socket(server);
-    var constants = require("./utilities/constants");
-    var database = require("./database/database");
-
-    // TODO move the socket code and hooks into a separate file
-    io.on(constants.events.socket.connected, socket => {
-        console.log("Socket connected to server.",socket.id);
-
-        socket.on("dash.get.dashboard", (parameters, resultHandler) => {
-            console.log("Received socket get.dasboard");
-            database
-                .findDashboardsForEmail(parameters)
-                .then(results => {
-                    resultHandler(null, !results || results.length <= 0 ? [] : results);
-                })
-                .catch(error => {
-                    resultHandler(error);
-                })
-                .done();
-        });
-        
-        socket.on("dash.get.dashboard.components", (parameters, resultHandler) => {
-            console.log("Received socket get.dasboard.components", JSON.stringify(parameters));
-
-            if (!parameters) {
-                resultHandler("No components");
-                return;
-            }
-
-            database
-                .findComponentsForDashboard(parameters, rowTransformer(parameters))
-                .then(results => {
-                    resultHandler(null, results);
-                })
-                .catch(error => {
-                    resultHandler(error);
-                })
-                .done();
-        });
-
-        socket.on(constants.events.socket.disconnected, () => {
-            console.log("Socket disconnected from server.", socket.id);
-        });
-    });
-    
-    return deferred.promise;
-};
-
 // Start the application through the Promise-chain
 initRoutes()
     .then(() => database.init())
     .then(() => initServer())
-    .then(server => initSockets(server))
+    .then(server => socket.init(server))
+    .then(() => socket.hookSocketMessages())
     .catch(error => { 
         console.log(error);
         process.exit(6);
