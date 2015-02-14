@@ -120,9 +120,9 @@ var initSockets = server => {
 
 // Start the application through the Promise-chain
 initRoutes()
-    .then(() => { return database.init(); })
-    .then(() => { return initServer(); })
-    .then(server => { return initSockets(server); })
+    .then(() => database.init())
+    .then(() => initServer())
+    .then(server => initSockets(server))
     .catch(error => { 
         console.log(error);
         process.exit(6);
