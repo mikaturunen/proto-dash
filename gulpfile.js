@@ -81,13 +81,27 @@ gulp.task("todo", function() {
         .pipe(gulp.dest("."));
 });
 
-gulp.task("jsdoc", function() {
-    return gulp.src([ "./client/**/*.js", "./server/**/*.js", "README.md" ])
+gulp.task("jsdoc-server", function() {
+    return gulp.src([ "./server/**/*.js", "README.md" ])
         .pipe(gulpDoxx({
-            title: "Prototype Dashboard"
+            title: "Prototype Dashboard",
+            prefix: "/server"
         }))
-        .pipe(gulp.dest("jsdoc"));
+        .pipe(gulp.dest("jsdoc/server"));
 });
+
+gulp.task("jsdoc-client", function() {
+    return gulp.src([ "./client/**/*.js", "README.md" ])
+        .pipe(gulpDoxx({
+            title: "Prototype Dashboard",
+            prefix: "/client"
+        }))
+        .pipe(gulp.dest("jsdoc/client"));
+});
+
+gulp.task("jsdoc", function() {
+    sequence([ "jsdoc-server", "jsdoc-client" ]);
+})
 
 var driveSequence = function(isDebug) {
     var browser = isDebug ? "browserify-debug" : "browserify";
