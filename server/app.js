@@ -9,6 +9,7 @@ var express = require("express");
 var app = express();
 var database = require("./database/database");
 var Q = require("q");
+var rowTransformer = require("./transformers/row-transformer");
 
 /** 
  * Initializes all the express HTTP specific routes. 
@@ -99,7 +100,7 @@ var initSockets = server => {
             }
 
             database
-                .findComponentsForDashboard(parameters, arrangeComponentsIntoRowsTransformer(parameters))
+                .findComponentsForDashboard(parameters, rowTransformer(parameters))
                 .then(results => {
                     resultHandler(null, results);
                 })
