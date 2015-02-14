@@ -85,7 +85,7 @@ gulp.task("jsdoc-server", function() {
     return gulp.src([ "./server/**/*.js", "README.md" ])
         .pipe(gulpDoxx({
             title: "Prototype Dashboard",
-            prefix: "/server"
+            urlPrefix: "/server"
         }))
         .pipe(gulp.dest("jsdoc/server"));
 });
@@ -94,7 +94,7 @@ gulp.task("jsdoc-client", function() {
     return gulp.src([ "./client/**/*.js", "README.md" ])
         .pipe(gulpDoxx({
             title: "Prototype Dashboard",
-            prefix: "/client"
+            urlPrefix: "/client"
         }))
         .pipe(gulp.dest("jsdoc/client"));
 });
