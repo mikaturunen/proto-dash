@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>gapi-service.js</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="../docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>gapi-service.js</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-comment">/* global gapi, console, require, angular, document */</span>
+<span class="hljs-comment">/* jslint node: true */</span>
+<span class="hljs-comment">/* jshint esnext: true */</span>
+<span class="hljs-pi">
+"use strict"</span>;
+
+<span class="hljs-keyword">var</span> name = <span class="hljs-string">"dash.gapi"</span>;
+<span class="hljs-keyword">var</span> dependencyMap = <span class="hljs-built_in">require</span>(<span class="hljs-string">"../dependency-map"</span>).add(name);
+<span class="hljs-keyword">var</span> constants = <span class="hljs-built_in">require</span>(<span class="hljs-string">"../../server/utilities/constants"</span>);
+
+<span class="hljs-comment">/**
+ * Service for easing the use of GAPI client with Angular. 
+ * @param  {ng-service} $q     
+ * @param  {ng-service} $window 
+ * @param  {ng-service} $state  
+ * @return {Object} The service object.
+ */</span>
+<span class="hljs-keyword">var</span> service = ($q, $<span class="hljs-built_in">window</span>, $state) =&gt; {
+    <span class="hljs-comment">/**
+     * Scopes for the GAPI we are using.
+     */</span>
+    <span class="hljs-keyword">var</span> scopes = [
+                <span class="hljs-string">"https://www.googleapis.com/auth/analytics.readonly"</span>,
+                <span class="hljs-string">"https://www.googleapis.com/auth/plus.login"</span>, 
+                <span class="hljs-string">"https://www.googleapis.com/auth/userinfo.email"</span> 
+            ].join(<span class="hljs-string">" "</span>);
+
+    <span class="hljs-comment">/** 
+     * Specific client ID - could be debated is it wise to release this into github but for now
+     * it is; as it's not for real use and later it'll be populated through env variables.
+     */</span>
+    <span class="hljs-keyword">var</span> clientId = <span class="hljs-string">"182467596451-qubeiec3osp7iqhuqqp4sb3jrdgpk8ah.apps.googleusercontent.com"</span>;
+
+    <span class="hljs-comment">/**
+     * Generates a single component through GAPI
+     * @param  {Object} gapiQuery Object that represents the content that gapi DataChart digests
+     * @return {Promise} Promise that resolves to the generated component. Rejects on error.
+     */</span>
+    <span class="hljs-keyword">var</span> generate = gapiQuery =&gt; {
+        <span class="hljs-keyword">var</span> deferred = $q.defer();
+
+        <span class="hljs-keyword">if</span> (!gapiQuery) {
+            deferred.reject(<span class="hljs-string">"gapiQuery (.gapi) undefined."</span>);
+            <span class="hljs-keyword">return</span> deferred.promise;
+        }
+
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"Generating gapi.analytics.googleCharts.DataChart from:"</span>, gapiQuery);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <p>Adding the ‘ga:’ if it’s missing. This thing is REALLY easy to miss…</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">if</span> (gapiQuery.ids &amp;&amp; gapiQuery.ids.substring(<span class="hljs-number">0</span>, <span class="hljs-number">3</span>) !== <span class="hljs-string">"ga:"</span>) {
+            gapiQuery.ids = <span class="hljs-string">"ga:"</span> + gapiQuery.ids;
+        }
+
+        <span class="hljs-keyword">var</span> chart = <span class="hljs-keyword">new</span> $<span class="hljs-built_in">window</span>.gapi.analytics.googleCharts.DataChart(gapiQuery);
+        chart.on(<span class="hljs-string">"success"</span>, (opt1, opt2) =&gt; {
+            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"SUCCESS:"</span>, opt1, opt2);
+            deferred.resolve(<span class="hljs-literal">true</span>);
+        });
+        chart.on(<span class="hljs-string">"error"</span>, (opt1, opt2) =&gt; {
+            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"ERROR:"</span>, opt1, opt2);
+            deferred.reject(opt1);
+        });
+        chart.execute();
+
+        <span class="hljs-keyword">return</span> deferred.promise;
+    };
+
+    <span class="hljs-comment">/** 
+     * Wrapper for loading specific apis onto GAPI. Generates promise for the loading operation.
+     * @param  {string} api     gapi api to load
+     * @param  {string} version gapi api version to load
+     * @return {Promise}        resolves true on success
+     */</span>
+    <span class="hljs-keyword">var</span> generateLoadPromise = (api, version) =&gt; {
+        <span class="hljs-keyword">var</span> deferred = $q.defer();
+        
+        $<span class="hljs-built_in">window</span>
+            .gapi
+            .client
+            .load(api, version, () =&gt; {
+                <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"Loaded api"</span>, api, <span class="hljs-string">", version"</span>, version);
+                deferred.resolve(<span class="hljs-literal">true</span>);
+            }, deferred.reject);
+        
+        <span class="hljs-keyword">return</span> deferred.promise;     
+    };
+
+    <span class="hljs-comment">/**
+     * Follows have we called gapi.analytics.auth.authorize already
+     */</span>
+    <span class="hljs-keyword">var</span> isCalledOnce = <span class="hljs-literal">false</span>;
+
+    <span class="hljs-comment">/**
+     * Calls the gapi.analytics.auth once and makes sure following calls do not call it again. Gapi explodes if it's 
+     * called multiple times and it's required behavior for login / authenticating the interfaces
+     * @param  {{ success: string; failed: string; }} redirectOptions Containing potential $state.go targets for auth events
+     * @return {Promise} Resolves to true on authenticated
+     */</span>
+    <span class="hljs-keyword">var</span> callAnalyticsAuthOnce = (redirectOptions) =&gt; {
+        <span class="hljs-keyword">var</span> deferred = $q.defer();
+
+        <span class="hljs-keyword">if</span> (isCalledOnce === <span class="hljs-literal">false</span>) {
+            isCalledOnce = <span class="hljs-literal">true</span>;
+
+            <span class="hljs-keyword">try</span> {
+                <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"attempting to auth"</span>);
+
+                $<span class="hljs-built_in">window</span>.gapi.analytics.auth.on(<span class="hljs-string">"success"</span>, response =&gt; { 
+                    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"Auth success."</span>);
+                    deferred.resolve(<span class="hljs-literal">true</span>);
+
+                    <span class="hljs-keyword">if</span> (redirectOptions &amp;&amp; redirectOptions.success) {
+                        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"Requested redirect on auth success... redirecting"</span>);
+                        $state.go(redirectOptions.success);
+                    }
+                });
+
+                $<span class="hljs-built_in">window</span>.gapi.analytics.auth.on(<span class="hljs-string">"error"</span>, response =&gt; { 
+                    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"Auth failed."</span>);
+                    deferred.reject(<span class="hljs-literal">false</span>);
+
+                    <span class="hljs-keyword">if</span> (redirectOptions &amp;&amp; redirectOptions.failed) {
+                        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"Requested redirect on auth failure... redirecting"</span>);
+                        $state.go(redirectOptions.failed);
+                    }
+                });
+
+                $<span class="hljs-built_in">window</span>.gapi.analytics.auth.authorize({
+                    clientid: clientId,
+                    scope: scopes,
+                    container: <span class="hljs-string">"embed-api-auth-container"</span>, 
+                    cookie_policy: <span class="hljs-string">"single_host_origin"</span>
+                }); 
+            } <span class="hljs-keyword">catch</span> (error) {
+                <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"Error in callAnalyticsAuthOnce:"</span>, error);
+                deferred.reject(error);
+            }
+        } <span class="hljs-keyword">else</span> {
+             deferred.resolve(<span class="hljs-literal">true</span>);
+        }
+       
+        <span class="hljs-keyword">return</span> deferred.promise;
+    };
+
+    <span class="hljs-comment">/** 
+     * Loads all specified APIs into gapi as part of the initial procedure of hooking up gapi into $window.
+     * @return {Promise} True when all apis are loaded
+     */</span>
+    <span class="hljs-keyword">var</span> loader = () =&gt; {
+        <span class="hljs-keyword">var</span> deferred = $q.defer();
+
+        generateLoadPromise(<span class="hljs-string">"oauth2"</span>, <span class="hljs-string">"v2"</span>)
+            .then(() =&gt; { <span class="hljs-keyword">return</span> generateLoadPromise(<span class="hljs-string">"analytics"</span>, <span class="hljs-string">"v3"</span>); })
+            .then(deferred.resolve, deferred.reject);
+
+        <span class="hljs-keyword">return</span> deferred.promise;
+    };
+
+    <span class="hljs-comment">/**
+     * The actual service we are returning
+     */</span>
+    <span class="hljs-keyword">return</span> {
+        generate: generate,
+        loadApis: loader,
+        callAnalyticsAuthOnce: callAnalyticsAuthOnce,
+        clientId: clientId,
+        scopes: scopes
+    };
+};
+service.$inject = [ <span class="hljs-string">"$q"</span>, <span class="hljs-string">"$window"</span>, <span class="hljs-string">"$state"</span> ];
+service.serviceName = <span class="hljs-string">"gapiservice"</span>;
+
+angular
+    .module(name)
+    .service(service.serviceName, service);</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>

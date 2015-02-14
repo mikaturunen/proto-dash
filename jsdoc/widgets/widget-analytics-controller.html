@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>widget-analytics-controller.js</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="../docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>widget-analytics-controller.js</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-comment">/* global gapi, console, require, angular, document, window */</span>
+<span class="hljs-comment">/* jslint node: true */</span>
+<span class="hljs-comment">/* jshint esnext: true */</span>
+<span class="hljs-pi">
+"use strict"</span>;
+
+<span class="hljs-keyword">var</span> name = <span class="hljs-string">"dash.controllers"</span>;
+<span class="hljs-keyword">var</span> dependencyMap = <span class="hljs-built_in">require</span>(<span class="hljs-string">"../dependency-map"</span>).add(name);
+<span class="hljs-keyword">var</span> directive = <span class="hljs-built_in">require</span>(<span class="hljs-string">"./widget-analytics-directive"</span>);
+
+<span class="hljs-keyword">var</span> _ = <span class="hljs-built_in">require</span>(<span class="hljs-string">"lodash"</span>);
+
+<span class="hljs-keyword">var</span> controller = ($rootScope, $scope, $<span class="hljs-built_in">window</span>, $timeout) =&gt; {   
+    $scope.opened = <span class="hljs-literal">false</span>;
+    $scope.open = () =&gt; {
+        $timeout(() =&gt; {
+            $scope.opened = <span class="hljs-literal">true</span>;
+        });
+   };
+    
+    $scope.openedEnd = <span class="hljs-literal">false</span>;
+    $scope.openEnd = () =&gt; {
+        $timeout(() =&gt; {
+            $scope.opened = <span class="hljs-literal">true</span>;
+        });
+   };</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <p>TODO design a solution to use the 30daysago etc dynamic values from gapi on the calendar</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">if</span> ($scope.component.gapi &amp;&amp;  $scope.component.gapi.query) {            
+        $scope.startDate = $<span class="hljs-built_in">window</span>.moment($scope.component.gapi.query[<span class="hljs-string">"start-date"</span>], <span class="hljs-string">"YYYY-MM-DD"</span>);
+        $scope.endDate = $<span class="hljs-built_in">window</span>.moment($scope.component.gapi.query[<span class="hljs-string">"end-date"</span>], <span class="hljs-string">"YYYY-MM-DD"</span>);
+    }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <ul>
+<li>TODO Save the values into the database when user selects something</li>
+</ul>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>
+    $scope.dateOptions = {
+        formatYear: <span class="hljs-string">'yy'</span>,
+        startingDay: <span class="hljs-number">1</span>
+    };
+
+};
+controller.$inject = [ <span class="hljs-string">"$rootScope"</span>, <span class="hljs-string">"$scope"</span>, <span class="hljs-string">"$window"</span>, <span class="hljs-string">"$timeout"</span> ];
+controller.controllerName = <span class="hljs-string">"WidgetAnalyticsController"</span>;
+
+angular
+    .module(name)
+    .controller(controller.controllerName, controller);</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>

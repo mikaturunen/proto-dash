@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>socket.js</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="../docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>socket.js</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-comment">/* global console, require, __dirname, process, module */</span>
+<span class="hljs-comment">/* jshint node: true */</span>
+<span class="hljs-comment">/* jshint esnext: true */</span>
+
+<span class="hljs-keyword">var</span> socket = <span class="hljs-built_in">require</span>(<span class="hljs-string">"socket.io"</span>);
+<span class="hljs-keyword">var</span> database = <span class="hljs-built_in">require</span>(<span class="hljs-string">"../database/database"</span>);
+<span class="hljs-keyword">var</span> Q = <span class="hljs-built_in">require</span>(<span class="hljs-string">"q"</span>);
+<span class="hljs-keyword">var</span> constants = <span class="hljs-built_in">require</span>(<span class="hljs-string">"../utilities/constants"</span>);
+<span class="hljs-keyword">var</span> rowTransformer = <span class="hljs-built_in">require</span>(<span class="hljs-string">"../transformers/row-transformer"</span>);
+<span class="hljs-keyword">var</span> io;
+
+<span class="hljs-comment">/**
+ * Initializes the socket.io server.
+ * @param {Object} server - Server object from Express to connect the IO with.
+ */</span>
+<span class="hljs-keyword">var</span> initializeSocket = (server) =&gt; {
+     io = socket(server);
+};
+
+<span class="hljs-comment">/** 
+ * Hooks all the required socket events into Socket.io clients.
+ * @returns {Q.Promise&lt;boolean&gt;} Resolves to boolean truen on success. Rejects with error message.
+ */</span>
+<span class="hljs-keyword">var</span> hookSocketMessages = () =&gt; {
+    <span class="hljs-keyword">var</span> deferred = Q.defer();
+    <span class="hljs-keyword">if</span> (!io) {
+        deferred.reject(<span class="hljs-string">"No socket connection present. Call initializeSocket first!"</span>);
+        <span class="hljs-keyword">return</span> deferred.promise;
+    }
+    
+   io.on(constants.events.socket.connected, socket =&gt; {
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"Socket connected to server."</span>, socket.id);
+
+        socket.on(<span class="hljs-string">"dash.get.dashboard"</span>, (parameters, resultHandler) =&gt; {
+            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"Received socket get.dasboard"</span>);
+            database
+                .findDashboardsForEmail(parameters)
+                .then(results =&gt; resultHandler(<span class="hljs-literal">null</span>, !results || results.length &lt;= <span class="hljs-number">0</span> ? [] : results))
+                .catch(error =&gt; resultHandler(error))
+                .done();
+        });
+
+        socket.on(<span class="hljs-string">"dash.get.dashboard.components"</span>, (parameters, resultHandler) =&gt; {
+            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"Received socket get.dasboard.components"</span>, <span class="hljs-built_in">JSON</span>.stringify(parameters));
+
+            <span class="hljs-keyword">if</span> (!parameters) {
+                resultHandler(<span class="hljs-string">"No components"</span>);
+                <span class="hljs-keyword">return</span>;
+            }
+
+            database
+                .findComponentsForDashboard(parameters, rowTransformer(parameters))
+                .then(results =&gt; resultHandler(<span class="hljs-literal">null</span>, results))
+                .catch(error =&gt; resultHandler(error))
+                .done();
+        });
+
+        socket.on(constants.events.socket.disconnected, () =&gt; {
+            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"Socket disconnected from server."</span>, socket.id);
+        });
+    });  
+    
+    deferred.resolve(io);
+
+    <span class="hljs-keyword">return</span> deferred.promise;
+};
+
+<span class="hljs-comment">/** 
+ * @module socket
+ * Module for connecting all the socket server/clients together and attaching the events to it
+ */</span>
+<span class="hljs-built_in">module</span>.exports = {
+    init: initializeSocket,
+    hookSocketMessages: hookSocketMessages
+};</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>

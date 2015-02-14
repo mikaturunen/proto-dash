@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>gapi.js</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="../docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>gapi.js</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-comment">/* global gapi, console, require, angular, document */</span>
+<span class="hljs-comment">/* jslint node: true */</span>
+<span class="hljs-comment">/* jshint esnext: true */</span>
+<span class="hljs-pi">
+"use strict"</span>;
+
+<span class="hljs-keyword">var</span> name = <span class="hljs-string">"dash.gapi"</span>;
+<span class="hljs-keyword">var</span> dependencyMap = <span class="hljs-built_in">require</span>(<span class="hljs-string">"../dependency-map"</span>).add(name);
+<span class="hljs-keyword">var</span> constants = <span class="hljs-built_in">require</span>(<span class="hljs-string">"../../server/utilities/constants"</span>);
+
+<span class="hljs-keyword">var</span> gapiIsReadyDeferred;
+<span class="hljs-keyword">var</span> gapiIsReadyPromise;
+
+<span class="hljs-comment">/** 
+ * Service for immediate GAPI usage; commonly one would use it through the $window service but 
+ * this service abstracts few behaviors such as the more or less broken authentication/authorization of gapi. I'm not even
+ * kidding.
+ */</span>
+<span class="hljs-keyword">var</span> service = ($q, $<span class="hljs-built_in">window</span>, $state, gapiservice, $location) =&gt; {
+    <span class="hljs-comment">/**
+     * Attempts to authenticate the provided client.
+     * @param  {{ success: string; failed: string; }}} redirectOptions Options for redirecting the user if necessary. 
+     * @return {Promise}                 Promise resolving to true on success authentication.
+     */</span>
+    <span class="hljs-keyword">var</span> auth = (redirectOptions) =&gt; {
+        <span class="hljs-keyword">var</span> deferred = $q.defer();
+
+        gapiIsReadyPromise.then(() =&gt; {   
+            gapiservice
+                .callAnalyticsAuthOnce(redirectOptions)
+                .then(() =&gt; {
+                    <span class="hljs-keyword">if</span> ($<span class="hljs-built_in">window</span>.gapi.analytics.auth.isAuthorized() === <span class="hljs-literal">true</span>) {
+                        deferred.resolve(<span class="hljs-literal">true</span>);
+                    } <span class="hljs-keyword">else</span> {
+                        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"Not authed"</span>);
+                        deferred.reject(<span class="hljs-literal">false</span>);
+                    }
+                })
+                .catch(error =&gt; {
+                    <span class="hljs-built_in">console</span>.log(error);
+                    deferred.reject(error);
+                });
+        });
+
+        <span class="hljs-keyword">return</span> deferred.promise;
+    };
+
+    <span class="hljs-comment">/**
+     * Checks if the current client is authorized through gapi to see google's services. Even if user fakes this result
+     * all the calls to google will fail. 
+     * @return {Promise} True when authorized.
+     */</span>
+    <span class="hljs-keyword">var</span> isAuthorized = () =&gt; {
+        <span class="hljs-keyword">var</span> deferred = $q.defer();
+        
+        gapiIsReadyPromise.then(() =&gt; { 
+            <span class="hljs-keyword">try</span> {
+                $<span class="hljs-built_in">window</span>.gapi.client.oauth2.userinfo.get().execute(response =&gt; {
+                    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"Initial response from oauth2:"</span>, response);
+                    deferred.resolve(response);
+                });
+            } <span class="hljs-keyword">catch</span> (error) {
+                <span class="hljs-built_in">console</span>.error(error);
+                deferred.reject(error);
+            }
+        });
+
+        <span class="hljs-keyword">return</span> deferred.promise;
+    };
+
+    <span class="hljs-comment">/** 
+     * Logs out the current active user and clears the related cookies from the cookie store.
+     */</span>
+    <span class="hljs-keyword">var</span> logout = () =&gt; {
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"Logging user out.."</span>);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <p>Simply calling the signout() is not enough as the same user with the same browser can instantly log back in 
+without confirmation or password. We need to make sure the cookies are dead with the help of Google.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        $<span class="hljs-built_in">window</span>.gapi.auth.signOut();</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <p>Redirecting the user to google for logout -&gt; google app engine as middleman and back to -&gt; application.
+You cannot redirect user back to custom domain / application from google directly so you’ll have to use 
+appEngine as the middle-man in doing this.</p>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-4">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-4">&#182;</a>
+              </div>
+              <p>Honestly.. I didn’t think I would be doing something like this in the 2015.. </p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        <span class="hljs-keyword">var</span> applicationLoginPage = $location.protocol() + <span class="hljs-string">"://"</span> + $location.host() + <span class="hljs-string">":"</span> + $location.port();
+        <span class="hljs-keyword">var</span> logoutGoogleAccount = <span class="hljs-string">"https://www.google.com/accounts/Logout?continue="</span>;
+        <span class="hljs-keyword">var</span> usingAppEngineAsMiddleMan = <span class="hljs-string">"https://appengine.google.com/_ah/logout?continue="</span>;
+        <span class="hljs-keyword">var</span> completeURL = logoutGoogleAccount + usingAppEngineAsMiddleMan + applicationLoginPage;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-5">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-5">&#182;</a>
+              </div>
+              <p>Start the whole redirect chain of events.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        $<span class="hljs-built_in">window</span>.location.href = completeURL;
+    };
+
+    <span class="hljs-keyword">return</span> {
+        auth: auth,
+        isAuthorized: isAuthorized,
+        logout: logout
+    };
+};
+service.$inject = [ <span class="hljs-string">"$q"</span>, <span class="hljs-string">"$window"</span>, <span class="hljs-string">"$state"</span>, <span class="hljs-string">"gapiservice"</span>, <span class="hljs-string">"$location"</span> ];
+service.serviceName = <span class="hljs-string">"gapi"</span>;
+
+<span class="hljs-comment">/** 
+ * Run block for the current module. This makes sure the gapi gets injected into the current web page in most
+ * hassle free way possible. 
+ * @param  {ng-service} $q              
+ * @param  {ng-service} gapiservice  
+ */</span>
+<span class="hljs-keyword">var</span> run = ($q, gapiservice) =&gt; {
+    gapiIsReadyDeferred = $q.defer();
+    gapiIsReadyPromise = gapiIsReadyDeferred.promise;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-6">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-6">&#182;</a>
+              </div>
+              <p>NOTE I don’t agree at all with the way GAPI operates and how it has been designed to ‘dynamically’ be injected
+     into the website. I think it breaks too many princibles of a modern web application. This is not a good thing.
+     This is a quick attempt to just try and go ahead in wrapping the horrible implementation of gapi into a more
+     decent usage case and to make sure it would behave nicely with the Angular applications life cycle.</p>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-7">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-7">&#182;</a>
+              </div>
+              <p>Wow, I’m surprised there’s no really clean way of doing this.. I hate myself for this</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">var</span> scriptText = <span class="hljs-string">""</span> +
+       <span class="hljs-string">"(function(w,d,s,g,js,fs){ "</span> +
+            <span class="hljs-string">"g=w.gapi||(w.gapi={});g.analytics={q:[],ready:function(f){this.q.push(f);}}; "</span> +
+            <span class="hljs-string">"js=d.createElement(s);fs=d.getElementsByTagName(s)[0]; "</span> +
+            <span class="hljs-string">"js.src='https://apis.google.com/js/platform.js'; "</span> +
+            <span class="hljs-string">"fs.parentNode.insertBefore(js,fs);js.onload=function(){g.load('analytics');}; "</span> +
+       <span class="hljs-string">"}(window,document,'script'));  "</span>;
+    
+    <span class="hljs-keyword">var</span> gaCode = <span class="hljs-built_in">document</span>.createTextNode(scriptText);
+    <span class="hljs-keyword">var</span> scriptTag = <span class="hljs-built_in">document</span>.createElement(<span class="hljs-string">"script"</span>);
+    scriptTag.type = <span class="hljs-string">"text/javascript"</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-8">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-8">&#182;</a>
+              </div>
+              <p>slam them dynamically into the body and be done with it. My soul weeps.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    scriptTag.appendChild(gaCode);
+    <span class="hljs-built_in">document</span>.body.appendChild(scriptTag);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-9">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-9">&#182;</a>
+              </div>
+              <p>now somewhat normalized behavior, quickly wrap the beast into promise </p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    gapi.analytics.ready(() =&gt; {
+        gapiservice.loadApis().then(() =&gt; {
+            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"gapi.analytics is ready for use."</span>);
+            gapiIsReadyDeferred.resolve(gapi);
+        }, 
+        () =&gt; {
+            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"Failed to load required apis for gapi."</span>);
+            gapiIsReadyDeferred.reject(<span class="hljs-literal">false</span>); 
+        });
+    });
+};
+run.$inject = [ <span class="hljs-string">"$q"</span>, <span class="hljs-string">"gapiservice"</span> ];
+
+angular
+    .module(name)
+    .run(run)
+    .service(service.serviceName, service);</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>
