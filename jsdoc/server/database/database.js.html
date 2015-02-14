@@ -71,7 +71,7 @@
       <div class="row">
         <div class="span3 bs-docs-sidebar">
           <ul class="nav nav-list bs-docs-sidenav affix-top">
-            <li class="active"><a href="//index.html">Main</a></li>
+            <li><a href="//index.html">Main</a></li>
             <li><a href="//client/dependency-map.js.html">dependency-map.js</a></li>
             <li><a href="//client/index.js.html">index.js</a></li>
             <li><a href="//client/company/company-directive.js.html">company/company-directive.js</a></li>
@@ -89,7 +89,7 @@
             <li><a href="//client/widgets/widget-image-directive.js.html">widgets/widget-image-directive.js</a></li>
             <li><a href="//server/app.js.html">app.js</a></li>
             <li><a href="//server/config/config.js.html">config/config.js</a></li>
-            <li><a href="//server/database/database.js.html">database/database.js</a></li>
+            <li class="active"><a href="//server/database/database.js.html">database/database.js</a></li>
             <li><a href="//server/socket/socket.js.html">socket/socket.js</a></li>
             <li><a href="//server/transformers/row-transformer.js.html">transformers/row-transformer.js</a></li>
             <li><a href="//server/utilities/constants.js.html">utilities/constants.js</a></li>
@@ -97,13 +97,216 @@
           </ul>
           <div class="scrollspy">
             <ul class="nav nav-list bs-docs-sidenav affix-top">
+              <li><a href="#init"><i class="alert alert-success"></i><span>init</span></a>
+              </li>
+              <li><a href="#getCollection"><i class="alert alert-success"></i><span>getCollection</span></a>
+              </li>
+              <li><a href="#find"><i class="alert alert-success"></i><span>find</span></a>
+              </li>
+              <li><a href="#collectComponentsFromRows"><i class="alert alert-success"></i><span>collectComponentsFromRows</span></a>
+              </li>
             </ul>
           </div>
         </div>
         <div class="span9">
-          <section id="Main"><h1>proto-dash</h1>
-<p>Prototype of a widget based dashboard</p><h1>TODOs</h1>
-<p><a href="TODO.md">Link to TODO</a></p></section>
+          <div class="description"><p>global console, require, __dirname, process, module</p> </div>
+          <div class="description"><p>jshint node: true</p> </div>
+          <div class="description"><p>jshint esnext: true</p> </div>
+          <pre><code class="language-javascript">&quot;use strict&quot;;
+
+var Q = require(&quot;q&quot;);
+var mongo = require(&quot;mongodb&quot;);
+var ObjectID = mongo.ObjectID;
+var MongoClient = mongo.MongoClient;
+var _ = require(&quot;lodash&quot;);
+var config = require(&quot;../config/config&quot;);
+// Building the 'nnngh' mongodb connection string from the values :)
+var connectionString = &quot;mongodb://&quot; + config.databaseUser + &quot;:&quot; + 
+    config.databasePassword + &quot;@&quot; + 
+    config.databaseUrl + &quot;:&quot; + 
+    config.databasePort + &quot;/&quot; + 
+    config.database;
+var database;
+
+// Collections 
+// NOTE if the collections related code gets too out of hand, move it to its own module
+var dashboard;
+var components;</code></pre>
+          <section id="init">
+            <h1>init</h1>
+            <h5 class="subheader"></h5>
+            <p>
+              <div class="label label-success radius ctx-type">declaration</div><span>init</span>
+            </p>
+          </section>
+          <div class="description"><p>Initializes the Mongo database connection. Opens the connection to the database and to the associated collections.</p> </div>
+          <pre><code class="language-javascript">var init = () =&gt; {
+    var deferred = Q.defer();
+
+    Q.ninvoke(MongoClient, &quot;connect&quot;, connectionString)
+        .then(function(connectedDatabase) {
+            database = connectedDatabase;
+            dashboard = getCollection(&quot;dashboard&quot;)();
+            components = getCollection(&quot;components&quot;)();
+            deferred.resolve(true);
+        })
+        .catch(deferred.reject)
+        .done();
+
+    return deferred.promise;
+};</code></pre>
+          <section id="getCollection">
+            <h1>getCollection</h1>
+            <h5 class="subheader"></h5>
+            <p>
+              <div class="label label-success radius ctx-type">declaration</div><span>getCollection</span>
+            </p>
+          </section>
+          <div class="description"><p>Gets a specific connection to a Collection in the MongoDb</p> </div>
+          <pre><code class="language-javascript">var getCollection = collection =&gt; {
+    if (!database) {
+        throw &quot;No connection to database.&quot;;
+    } 
+
+    return function() {
+        console.log(&quot;Returning requested collection.&quot;, collection);
+        return database.collection(collection);
+    };
+};</code></pre>
+          <section id="find">
+            <h1>find</h1>
+            <h5 class="subheader"></h5>
+            <p>
+              <div class="label label-success radius ctx-type">declaration</div><span>find</span>
+            </p>
+          </section>
+          <div class="description"><p>Performs a specific find-query into a given Collection in the Mongo database.</p> </div>
+          <pre><code class="language-javascript">var find = (collection, query) =&gt; {
+   var deferred = Q.defer();
+        
+    if (collection.find === undefined) {
+        deferred.reject(&quot;No find function in collection.&quot;);
+        return;
+    }
+    
+    collection
+        .find(query)
+        .toArray(function(error, documents) {
+            if (error) {
+                console.log(&quot;Error getting documents for collection.&quot;, error);
+                deferred.reject(documents);
+                return;
+            }
+
+            deferred.resolve(documents);
+        });
+
+    return deferred.promise;  
+};</code></pre>
+          <section id="collectComponentsFromRows">
+            <h1>collectComponentsFromRows</h1>
+            <h5 class="subheader"></h5>
+            <p>
+              <div class="label label-success radius ctx-type">declaration</div><span>collectComponentsFromRows</span>
+            </p>
+          </section>
+          <table class="table table-bordered table-striped">
+            <thead>
+              <tr>
+                <th style="width:20%">Option name</th>
+                <th style="width:20%">Type</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>rows</td>
+                <td>Array&lt;Array&lt;string&gt;&gt;</td>
+                <td>- Rows to flatten.</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="description"><p>Flattens the row structure and concantenates everything into one row for easier consumption and database querying.</p> </div>
+          <pre><code class="language-javascript">var collectComponentsFromRows = rows =&gt; {
+    // the columns are built of components (columns, single column = single component)
+    
+    var component_ids = _.flatten(rows.map(function(rowColumns) {
+        return rowColumns.map(function(component_id) {  
+            return new ObjectID(component_id);
+        });
+    }));
+    
+    console.log(&quot;Collected component_ids for Dashboard.&quot;, component_ids);
+    return component_ids;
+};
+
+module.exports = {
+    init: init,
+    getCollection: getCollection,</code></pre>
+          <table class="table table-bordered table-striped">
+            <thead>
+              <tr>
+                <th style="width:20%">Option name</th>
+                <th style="width:20%">Type</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>rows_component_ids</td>
+                <td>Object</td>
+                <td>double dimension array containing the order and document_ids of Components.</td>
+              </tr>
+              <tr>
+                <td>transformer</td>
+                <td>Function</td>
+                <td>(Optional) Transformer function that is applied to the data before it's resolved.</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="description"><p>Finds Components for a specific Dashboard based on its component_ids and row order.</p> </div>
+          <pre><code class="language-javascript">findComponentsForDashboard: (rows_component_ids, transformer) =&gt; {
+        if (transformer !== undefined) {
+            var deferred = Q.defer();
+            
+            // transformer enabled where the results are projected/transformed into something else
+            find(components, { _id: { $in: collectComponentsFromRows(rows_component_ids) } })
+                .then(function(results) {
+                    deferred.resolve(transformer(results));
+                }) 
+                .catch(function(error) {
+                    console.error(error);
+                    deferred.reject(error);
+                })
+                .done();
+           
+            return deferred.promise;
+        } else {
+            // raw resulting query
+            return find(components, { _id: { $in: collectComponentsFromRows(rows_component_ids) } });
+        }
+    },</code></pre>
+          <table class="table table-bordered table-striped">
+            <thead>
+              <tr>
+                <th style="width:20%">Option name</th>
+                <th style="width:20%">Type</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>email</td>
+                <td>string</td>
+                <td>email to look for</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="description"><p>Gets all Dashboards for specific Email address.</p> </div>
+          <pre><code class="language-javascript">findDashboardsForEmail: email =&gt; {
+        return find(dashboard, { for_emails: { $in: [ email ] }});
+    }
+};</code></pre>
         </div>
       </div>
     </div>

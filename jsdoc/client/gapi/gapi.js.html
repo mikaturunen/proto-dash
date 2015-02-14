@@ -71,7 +71,7 @@
       <div class="row">
         <div class="span3 bs-docs-sidebar">
           <ul class="nav nav-list bs-docs-sidenav affix-top">
-            <li class="active"><a href="//index.html">Main</a></li>
+            <li><a href="//index.html">Main</a></li>
             <li><a href="//client/dependency-map.js.html">dependency-map.js</a></li>
             <li><a href="//client/index.js.html">index.js</a></li>
             <li><a href="//client/company/company-directive.js.html">company/company-directive.js</a></li>
@@ -79,7 +79,7 @@
             <li><a href="//client/dashboard/dashboard-controller.js.html">dashboard/dashboard-controller.js</a></li>
             <li><a href="//client/dashboard/dashboard-service.js.html">dashboard/dashboard-service.js</a></li>
             <li><a href="//client/gapi/gapi-service.js.html">gapi/gapi-service.js</a></li>
-            <li><a href="//client/gapi/gapi.js.html">gapi/gapi.js</a></li>
+            <li class="active"><a href="//client/gapi/gapi.js.html">gapi/gapi.js</a></li>
             <li><a href="//client/header/header-navigation-directive.js.html">header/header-navigation-directive.js</a></li>
             <li><a href="//client/login/login-controller.js.html">login/login-controller.js</a></li>
             <li><a href="//client/socket/socket-service.js.html">socket/socket-service.js</a></li>
@@ -97,13 +97,221 @@
           </ul>
           <div class="scrollspy">
             <ul class="nav nav-list bs-docs-sidenav affix-top">
+              <li><a href="#service"><i class="alert alert-success"></i><span>service</span></a>
+              </li>
+              <li><a href="#auth"><i class="alert alert-success"></i><span>auth</span></a>
+              </li>
+              <li><a href="#isAuthorized"><i class="alert alert-success"></i><span>isAuthorized</span></a>
+              </li>
+              <li><a href="#logout"><i class="alert alert-success"></i><span>logout</span></a>
+              </li>
+              <li><a href="#run"><i class="alert alert-success"></i><span>run</span></a>
+              </li>
             </ul>
           </div>
         </div>
         <div class="span9">
-          <section id="Main"><h1>proto-dash</h1>
-<p>Prototype of a widget based dashboard</p><h1>TODOs</h1>
-<p><a href="TODO.md">Link to TODO</a></p></section>
+          <div class="description"><p>global gapi, console, require, angular, document</p> </div>
+          <div class="description"><p>jslint node: true</p> </div>
+          <div class="description"><p>jshint esnext: true</p> </div>
+          <pre><code class="language-javascript">&quot;use strict&quot;;
+
+var name = &quot;dash.gapi&quot;;
+var dependencyMap = require(&quot;../dependency-map&quot;).add(name);
+var constants = require(&quot;../../server/utilities/constants&quot;);
+
+var gapiIsReadyDeferred;
+var gapiIsReadyPromise;</code></pre>
+          <section id="service">
+            <h1>service</h1>
+            <h5 class="subheader"></h5>
+            <p>
+              <div class="label label-success radius ctx-type">declaration</div><span>service</span>
+            </p>
+          </section>
+          <div class="description"><p>Service for immediate GAPI usage; commonly one would use it through the $window service but<br />this service abstracts few behaviors such as the more or less broken authentication/authorization of gapi. I&#39;m not even<br />kidding.</p> </div>
+          <pre><code class="language-javascript">var service = ($q, $window, $state, gapiservice, $location) =&gt; {</code></pre>
+          <section id="auth">
+            <h1>auth</h1>
+            <h5 class="subheader"></h5>
+            <p>
+              <div class="label label-success radius ctx-type">declaration</div><span>auth</span> -><span>Promise</span>
+            </p>
+          </section>
+          <table class="table table-bordered table-striped">
+            <thead>
+              <tr>
+                <th style="width:20%">Option name</th>
+                <th style="width:20%">Type</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>success:</td>
+                <td></td>
+                <td>string; failed: string; }}} redirectOptions Options for redirecting the user if necessary. </td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="description"><p>Attempts to authenticate the provided client.</p> </div>
+          <pre><code class="language-javascript">var auth = (redirectOptions) =&gt; {
+        var deferred = $q.defer();
+
+        gapiIsReadyPromise.then(() =&gt; {   
+            gapiservice
+                .callAnalyticsAuthOnce(redirectOptions)
+                .then(() =&gt; {
+                    if ($window.gapi.analytics.auth.isAuthorized() === true) {
+                        deferred.resolve(true);
+                    } else {
+                        console.log(&quot;Not authed&quot;);
+                        deferred.reject(false);
+                    }
+                })
+                .catch(error =&gt; {
+                    console.log(error);
+                    deferred.reject(error);
+                });
+        });
+
+        return deferred.promise;
+    };</code></pre>
+          <section id="isAuthorized">
+            <h1>isAuthorized</h1>
+            <h5 class="subheader"></h5>
+            <p>
+              <div class="label label-success radius ctx-type">declaration</div><span>isAuthorized</span> -><span>Promise</span>
+            </p>
+          </section>
+          <div class="description"><p>Checks if the current client is authorized through gapi to see google&#39;s services. Even if user fakes this result<br />all the calls to google will fail. </p> </div>
+          <pre><code class="language-javascript">var isAuthorized = () =&gt; {
+        var deferred = $q.defer();
+        
+        gapiIsReadyPromise.then(() =&gt; { 
+            try {
+                $window.gapi.client.oauth2.userinfo.get().execute(response =&gt; {
+                    console.log(&quot;Initial response from oauth2:&quot;, response);
+                    deferred.resolve(response);
+                });
+            } catch (error) {
+                console.error(error);
+                deferred.reject(error);
+            }
+        });
+
+        return deferred.promise;
+    };</code></pre>
+          <section id="logout">
+            <h1>logout</h1>
+            <h5 class="subheader"></h5>
+            <p>
+              <div class="label label-success radius ctx-type">declaration</div><span>logout</span>
+            </p>
+          </section>
+          <div class="description"><p>Logs out the current active user and clears the related cookies from the cookie store.</p> </div>
+          <pre><code class="language-javascript">var logout = () =&gt; {
+        console.log(&quot;Logging user out..&quot;);
+
+        // Simply calling the signout() is not enough as the same user with the same browser can instantly log back in 
+        // without confirmation or password. We need to make sure the cookies are dead with the help of Google.
+        $window.gapi.auth.signOut();
+
+        // Redirecting the user to google for logout -&gt; google app engine as middleman and back to -&gt; application.
+        // You cannot redirect user back to custom domain / application from google directly so you'll have to use 
+        // appEngine as the middle-man in doing this.
+        
+        // Honestly.. I didn't think I would be doing something like this in the 2015.. 
+        var applicationLoginPage = $location.protocol() + &quot;://&quot; + $location.host() + &quot;:&quot; + $location.port();
+        var logoutGoogleAccount = &quot;https://www.google.com/accounts/Logout?continue=&quot;;
+        var usingAppEngineAsMiddleMan = &quot;https://appengine.google.com/_ah/logout?continue=&quot;;
+        var completeURL = logoutGoogleAccount + usingAppEngineAsMiddleMan + applicationLoginPage;
+
+        // Start the whole redirect chain of events.
+        $window.location.href = completeURL;
+    };
+
+    return {
+        auth: auth,
+        isAuthorized: isAuthorized,
+        logout: logout
+    };
+};
+service.$inject = [ &quot;$q&quot;, &quot;$window&quot;, &quot;$state&quot;, &quot;gapiservice&quot;, &quot;$location&quot; ];
+service.serviceName = &quot;gapi&quot;;</code></pre>
+          <section id="run">
+            <h1>run</h1>
+            <h5 class="subheader"></h5>
+            <p>
+              <div class="label label-success radius ctx-type">declaration</div><span>run</span>
+            </p>
+          </section>
+          <table class="table table-bordered table-striped">
+            <thead>
+              <tr>
+                <th style="width:20%">Option name</th>
+                <th style="width:20%">Type</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>$q</td>
+                <td>ng-service</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>gapiservice</td>
+                <td>ng-service</td>
+                <td></td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="description"><p>Run block for the current module. This makes sure the gapi gets injected into the current web page in most<br />hassle free way possible. </p> </div>
+          <pre><code class="language-javascript">var run = ($q, gapiservice) =&gt; {
+    gapiIsReadyDeferred = $q.defer();
+    gapiIsReadyPromise = gapiIsReadyDeferred.promise;
+
+    // NOTE I don't agree at all with the way GAPI operates and how it has been designed to 'dynamically' be injected
+    //      into the website. I think it breaks too many princibles of a modern web application. This is not a good thing.
+    //      This is a quick attempt to just try and go ahead in wrapping the horrible implementation of gapi into a more
+    //      decent usage case and to make sure it would behave nicely with the Angular applications life cycle.
+
+    // Wow, I'm surprised there's no really clean way of doing this.. I hate myself for this
+    var scriptText = &quot;&quot; +
+       &quot;(function(w,d,s,g,js,fs){ &quot; +
+            &quot;g=w.gapi||(w.gapi={});g.analytics={q:[],ready:function(f){this.q.push(f);}}; &quot; +
+            &quot;js=d.createElement(s);fs=d.getElementsByTagName(s)[0]; &quot; +
+            &quot;js.src='https://apis.google.com/js/platform.js'; &quot; +
+            &quot;fs.parentNode.insertBefore(js,fs);js.onload=function(){g.load('analytics');}; &quot; +
+       &quot;}(window,document,'script'));  &quot;;
+    
+    var gaCode = document.createTextNode(scriptText);
+    var scriptTag = document.createElement(&quot;script&quot;);
+    scriptTag.type = &quot;text/javascript&quot;;
+    
+    // slam them dynamically into the body and be done with it. My soul weeps.
+    scriptTag.appendChild(gaCode);
+    document.body.appendChild(scriptTag);
+
+    // now somewhat normalized behavior, quickly wrap the beast into promise 
+    gapi.analytics.ready(() =&gt; {
+        gapiservice.loadApis().then(() =&gt; {
+            console.log(&quot;gapi.analytics is ready for use.&quot;);
+            gapiIsReadyDeferred.resolve(gapi);
+        }, 
+        () =&gt; {
+            console.log(&quot;Failed to load required apis for gapi.&quot;);
+            gapiIsReadyDeferred.reject(false); 
+        });
+    });
+};
+run.$inject = [ &quot;$q&quot;, &quot;gapiservice&quot; ];
+
+angular
+    .module(name)
+    .run(run)
+    .service(service.serviceName, service);</code></pre>
         </div>
       </div>
     </div>

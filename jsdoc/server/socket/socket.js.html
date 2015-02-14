@@ -71,7 +71,7 @@
       <div class="row">
         <div class="span3 bs-docs-sidebar">
           <ul class="nav nav-list bs-docs-sidenav affix-top">
-            <li class="active"><a href="//index.html">Main</a></li>
+            <li><a href="//index.html">Main</a></li>
             <li><a href="//client/dependency-map.js.html">dependency-map.js</a></li>
             <li><a href="//client/index.js.html">index.js</a></li>
             <li><a href="//client/company/company-directive.js.html">company/company-directive.js</a></li>
@@ -90,20 +90,131 @@
             <li><a href="//server/app.js.html">app.js</a></li>
             <li><a href="//server/config/config.js.html">config/config.js</a></li>
             <li><a href="//server/database/database.js.html">database/database.js</a></li>
-            <li><a href="//server/socket/socket.js.html">socket/socket.js</a></li>
+            <li class="active"><a href="//server/socket/socket.js.html">socket/socket.js</a></li>
             <li><a href="//server/transformers/row-transformer.js.html">transformers/row-transformer.js</a></li>
             <li><a href="//server/utilities/constants.js.html">utilities/constants.js</a></li>
             <li><a href="//README.md.html">README.md</a></li>
           </ul>
           <div class="scrollspy">
             <ul class="nav nav-list bs-docs-sidenav affix-top">
+              <li><a href="#socket"><i class="alert alert-success"></i><span>socket</span></a>
+              </li>
+              <li><a href="#initializeSocket"><i class="alert alert-success"></i><span>initializeSocket</span></a>
+              </li>
+              <li><a href="#hookSocketMessages"><i class="alert alert-success"></i><span>hookSocketMessages</span></a>
+              </li>
+              <li><a href="#exports"><i class="alert alert-success"></i><span>exports</span></a>
+              </li>
             </ul>
           </div>
         </div>
         <div class="span9">
-          <section id="Main"><h1>proto-dash</h1>
-<p>Prototype of a widget based dashboard</p><h1>TODOs</h1>
-<p><a href="TODO.md">Link to TODO</a></p></section>
+          <div class="description"><p>global console, require, __dirname, process, module</p> </div>
+          <div class="description"><p>jshint node: true</p> </div>
+          <section id="socket">
+            <h1>socket</h1>
+            <h5 class="subheader"></h5>
+            <p>
+              <div class="label label-success radius ctx-type">declaration</div><span>socket</span>
+            </p>
+          </section>
+          <div class="description"><p>jshint esnext: true</p> </div>
+          <pre><code class="language-javascript">var socket = require(&quot;socket.io&quot;);
+var database = require(&quot;../database/database&quot;);
+var Q = require(&quot;q&quot;);
+var constants = require(&quot;../utilities/constants&quot;);
+var rowTransformer = require(&quot;../transformers/row-transformer&quot;);
+var io;</code></pre>
+          <section id="initializeSocket">
+            <h1>initializeSocket</h1>
+            <h5 class="subheader"></h5>
+            <p>
+              <div class="label label-success radius ctx-type">declaration</div><span>initializeSocket</span>
+            </p>
+          </section>
+          <table class="table table-bordered table-striped">
+            <thead>
+              <tr>
+                <th style="width:20%">Option name</th>
+                <th style="width:20%">Type</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>server</td>
+                <td>Object</td>
+                <td>- Server object from Express to connect the IO with.</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="description"><p>Initializes the socket.io server.</p> </div>
+          <pre><code class="language-javascript">var initializeSocket = (server) =&gt; {
+     io = socket(server);
+};</code></pre>
+          <section id="hookSocketMessages">
+            <h1>hookSocketMessages</h1>
+            <h5 class="subheader"></h5>
+            <p>
+              <div class="label label-success radius ctx-type">declaration</div><span>hookSocketMessages</span>
+            </p>
+          </section>
+          <div class="description"><p>Hooks all the required socket events into Socket.io clients.</p> </div>
+          <pre><code class="language-javascript">var hookSocketMessages = () =&gt; {
+    var deferred = Q.defer();
+    if (!io) {
+        deferred.reject(&quot;No socket connection present. Call initializeSocket first!&quot;);
+        return deferred.promise;
+    }
+    
+   io.on(constants.events.socket.connected, socket =&gt; {
+        console.log(&quot;Socket connected to server.&quot;, socket.id);
+
+        socket.on(&quot;dash.get.dashboard&quot;, (parameters, resultHandler) =&gt; {
+            console.log(&quot;Received socket get.dasboard&quot;);
+            database
+                .findDashboardsForEmail(parameters)
+                .then(results =&gt; resultHandler(null, !results || results.length &lt;= 0 ? [] : results))
+                .catch(error =&gt; resultHandler(error))
+                .done();
+        });
+
+        socket.on(&quot;dash.get.dashboard.components&quot;, (parameters, resultHandler) =&gt; {
+            console.log(&quot;Received socket get.dasboard.components&quot;, JSON.stringify(parameters));
+
+            if (!parameters) {
+                resultHandler(&quot;No components&quot;);
+                return;
+            }
+
+            database
+                .findComponentsForDashboard(parameters, rowTransformer(parameters))
+                .then(results =&gt; resultHandler(null, results))
+                .catch(error =&gt; resultHandler(error))
+                .done();
+        });
+
+        socket.on(constants.events.socket.disconnected, () =&gt; {
+            console.log(&quot;Socket disconnected from server.&quot;, socket.id);
+        });
+    });  
+    
+    deferred.resolve(io);
+
+    return deferred.promise;
+};</code></pre>
+          <section id="exports">
+            <h1>exports</h1>
+            <h5 class="subheader"></h5>
+            <p>
+              <div class="label label-success radius ctx-type">property</div><span>module.exports</span>
+            </p>
+          </section>
+          <div class="description"><p>@module socket<br />Module for connecting all the socket server/clients together and attaching the events to it</p> </div>
+          <pre><code class="language-javascript">module.exports = {
+    init: initializeSocket,
+    hookSocketMessages: hookSocketMessages
+};</code></pre>
         </div>
       </div>
     </div>

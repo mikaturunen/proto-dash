@@ -71,7 +71,7 @@
       <div class="row">
         <div class="span3 bs-docs-sidebar">
           <ul class="nav nav-list bs-docs-sidenav affix-top">
-            <li class="active"><a href="//index.html">Main</a></li>
+            <li><a href="//index.html">Main</a></li>
             <li><a href="//client/dependency-map.js.html">dependency-map.js</a></li>
             <li><a href="//client/index.js.html">index.js</a></li>
             <li><a href="//client/company/company-directive.js.html">company/company-directive.js</a></li>
@@ -91,19 +91,77 @@
             <li><a href="//server/config/config.js.html">config/config.js</a></li>
             <li><a href="//server/database/database.js.html">database/database.js</a></li>
             <li><a href="//server/socket/socket.js.html">socket/socket.js</a></li>
-            <li><a href="//server/transformers/row-transformer.js.html">transformers/row-transformer.js</a></li>
+            <li class="active"><a href="//server/transformers/row-transformer.js.html">transformers/row-transformer.js</a></li>
             <li><a href="//server/utilities/constants.js.html">utilities/constants.js</a></li>
             <li><a href="//README.md.html">README.md</a></li>
           </ul>
           <div class="scrollspy">
             <ul class="nav nav-list bs-docs-sidenav affix-top">
+              <li><a href="#_"><i class="alert alert-success"></i><span>_</span></a>
+              </li>
+              <li><a href="#componentsIntoRows"><i class="alert alert-success"></i><span>componentsIntoRows</span></a>
+              </li>
             </ul>
           </div>
         </div>
         <div class="span9">
-          <section id="Main"><h1>proto-dash</h1>
-<p>Prototype of a widget based dashboard</p><h1>TODOs</h1>
-<p><a href="TODO.md">Link to TODO</a></p></section>
+          <div class="description"><p>global console, require, __dirname, process, module</p> </div>
+          <div class="description"><p>jshint node: true</p> </div>
+          <section id="_">
+            <h1>_</h1>
+            <h5 class="subheader"></h5>
+            <p>
+              <div class="label label-success radius ctx-type">declaration</div><span>_</span>
+            </p>
+          </section>
+          <div class="description"><p>jshint esnext: true</p> </div>
+          <pre><code class="language-javascript">var _ = require(&quot;lodash&quot;);
+var mongo = require(&quot;mongodb&quot;);
+var ObjectID = mongo.ObjectID;</code></pre>
+          <section id="componentsIntoRows">
+            <h1>componentsIntoRows</h1>
+            <h5 class="subheader"></h5>
+            <p>
+              <div class="label label-success radius ctx-type">declaration</div><span>componentsIntoRows</span>
+            </p>
+          </section>
+          <table class="table table-bordered table-striped">
+            <thead>
+              <tr>
+                <th style="width:20%">Option name</th>
+                <th style="width:20%">Type</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>rows_component_ids</td>
+                <td>string[][]</td>
+                <td>2d array with the first layer being rows and the second dimension being columns</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="description"><p>Transformers the array of resulting component documents into the rows x columns format specified in the dashboard<br />that rows_component_ids represent with pure englighted magic and unicorns.</p> </div>
+          <pre><code class="language-javascript">var componentsIntoRows = (rows_component_ids) =&gt; {
+    return (results) =&gt; {
+        // don't ask, I'm just throwing some map magic at it. Basically what is being done is I want the actual objects
+        // to represent the rows in the exact same format as rows_component_ids are. So rows_component_ids describe
+        // the format for us and we just fill in the details with the map magic and store the component objects in the 
+        // exactly same format as the rows_component_ids is: Array&lt;Array&lt;Object&gt;&gt;, number or rows and colums is dynamic
+        
+        return rows_component_ids.map(rowColumns =&gt; {
+            return rowColumns.map(component_id =&gt; { 
+                // we make sure that we never get undefined into the collection. Makes our life a little easier on front
+                var component = _.find(results, componentDocument =&gt; {
+                    return componentDocument._id.equals(component_id);
+                }) || { }; 
+               return component;
+            });
+        });
+    };
+};
+
+module.exports = componentsIntoRows;</code></pre>
         </div>
       </div>
     </div>

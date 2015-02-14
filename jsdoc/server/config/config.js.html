@@ -71,7 +71,7 @@
       <div class="row">
         <div class="span3 bs-docs-sidebar">
           <ul class="nav nav-list bs-docs-sidenav affix-top">
-            <li class="active"><a href="//index.html">Main</a></li>
+            <li><a href="//index.html">Main</a></li>
             <li><a href="//client/dependency-map.js.html">dependency-map.js</a></li>
             <li><a href="//client/index.js.html">index.js</a></li>
             <li><a href="//client/company/company-directive.js.html">company/company-directive.js</a></li>
@@ -88,7 +88,7 @@
             <li><a href="//client/widgets/widget-frame-directive.js.html">widgets/widget-frame-directive.js</a></li>
             <li><a href="//client/widgets/widget-image-directive.js.html">widgets/widget-image-directive.js</a></li>
             <li><a href="//server/app.js.html">app.js</a></li>
-            <li><a href="//server/config/config.js.html">config/config.js</a></li>
+            <li class="active"><a href="//server/config/config.js.html">config/config.js</a></li>
             <li><a href="//server/database/database.js.html">database/database.js</a></li>
             <li><a href="//server/socket/socket.js.html">socket/socket.js</a></li>
             <li><a href="//server/transformers/row-transformer.js.html">transformers/row-transformer.js</a></li>
@@ -97,13 +97,87 @@
           </ul>
           <div class="scrollspy">
             <ul class="nav nav-list bs-docs-sidenav affix-top">
+              <li><a href="#Q"><i class="alert alert-success"></i><span>Q</span></a>
+              </li>
+              <li><a href="#selectValue"><i class="alert alert-success"></i><span>selectValue</span></a>
+              </li>
             </ul>
           </div>
         </div>
         <div class="span9">
-          <section id="Main"><h1>proto-dash</h1>
-<p>Prototype of a widget based dashboard</p><h1>TODOs</h1>
-<p><a href="TODO.md">Link to TODO</a></p></section>
+          <div class="description"><p>global console, require, __dirname, process, module</p> </div>
+          <div class="description"><p>jslint node: true</p> </div>
+          <section id="Q">
+            <h1>Q</h1>
+            <h5 class="subheader"></h5>
+            <p>
+              <div class="label label-success radius ctx-type">declaration</div><span>Q</span>
+            </p>
+          </section>
+          <div class="description"><p>jshint esnext: true</p> </div>
+          <pre><code class="language-javascript">var Q = require(&quot;q&quot;);
+var fs = require(&quot;fs&quot;);
+var path = require(&quot;path&quot;);
+
+// I could write fs.exists, go through the hassle of checking it and all but I thought I'd just do it this way for now,
+// potential refactor target in the near future.
+var config;
+
+try {
+    config = require(&quot;./config.json&quot;);
+} catch (error) {
+    // File not found, digest error and create dummy!
+    // We can safely assume that when there are no configuration file in place, we use environment variables
+    config = { };
+    console.log(&quot;Configuration not found - using environment values&quot;);
+}</code></pre>
+          <section id="selectValue">
+            <h1>selectValue</h1>
+            <h5 class="subheader"></h5>
+            <p>
+              <div class="label label-success radius ctx-type">declaration</div><span>selectValue</span>
+            </p>
+          </section>
+          <table class="table table-bordered table-striped">
+            <thead>
+              <tr>
+                <th style="width:20%">Option name</th>
+                <th style="width:20%">Type</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>lhs</td>
+                <td>string</td>
+                <td>Left-hand side variable,</td>
+              </tr>
+              <tr>
+                <td>rhg</td>
+                <td>string</td>
+                <td>Right-hande side variable.</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="description"><p>Selects a value: either left-hand side or right-hand side. When LHS is undefined or &quot;&quot; it&#39;s skipped and RHG is used.</p> </div>
+          <pre><code class="language-javascript">var selectValue = (lhs, rhs) =&gt; {
+    if (lhs !== undefined &amp;&amp; lhs.trim() !== &quot;&quot;) {
+        return lhs;
+    }
+    return rhs;
+};
+
+// Setup all the configurations based on the environmental of configuration given variables. 
+// NOTE: configuration files are never populated into GitHub for more or less obvious reasons :)
+var configuration = {
+    databaseUser:     selectValue(process.env.DATABASE_USER, config.databaseUser),
+    databasePassword: selectValue(process.env.DATABASE_PASSWORD, config.databasePassword),
+    databaseUrl:      selectValue(process.env.DATABASE_URL, config.databaseUrl),
+    database:         selectValue(process.env.DATABASE, config.database),
+    databasePort:     selectValue(process.env.DATABASE_PORT, config.databasePort)
+};
+
+module.exports = configuration;</code></pre>
         </div>
       </div>
     </div>

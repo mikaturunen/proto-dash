@@ -71,12 +71,12 @@
       <div class="row">
         <div class="span3 bs-docs-sidebar">
           <ul class="nav nav-list bs-docs-sidenav affix-top">
-            <li class="active"><a href="//index.html">Main</a></li>
+            <li><a href="//index.html">Main</a></li>
             <li><a href="//client/dependency-map.js.html">dependency-map.js</a></li>
             <li><a href="//client/index.js.html">index.js</a></li>
             <li><a href="//client/company/company-directive.js.html">company/company-directive.js</a></li>
             <li><a href="//client/footer/footer-navigation-directive.js.html">footer/footer-navigation-directive.js</a></li>
-            <li><a href="//client/dashboard/dashboard-controller.js.html">dashboard/dashboard-controller.js</a></li>
+            <li class="active"><a href="//client/dashboard/dashboard-controller.js.html">dashboard/dashboard-controller.js</a></li>
             <li><a href="//client/dashboard/dashboard-service.js.html">dashboard/dashboard-service.js</a></li>
             <li><a href="//client/gapi/gapi-service.js.html">gapi/gapi-service.js</a></li>
             <li><a href="//client/gapi/gapi.js.html">gapi/gapi.js</a></li>
@@ -97,13 +97,190 @@
           </ul>
           <div class="scrollspy">
             <ul class="nav nav-list bs-docs-sidenav affix-top">
+              <li><a href="#controller"><i class="alert alert-success"></i><span>controller</span></a>
+              </li>
+              <li><a href="#selectDashboard"><i class="alert alert-success"></i><span>selectDashboard</span></a>
+              </li>
+              <li><a href="#execute"><i class="alert alert-success"></i><span>execute</span></a>
+              </li>
+              <li><a href="#configuration"><i class="alert alert-success"></i><span>configuration</span></a>
+              </li>
             </ul>
           </div>
         </div>
         <div class="span9">
-          <section id="Main"><h1>proto-dash</h1>
-<p>Prototype of a widget based dashboard</p><h1>TODOs</h1>
-<p><a href="TODO.md">Link to TODO</a></p></section>
+          <div class="description"><p>global gapi, console, require, angular, document, window</p> </div>
+          <div class="description"><p>jslint node: true</p> </div>
+          <div class="description"><p>jshint esnext: true</p> </div>
+          <pre><code class="language-javascript">&quot;use strict&quot;;
+
+var name = &quot;dash.controllers&quot;;
+var dependencyMap = require(&quot;../dependency-map&quot;).add(name);
+var constants = require(&quot;../../server/utilities/constants&quot;);
+var dashService = require(&quot;./dashboard-service&quot;);
+
+var _ = require(&quot;lodash&quot;);</code></pre>
+          <section id="controller">
+            <h1>controller</h1>
+            <h5 class="subheader"></h5>
+            <p>
+              <div class="label label-success radius ctx-type">declaration</div><span>controller</span>
+            </p>
+          </section>
+          <div class="description"><p>Controller for angular that takes care of most of the Dashboard behavior.</p> </div>
+          <pre><code class="language-javascript">var controller = ($rootScope, $scope, $state, gapi, dashService, $q, $window) =&gt; {   
+    $scope.dashboards = [];
+    $scope.dashboard = undefined;
+    $scope.userHasNoDashboards = false;
+    $scope.dashboardComponents = [];
+    $scope.getComponentsForDashboard = dashService.getComponentsForDashboard($scope);
+    $scope.getDashboards = dashService.getDashboards($scope);
+    $scope.logout = gapi.logout;</code></pre>
+          <section id="selectDashboard">
+            <h1>selectDashboard</h1>
+            <h5 class="subheader"></h5>
+            <p>
+              <div class="label label-success radius ctx-type">property</div><span>$scope.selectDashboard</span>
+            </p>
+          </section>
+          <table class="table table-bordered table-striped">
+            <thead>
+              <tr>
+                <th style="width:20%">Option name</th>
+                <th style="width:20%">Type</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>dashboard</td>
+                <td>DashboardModel</td>
+                <td>Dashboard object</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="description"><p>Selects a given dashboard into active use and fetches the components for the dashboard.</p> </div>
+          <pre><code class="language-javascript">$scope.selectDashboard = dashboard =&gt; {
+        $scope.getComponentsForDashboard(dashboard)
+            .then(components =&gt; {
+                // TODO store selection into local storage
+                console.log(&quot;Wookie woo, selected new dashboard&quot;);
+            })
+            .catch(error =&gt; {
+                console.log(&quot;Could not fetch dashboard&quot;);
+                console.error(error);
+            });
+    };</code></pre>
+          <section id="execute">
+            <h1>execute</h1>
+            <h5 class="subheader"></h5>
+            <p>
+              <div class="label label-success radius ctx-type">declaration</div><span>execute</span>
+            </p>
+          </section>
+          <table class="table table-bordered table-striped">
+            <thead>
+              <tr>
+                <th style="width:20%">Option name</th>
+                <th style="width:20%">Type</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>user</td>
+                <td>string</td>
+                <td>users email</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="description"><p>After authorization starts working on getting all the required dashboards and information to the client.</p> </div>
+          <pre><code class="language-javascript">var execute = user =&gt; {
+        $scope
+            .getDashboards(user)
+            .then(dashboards =&gt; {
+                var deferred = $q.defer();
+
+                // TODO read selected dashboard from local storage and open based on it
+
+                // Temp development time fix as the database might contain all sorts of old mush before clean up :)
+                var index = _.findIndex(dashboards, (dash) =&gt; { return dash.rows_component_ids !== undefined; });
+
+                if (dashboards.length &gt; 0 &amp;&amp; index !== -1) {
+                    console.log(&quot;Received dashboards&quot;, JSON.stringify(dashboards));
+                    $scope.getComponentsForDashboard(dashboards[index]).then(deferred.resolve, deferred.reject);
+                } else {
+                    deferred.reject(new Error(&quot;User has no dashboards.&quot;, 1));
+                    $scope.userHasNoDashboards = true;
+                }
+
+                return deferred.promise;
+            })
+            .catch(error =&gt; {
+                // TODO show some sort of error to the user about it
+                $scope.dashboards = [ ];
+                console.log(&quot;No dashboards available for user&quot;);
+                console.error(error);
+            });
+    };
+
+    gapi.auth().then(response =&gt; {
+        console.log(&quot;response&quot;, response);
+        gapi.isAuthorized()
+            .then(response =&gt; {
+                console.log(&quot;authed:&quot;, response, response.email);
+                execute(response.email);
+            })
+            .catch(error =&gt; { 
+                console.log(&quot;error&quot;, error); 
+                // because we know GAPI misbehaves; we actually do a refresh to the front page instead of state.go to it
+                $window.location.href = &quot;/&quot;;
+            });
+    })
+    .catch(error =&gt; {
+        console.log(&quot;auth error&quot;, error);
+        $window.location.href = &quot;/&quot;;
+    });
+};
+controller.$inject = [ &quot;$rootScope&quot;, &quot;$scope&quot;, &quot;$state&quot;, &quot;gapi&quot;, &quot;dashboard-service&quot;, &quot;$q&quot;, &quot;$window&quot; ];
+controller.controllerName = &quot;DashboardController&quot;;</code></pre>
+          <section id="configuration">
+            <h1>configuration</h1>
+            <h5 class="subheader"></h5>
+            <p>
+              <div class="label label-success radius ctx-type">declaration</div><span>configuration</span>
+            </p>
+          </section>
+          <table class="table table-bordered table-striped">
+            <thead>
+              <tr>
+                <th style="width:20%">Option name</th>
+                <th style="width:20%">Type</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>$stateProvider</td>
+                <td>ng-service</td>
+                <td></td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="description"><p>Configuration for angular-ui-router and how the controller hooks into it. Providing a single place of declaration.</p> </div>
+          <pre><code class="language-javascript">var configuration = $stateProvider =&gt; {
+    $stateProvider.state(&quot;dashboard&quot;, {
+        templateUrl: &quot;/public/html/dashboard/dashboard-view.html&quot;,
+        url: &quot;/dashboard&quot;,
+        controller: controller
+    });
+};
+configuration.$inject = [ &quot;$stateProvider&quot; ];
+
+angular
+    .module(name)
+    .controller(controller.controllerName, controller)
+    .config(configuration);</code></pre>
         </div>
       </div>
     </div>

@@ -71,7 +71,7 @@
       <div class="row">
         <div class="span3 bs-docs-sidebar">
           <ul class="nav nav-list bs-docs-sidenav affix-top">
-            <li class="active"><a href="//index.html">Main</a></li>
+            <li><a href="//index.html">Main</a></li>
             <li><a href="//client/dependency-map.js.html">dependency-map.js</a></li>
             <li><a href="//client/index.js.html">index.js</a></li>
             <li><a href="//client/company/company-directive.js.html">company/company-directive.js</a></li>
@@ -82,7 +82,7 @@
             <li><a href="//client/gapi/gapi.js.html">gapi/gapi.js</a></li>
             <li><a href="//client/header/header-navigation-directive.js.html">header/header-navigation-directive.js</a></li>
             <li><a href="//client/login/login-controller.js.html">login/login-controller.js</a></li>
-            <li><a href="//client/socket/socket-service.js.html">socket/socket-service.js</a></li>
+            <li class="active"><a href="//client/socket/socket-service.js.html">socket/socket-service.js</a></li>
             <li><a href="//client/widgets/widget-analytics-controller.js.html">widgets/widget-analytics-controller.js</a></li>
             <li><a href="//client/widgets/widget-analytics-directive.js.html">widgets/widget-analytics-directive.js</a></li>
             <li><a href="//client/widgets/widget-frame-directive.js.html">widgets/widget-frame-directive.js</a></li>
@@ -101,9 +101,51 @@
           </div>
         </div>
         <div class="span9">
-          <section id="Main"><h1>proto-dash</h1>
-<p>Prototype of a widget based dashboard</p><h1>TODOs</h1>
-<p><a href="TODO.md">Link to TODO</a></p></section>
+          <div class="description"><p>global gapi, console, require, angular, document, io</p> </div>
+          <div class="description"><p>jslint node: true</p> </div>
+          <div class="description"><p>jshint esnext: true</p> </div>
+          <pre><code class="language-javascript">&quot;use strict&quot;;
+
+var name = &quot;dash.socket&quot;;
+var dependencyMap = require(&quot;../dependency-map&quot;).add(name);
+
+var factory = ($rootScope) =&gt; {
+    var socket = io.connect();
+    
+    return {
+        on: (eventName, callback) =&gt; {
+            socket.on(eventName, function () {  
+                var args = arguments;
+                
+                // NOTE this is same behavior what $http does on XHR reply -&gt; gets angular to update it's views properly
+                $rootScope.$apply(function () {
+                    callback.apply(socket, args);
+                });
+            });
+        },
+        
+        emit: function (eventName, data, callback) {
+            console.log(&quot;socket-service.emit&quot;, eventName, data, callback);
+            
+            socket.emit(eventName, data, function () {
+                var args = arguments;
+                
+                // NOTE this is same behavior what $http does on XHR reply -&gt; gets angular to update it's views properly
+                $rootScope.$apply(function () {
+                    if (callback) {
+                        callback.apply(socket, args);
+                    }
+                });
+            });
+        }
+    };
+};
+factory.$inject = [ &quot;$rootScope&quot; ];
+factory.factoryName = &quot;socket&quot;;
+
+angular
+    .module(name)
+    .factory(factory.factoryName, factory);</code></pre>
         </div>
       </div>
     </div>

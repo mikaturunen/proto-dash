@@ -71,9 +71,9 @@
       <div class="row">
         <div class="span3 bs-docs-sidebar">
           <ul class="nav nav-list bs-docs-sidenav affix-top">
-            <li class="active"><a href="//index.html">Main</a></li>
+            <li><a href="//index.html">Main</a></li>
             <li><a href="//client/dependency-map.js.html">dependency-map.js</a></li>
-            <li><a href="//client/index.js.html">index.js</a></li>
+            <li class="active"><a href="//client/index.js.html">index.js</a></li>
             <li><a href="//client/company/company-directive.js.html">company/company-directive.js</a></li>
             <li><a href="//client/footer/footer-navigation-directive.js.html">footer/footer-navigation-directive.js</a></li>
             <li><a href="//client/dashboard/dashboard-controller.js.html">dashboard/dashboard-controller.js</a></li>
@@ -101,9 +101,41 @@
           </div>
         </div>
         <div class="span9">
-          <section id="Main"><h1>proto-dash</h1>
-<p>Prototype of a widget based dashboard</p><h1>TODOs</h1>
-<p><a href="TODO.md">Link to TODO</a></p></section>
+          <div class="description"><p>global gapi, console, require, angular, document</p> </div>
+          <div class="description"><p>jshint node: true</p> </div>
+          <div class="description"><p>jshint esnext: true</p> </div>
+          <pre><code class="language-javascript">&quot;use strict&quot;;
+
+require(&quot;./gapi/gapi-service&quot;);
+require(&quot;./gapi/gapi&quot;);
+require(&quot;./company/company-directive&quot;);
+require(&quot;./login/login-controller&quot;);
+require(&quot;./socket/socket-service&quot;);
+require(&quot;./header/header-navigation-directive&quot;);
+require(&quot;./footer/footer-navigation-directive&quot;);
+require(&quot;./dashboard/dashboard-controller&quot;);
+require(&quot;./widgets/widget-analytics-controller&quot;);
+require(&quot;./widgets/widget-frame-directive&quot;);
+require(&quot;./widgets/widget-image-directive&quot;);
+
+var configuration = ($urlRouterProvider, $locationProvider) =&gt; {
+    $locationProvider.html5Mode(true);
+    $urlRouterProvider.otherwise(&quot;/&quot;);
+};
+configuration.$inject = [ &quot;$urlRouterProvider&quot;, &quot;$locationProvider&quot; ];
+
+angular
+    .module(&quot;dash&quot;, [
+            // from bower or angular basic modules
+            &quot;ui.router&quot;, 
+            &quot;ui.bootstrap&quot;,
+            &quot;ngCookies&quot;
+        ]
+        .concat(require(&quot;./dependency-map&quot;).dependencies)
+    )
+    .config(configuration);
+
+console.log(&quot;Application bootstrapped&quot;);</code></pre>
         </div>
       </div>
     </div>

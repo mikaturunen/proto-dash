@@ -71,13 +71,13 @@
       <div class="row">
         <div class="span3 bs-docs-sidebar">
           <ul class="nav nav-list bs-docs-sidenav affix-top">
-            <li class="active"><a href="//index.html">Main</a></li>
+            <li><a href="//index.html">Main</a></li>
             <li><a href="//client/dependency-map.js.html">dependency-map.js</a></li>
             <li><a href="//client/index.js.html">index.js</a></li>
             <li><a href="//client/company/company-directive.js.html">company/company-directive.js</a></li>
             <li><a href="//client/footer/footer-navigation-directive.js.html">footer/footer-navigation-directive.js</a></li>
             <li><a href="//client/dashboard/dashboard-controller.js.html">dashboard/dashboard-controller.js</a></li>
-            <li><a href="//client/dashboard/dashboard-service.js.html">dashboard/dashboard-service.js</a></li>
+            <li class="active"><a href="//client/dashboard/dashboard-service.js.html">dashboard/dashboard-service.js</a></li>
             <li><a href="//client/gapi/gapi-service.js.html">gapi/gapi-service.js</a></li>
             <li><a href="//client/gapi/gapi.js.html">gapi/gapi.js</a></li>
             <li><a href="//client/header/header-navigation-directive.js.html">header/header-navigation-directive.js</a></li>
@@ -97,13 +97,149 @@
           </ul>
           <div class="scrollspy">
             <ul class="nav nav-list bs-docs-sidenav affix-top">
+              <li><a href="#service"><i class="alert alert-success"></i><span>service</span></a>
+              </li>
+              <li><a href="#getDashboards"><i class="alert alert-success"></i><span>getDashboards</span></a>
+              </li>
+              <li><a href="#getComponentsForDashboard"><i class="alert alert-success"></i><span>getComponentsForDashboard</span></a>
+              </li>
             </ul>
           </div>
         </div>
         <div class="span9">
-          <section id="Main"><h1>proto-dash</h1>
-<p>Prototype of a widget based dashboard</p><h1>TODOs</h1>
-<p><a href="TODO.md">Link to TODO</a></p></section>
+          <div class="description"><p>global gapi, console, require, angular, document</p> </div>
+          <div class="description"><p>jslint node: true</p> </div>
+          <div class="description"><p>jshint esnext: true</p> </div>
+          <pre><code class="language-javascript">&quot;use strict&quot;;
+
+var name = &quot;dash.controllers.service&quot;;
+var dependencyMap = require(&quot;../dependency-map&quot;).add(name);
+var constants = require(&quot;../../server/utilities/constants&quot;);</code></pre>
+          <section id="service">
+            <h1>service</h1>
+            <h5 class="subheader"></h5>
+            <p>
+              <div class="label label-success radius ctx-type">declaration</div><span>service</span>
+            </p>
+          </section>
+          <table class="table table-bordered table-striped">
+            <thead>
+              <tr>
+                <th style="width:20%">Option name</th>
+                <th style="width:20%">Type</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>$q</td>
+                <td>ng-service</td>
+                <td></td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="description"><p>Service that has abstracted simple behavior and communication from the dashboard controller to the service.<br />Allowed to manipulate the controllers scope as this is specific service for that controller.</p> </div>
+          <pre><code class="language-javascript">var service = ($q, socket) =&gt; {</code></pre>
+          <section id="getDashboards">
+            <h1>getDashboards</h1>
+            <h5 class="subheader"></h5>
+            <p>
+              <div class="label label-success radius ctx-type">declaration</div><span>getDashboards</span> -><span>(user)</span>
+            </p>
+          </section>
+          <table class="table table-bordered table-striped">
+            <thead>
+              <tr>
+                <th style="width:20%">Option name</th>
+                <th style="width:20%">Type</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>$scope</td>
+                <td>$scope</td>
+                <td>Dashboard-controllers active $scope object.</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="description"><p>Gets all dashboards for the active users. </p> </div>
+          <pre><code class="language-javascript">var getDashboards = ($scope) =&gt; {
+        return (user) =&gt; {
+            var deferred = $q.defer();
+
+            socket.emit(&quot;dash.get.dashboard&quot;, user, (socket, result) =&gt; {    
+                $scope.dashboards = result;
+                deferred.resolve(result);
+            });
+
+            return deferred.promise;
+        };
+    };</code></pre>
+          <section id="getComponentsForDashboard">
+            <h1>getComponentsForDashboard</h1>
+            <h5 class="subheader"></h5>
+            <p>
+              <div class="label label-success radius ctx-type">declaration</div><span>getComponentsForDashboard</span> -><span>(dashboard)</span>
+            </p>
+          </section>
+          <table class="table table-bordered table-striped">
+            <thead>
+              <tr>
+                <th style="width:20%">Option name</th>
+                <th style="width:20%">Type</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>$scope</td>
+                <td>$scope</td>
+                <td>Dashboard-controllers active $scope object.</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="description"><p>Gets components for selected dashboard.</p> </div>
+          <pre><code class="language-javascript">var getComponentsForDashboard = ($scope) =&gt; { 
+        return (dashboard)  =&gt; {
+            var deferred = $q.defer();
+
+            if (dashboard === undefined) {
+                console.error(&quot;No dashboard provided. Cannot fetch components for board that is not present.&quot;);
+                deferred.reject(&quot;No dashboards provided&quot;);
+                return deferred.promise;
+            }
+            
+            // set active dashboard
+            $scope.dashboard = dashboard;
+            console.log(&quot;Dashboard selected:&quot;, JSON.stringify(dashboard, null, 2));
+            
+            // fetch components for the dashboard
+            socket.emit(
+                &quot;dash.get.dashboard.components&quot;, 
+                dashboard.rows_component_ids, 
+                (socket, resultingComponents) =&gt; {
+                    console.log(&quot;Components for Active dashboard&quot;, resultingComponents);
+                    // backend sorts and makes sure the resulting components are already ready for use
+                    $scope.dashboardComponents = resultingComponents;
+                    deferred.resolve(resultingComponents);
+                });   
+
+            return deferred.promise;
+        };
+    };</code></pre>
+          <div class="description"><p>The actual service we are returning</p> </div>
+          <pre><code class="language-javascript">return {
+        getDashboards: getDashboards,
+        getComponentsForDashboard : getComponentsForDashboard
+    };
+};
+service.$inject = [ &quot;$q&quot;, &quot;socket&quot; ];
+service.serviceName = &quot;dashboard-service&quot;;
+
+angular
+    .module(name)
+    .service(service.serviceName, service);</code></pre>
         </div>
       </div>
     </div>

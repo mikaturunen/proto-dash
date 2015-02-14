@@ -71,7 +71,7 @@
       <div class="row">
         <div class="span3 bs-docs-sidebar">
           <ul class="nav nav-list bs-docs-sidenav affix-top">
-            <li class="active"><a href="//index.html">Main</a></li>
+            <li><a href="//index.html">Main</a></li>
             <li><a href="//client/dependency-map.js.html">dependency-map.js</a></li>
             <li><a href="//client/index.js.html">index.js</a></li>
             <li><a href="//client/company/company-directive.js.html">company/company-directive.js</a></li>
@@ -83,7 +83,7 @@
             <li><a href="//client/header/header-navigation-directive.js.html">header/header-navigation-directive.js</a></li>
             <li><a href="//client/login/login-controller.js.html">login/login-controller.js</a></li>
             <li><a href="//client/socket/socket-service.js.html">socket/socket-service.js</a></li>
-            <li><a href="//client/widgets/widget-analytics-controller.js.html">widgets/widget-analytics-controller.js</a></li>
+            <li class="active"><a href="//client/widgets/widget-analytics-controller.js.html">widgets/widget-analytics-controller.js</a></li>
             <li><a href="//client/widgets/widget-analytics-directive.js.html">widgets/widget-analytics-directive.js</a></li>
             <li><a href="//client/widgets/widget-frame-directive.js.html">widgets/widget-frame-directive.js</a></li>
             <li><a href="//client/widgets/widget-image-directive.js.html">widgets/widget-image-directive.js</a></li>
@@ -101,9 +101,52 @@
           </div>
         </div>
         <div class="span9">
-          <section id="Main"><h1>proto-dash</h1>
-<p>Prototype of a widget based dashboard</p><h1>TODOs</h1>
-<p><a href="TODO.md">Link to TODO</a></p></section>
+          <div class="description"><p>global gapi, console, require, angular, document, window</p> </div>
+          <div class="description"><p>jslint node: true</p> </div>
+          <div class="description"><p>jshint esnext: true</p> </div>
+          <pre><code class="language-javascript">&quot;use strict&quot;;
+
+var name = &quot;dash.controllers&quot;;
+var dependencyMap = require(&quot;../dependency-map&quot;).add(name);
+var directive = require(&quot;./widget-analytics-directive&quot;);
+
+var _ = require(&quot;lodash&quot;);
+
+var controller = ($rootScope, $scope, $window, $timeout) =&gt; {   
+    $scope.opened = false;
+    $scope.open = () =&gt; {
+        $timeout(() =&gt; {
+            $scope.opened = true;
+        });
+   };
+    
+    $scope.openedEnd = false;
+    $scope.openEnd = () =&gt; {
+        $timeout(() =&gt; {
+            $scope.opened = true;
+        });
+   };
+    
+    // TODO design a solution to use the 30daysago etc dynamic values from gapi on the calendar
+    if ($scope.component.gapi &amp;&amp;  $scope.component.gapi.query) {            
+        $scope.startDate = $window.moment($scope.component.gapi.query[&quot;start-date&quot;], &quot;YYYY-MM-DD&quot;);
+        $scope.endDate = $window.moment($scope.component.gapi.query[&quot;end-date&quot;], &quot;YYYY-MM-DD&quot;);
+    }
+
+    //- TODO Save the values into the database when user selects something
+
+    $scope.dateOptions = {
+        formatYear: 'yy',
+        startingDay: 1
+    };
+
+};
+controller.$inject = [ &quot;$rootScope&quot;, &quot;$scope&quot;, &quot;$window&quot;, &quot;$timeout&quot; ];
+controller.controllerName = &quot;WidgetAnalyticsController&quot;;
+
+angular
+    .module(name)
+    .controller(controller.controllerName, controller);</code></pre>
         </div>
       </div>
     </div>

@@ -71,7 +71,7 @@
       <div class="row">
         <div class="span3 bs-docs-sidebar">
           <ul class="nav nav-list bs-docs-sidenav affix-top">
-            <li class="active"><a href="//index.html">Main</a></li>
+            <li><a href="//index.html">Main</a></li>
             <li><a href="//client/dependency-map.js.html">dependency-map.js</a></li>
             <li><a href="//client/index.js.html">index.js</a></li>
             <li><a href="//client/company/company-directive.js.html">company/company-directive.js</a></li>
@@ -87,7 +87,7 @@
             <li><a href="//client/widgets/widget-analytics-directive.js.html">widgets/widget-analytics-directive.js</a></li>
             <li><a href="//client/widgets/widget-frame-directive.js.html">widgets/widget-frame-directive.js</a></li>
             <li><a href="//client/widgets/widget-image-directive.js.html">widgets/widget-image-directive.js</a></li>
-            <li><a href="//server/app.js.html">app.js</a></li>
+            <li class="active"><a href="//server/app.js.html">app.js</a></li>
             <li><a href="//server/config/config.js.html">config/config.js</a></li>
             <li><a href="//server/database/database.js.html">database/database.js</a></li>
             <li><a href="//server/socket/socket.js.html">socket/socket.js</a></li>
@@ -97,13 +97,99 @@
           </ul>
           <div class="scrollspy">
             <ul class="nav nav-list bs-docs-sidenav affix-top">
+              <li><a href="#initRoutes"><i class="alert alert-success"></i><span>initRoutes</span></a>
+              </li>
+              <li><a href="#initServer"><i class="alert alert-success"></i><span>initServer</span></a>
+              </li>
             </ul>
           </div>
         </div>
         <div class="span9">
-          <section id="Main"><h1>proto-dash</h1>
-<p>Prototype of a widget based dashboard</p><h1>TODOs</h1>
-<p><a href="TODO.md">Link to TODO</a></p></section>
+          <div class="description"><p>global console, require, __dirname, process, module</p> </div>
+          <div class="description"><p>jshint node: true</p> </div>
+          <div class="description"><p>jshint esnext: true</p> </div>
+          <pre><code class="language-javascript">&quot;use strict&quot;;
+
+var path = require(&quot;path&quot;);
+var express = require(&quot;express&quot;);
+var app = express();
+var database = require(&quot;./database/database&quot;);
+var Q = require(&quot;q&quot;);
+var socket = require(&quot;./socket/socket&quot;);</code></pre>
+          <section id="initRoutes">
+            <h1>initRoutes</h1>
+            <h5 class="subheader"></h5>
+            <p>
+              <div class="label label-success radius ctx-type">declaration</div><span>initRoutes</span> -><span>Q.Promise</span>
+            </p>
+          </section>
+          <div class="description"><p>Initializes all the express HTTP specific routes. </p> </div>
+          <pre><code class="language-javascript">var initRoutes = () =&gt; {
+    var deferred = Q.defer();
+    var releaseDirectory = path.join(__dirname, &quot;..&quot;);
+    
+    // NOTE this is not async function, we just use it through promise to allow clean and readable promise chain
+    
+    // creating a iterable list of static url we can safely use from the browser without express involving itself 
+    // with them too much
+    var staticRouteMappings = [
+        { directory: path.join(releaseDirectory, &quot;client&quot;), url: &quot;/public&quot; },
+        { directory: path.join(releaseDirectory, &quot;../node_modules/socket.io-client/socket.io.js&quot;), url: &quot;/socket.io.js&quot; }
+    ];
+
+    // This custom variable overwrites all other port variables
+    var port = process.env.DEV_PORT ? process.env.DEV_PORT : (process.env.PORT || 3000);
+    // Another specific hook for development environment easing
+    if (process.argv.length &gt;= 3) {
+        console.log(&quot;Argument for port given, using port number&quot;, process.argv[2]);
+        port = parseInt(process.argv[2]);
+    }
+    app.set(&quot;port&quot;, port);
+    
+    staticRouteMappings.forEach(mapping =&gt; {
+        app.use(mapping.url, express.static(mapping.directory));                      
+    });
+
+    // From all other routes we return index.html for now... 
+    // TODO 404 instead of serving the rough index.html and letting JS sort itself out
+    app.get(&quot;*&quot;, (request, response) =&gt; {
+        var indexHtml = path.join(releaseDirectory, &quot;client&quot;, &quot;html&quot;, &quot;index.html&quot;);
+        response.sendFile(indexHtml);
+    });
+    deferred.resolve(true);
+    
+    return deferred.promise;
+};</code></pre>
+          <section id="initServer">
+            <h1>initServer</h1>
+            <h5 class="subheader"></h5>
+            <p>
+              <div class="label label-success radius ctx-type">declaration</div><span>initServer</span>
+            </p>
+          </section>
+          <div class="description"><p>Initializes the express server itself.</p> </div>
+          <pre><code class="language-javascript">var initServer = () =&gt; {
+    var deferred = Q.defer();
+    
+    var server = app.listen(app.get(&quot;port&quot;), () =&gt; {
+        console.log(&quot;Node app is running at localhost:&quot; + app.get('port'));
+        deferred.resolve(server);
+    });
+    
+    return deferred.promise;
+};
+
+// Start the application through the Promise-chain
+initRoutes()
+    .then(() =&gt; database.init())
+    .then(() =&gt; initServer())
+    .then(server =&gt; socket.init(server))
+    .then(() =&gt; socket.hookSocketMessages())
+    .catch(error =&gt; { 
+        console.log(error);
+        process.exit(6);
+    })
+    .done();</code></pre>
         </div>
       </div>
     </div>

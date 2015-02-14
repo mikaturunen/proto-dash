@@ -71,11 +71,11 @@
       <div class="row">
         <div class="span3 bs-docs-sidebar">
           <ul class="nav nav-list bs-docs-sidenav affix-top">
-            <li class="active"><a href="//index.html">Main</a></li>
+            <li><a href="//index.html">Main</a></li>
             <li><a href="//client/dependency-map.js.html">dependency-map.js</a></li>
             <li><a href="//client/index.js.html">index.js</a></li>
             <li><a href="//client/company/company-directive.js.html">company/company-directive.js</a></li>
-            <li><a href="//client/footer/footer-navigation-directive.js.html">footer/footer-navigation-directive.js</a></li>
+            <li class="active"><a href="//client/footer/footer-navigation-directive.js.html">footer/footer-navigation-directive.js</a></li>
             <li><a href="//client/dashboard/dashboard-controller.js.html">dashboard/dashboard-controller.js</a></li>
             <li><a href="//client/dashboard/dashboard-service.js.html">dashboard/dashboard-service.js</a></li>
             <li><a href="//client/gapi/gapi-service.js.html">gapi/gapi-service.js</a></li>
@@ -101,9 +101,32 @@
           </div>
         </div>
         <div class="span9">
-          <section id="Main"><h1>proto-dash</h1>
-<p>Prototype of a widget based dashboard</p><h1>TODOs</h1>
-<p><a href="TODO.md">Link to TODO</a></p></section>
+          <div class="description"><p>global gapi, console, require, angular, document</p> </div>
+          <div class="description"><p>jslint node: true</p> </div>
+          <div class="description"><p>jshint esnext: true</p> </div>
+          <pre><code class="language-javascript">&quot;use strict&quot;;
+
+var name = &quot;dash.footer&quot;;
+var dependencyMap = require(&quot;../dependency-map&quot;).add(name);
+
+var link = (scope, element, attributes) =&gt; {
+};
+
+var directive = () =&gt; {
+    return {
+        restrict: &quot;E&quot;,
+        scope: {
+            dashboard: &quot;=&quot;
+        },
+        templateUrl: &quot;/public/html/footer/footer-navigation-template.html&quot;,
+        link: link
+    };
+};
+directive.directiveName = &quot;footerNavigation&quot;;
+
+angular
+    .module(name)
+    .directive(directive.directiveName, directive);</code></pre>
         </div>
       </div>
     </div>

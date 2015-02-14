@@ -71,14 +71,14 @@
       <div class="row">
         <div class="span3 bs-docs-sidebar">
           <ul class="nav nav-list bs-docs-sidenav affix-top">
-            <li class="active"><a href="//index.html">Main</a></li>
+            <li><a href="//index.html">Main</a></li>
             <li><a href="//client/dependency-map.js.html">dependency-map.js</a></li>
             <li><a href="//client/index.js.html">index.js</a></li>
             <li><a href="//client/company/company-directive.js.html">company/company-directive.js</a></li>
             <li><a href="//client/footer/footer-navigation-directive.js.html">footer/footer-navigation-directive.js</a></li>
             <li><a href="//client/dashboard/dashboard-controller.js.html">dashboard/dashboard-controller.js</a></li>
             <li><a href="//client/dashboard/dashboard-service.js.html">dashboard/dashboard-service.js</a></li>
-            <li><a href="//client/gapi/gapi-service.js.html">gapi/gapi-service.js</a></li>
+            <li class="active"><a href="//client/gapi/gapi-service.js.html">gapi/gapi-service.js</a></li>
             <li><a href="//client/gapi/gapi.js.html">gapi/gapi.js</a></li>
             <li><a href="//client/header/header-navigation-directive.js.html">header/header-navigation-directive.js</a></li>
             <li><a href="//client/login/login-controller.js.html">login/login-controller.js</a></li>
@@ -97,13 +97,295 @@
           </ul>
           <div class="scrollspy">
             <ul class="nav nav-list bs-docs-sidenav affix-top">
+              <li><a href="#service"><i class="alert alert-success"></i><span>service</span></a>
+              </li>
+              <li><a href="#scopes"><i class="alert alert-success"></i><span>scopes</span></a>
+              </li>
+              <li><a href="#clientId"><i class="alert alert-success"></i><span>clientId</span></a>
+              </li>
+              <li><a href="#generate"><i class="alert alert-success"></i><span>generate</span></a>
+              </li>
+              <li><a href="#generateLoadPromise"><i class="alert alert-success"></i><span>generateLoadPromise</span></a>
+              </li>
+              <li><a href="#isCalledOnce"><i class="alert alert-success"></i><span>isCalledOnce</span></a>
+              </li>
+              <li><a href="#callAnalyticsAuthOnce"><i class="alert alert-success"></i><span>callAnalyticsAuthOnce</span></a>
+              </li>
+              <li><a href="#loader"><i class="alert alert-success"></i><span>loader</span></a>
+              </li>
             </ul>
           </div>
         </div>
         <div class="span9">
-          <section id="Main"><h1>proto-dash</h1>
-<p>Prototype of a widget based dashboard</p><h1>TODOs</h1>
-<p><a href="TODO.md">Link to TODO</a></p></section>
+          <div class="description"><p>global gapi, console, require, angular, document</p> </div>
+          <div class="description"><p>jslint node: true</p> </div>
+          <div class="description"><p>jshint esnext: true</p> </div>
+          <pre><code class="language-javascript">&quot;use strict&quot;;
+
+var name = &quot;dash.gapi&quot;;
+var dependencyMap = require(&quot;../dependency-map&quot;).add(name);
+var constants = require(&quot;../../server/utilities/constants&quot;);</code></pre>
+          <section id="service">
+            <h1>service</h1>
+            <h5 class="subheader"></h5>
+            <p>
+              <div class="label label-success radius ctx-type">declaration</div><span>service</span> -><span>Object</span>
+            </p>
+          </section>
+          <table class="table table-bordered table-striped">
+            <thead>
+              <tr>
+                <th style="width:20%">Option name</th>
+                <th style="width:20%">Type</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>$q</td>
+                <td>ng-service</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>$window</td>
+                <td>ng-service</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>$state</td>
+                <td>ng-service</td>
+                <td></td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="description"><p>Service for easing the use of GAPI client with Angular. </p> </div>
+          <pre><code class="language-javascript">var service = ($q, $window, $state) =&gt; {</code></pre>
+          <section id="scopes">
+            <h1>scopes</h1>
+            <h5 class="subheader"></h5>
+            <p>
+              <div class="label label-success radius ctx-type">declaration</div><span>scopes</span>
+            </p>
+          </section>
+          <div class="description"><p>Scopes for the GAPI we are using.</p> </div>
+          <pre><code class="language-javascript">var scopes = [
+                &quot;https://www.googleapis.com/auth/analytics.readonly&quot;,
+                &quot;https://www.googleapis.com/auth/plus.login&quot;, 
+                &quot;https://www.googleapis.com/auth/userinfo.email&quot; 
+            ].join(&quot; &quot;);</code></pre>
+          <section id="clientId">
+            <h1>clientId</h1>
+            <h5 class="subheader"></h5>
+            <p>
+              <div class="label label-success radius ctx-type">declaration</div><span>clientId</span>
+            </p>
+          </section>
+          <div class="description"><p>Specific client ID - could be debated is it wise to release this into github but for now<br />it is; as it&#39;s not for real use and later it&#39;ll be populated through env variables.</p> </div>
+          <pre><code class="language-javascript">var clientId = &quot;182467596451-qubeiec3osp7iqhuqqp4sb3jrdgpk8ah.apps.googleusercontent.com&quot;;</code></pre>
+          <section id="generate">
+            <h1>generate</h1>
+            <h5 class="subheader"></h5>
+            <p>
+              <div class="label label-success radius ctx-type">declaration</div><span>generate</span> -><span>Promise</span>
+            </p>
+          </section>
+          <table class="table table-bordered table-striped">
+            <thead>
+              <tr>
+                <th style="width:20%">Option name</th>
+                <th style="width:20%">Type</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>gapiQuery</td>
+                <td>Object</td>
+                <td>Object that represents the content that gapi DataChart digests</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="description"><p>Generates a single component through GAPI</p> </div>
+          <pre><code class="language-javascript">var generate = gapiQuery =&gt; {
+        var deferred = $q.defer();
+
+        if (!gapiQuery) {
+            deferred.reject(&quot;gapiQuery (.gapi) undefined.&quot;);
+            return deferred.promise;
+        }
+
+        console.log(&quot;Generating gapi.analytics.googleCharts.DataChart from:&quot;, gapiQuery);
+
+        // Adding the 'ga:' if it's missing. This thing is REALLY easy to miss...
+        if (gapiQuery.ids &amp;&amp; gapiQuery.ids.substring(0, 3) !== &quot;ga:&quot;) {
+            gapiQuery.ids = &quot;ga:&quot; + gapiQuery.ids;
+        }
+
+        var chart = new $window.gapi.analytics.googleCharts.DataChart(gapiQuery);
+        chart.on(&quot;success&quot;, (opt1, opt2) =&gt; {
+            console.log(&quot;SUCCESS:&quot;, opt1, opt2);
+            deferred.resolve(true);
+        });
+        chart.on(&quot;error&quot;, (opt1, opt2) =&gt; {
+            console.log(&quot;ERROR:&quot;, opt1, opt2);
+            deferred.reject(opt1);
+        });
+        chart.execute();
+
+        return deferred.promise;
+    };</code></pre>
+          <section id="generateLoadPromise">
+            <h1>generateLoadPromise</h1>
+            <h5 class="subheader"></h5>
+            <p>
+              <div class="label label-success radius ctx-type">declaration</div><span>generateLoadPromise</span> -><span>Promise</span>
+            </p>
+          </section>
+          <table class="table table-bordered table-striped">
+            <thead>
+              <tr>
+                <th style="width:20%">Option name</th>
+                <th style="width:20%">Type</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>api</td>
+                <td>string</td>
+                <td>gapi api to load</td>
+              </tr>
+              <tr>
+                <td>version</td>
+                <td>string</td>
+                <td>gapi api version to load</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="description"><p>Wrapper for loading specific apis onto GAPI. Generates promise for the loading operation.</p> </div>
+          <pre><code class="language-javascript">var generateLoadPromise = (api, version) =&gt; {
+        var deferred = $q.defer();
+        
+        $window
+            .gapi
+            .client
+            .load(api, version, () =&gt; {
+                console.log(&quot;Loaded api&quot;, api, &quot;, version&quot;, version);
+                deferred.resolve(true);
+            }, deferred.reject);
+        
+        return deferred.promise;     
+    };</code></pre>
+          <section id="isCalledOnce">
+            <h1>isCalledOnce</h1>
+            <h5 class="subheader"></h5>
+            <p>
+              <div class="label label-success radius ctx-type">declaration</div><span>isCalledOnce</span>
+            </p>
+          </section>
+          <div class="description"><p>Follows have we called gapi.analytics.auth.authorize already</p> </div>
+          <pre><code class="language-javascript">var isCalledOnce = false;</code></pre>
+          <section id="callAnalyticsAuthOnce">
+            <h1>callAnalyticsAuthOnce</h1>
+            <h5 class="subheader"></h5>
+            <p>
+              <div class="label label-success radius ctx-type">declaration</div><span>callAnalyticsAuthOnce</span> -><span>Promise</span>
+            </p>
+          </section>
+          <table class="table table-bordered table-striped">
+            <thead>
+              <tr>
+                <th style="width:20%">Option name</th>
+                <th style="width:20%">Type</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>success:</td>
+                <td></td>
+                <td>string; failed: string; }} redirectOptions Containing potential $state.go targets for auth events</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="description"><p>Calls the gapi.analytics.auth once and makes sure following calls do not call it again. Gapi explodes if it&#39;s<br />called multiple times and it&#39;s required behavior for login / authenticating the interfaces</p> </div>
+          <pre><code class="language-javascript">var callAnalyticsAuthOnce = (redirectOptions) =&gt; {
+        var deferred = $q.defer();
+
+        if (isCalledOnce === false) {
+            isCalledOnce = true;
+
+            try {
+                console.log(&quot;attempting to auth&quot;);
+
+                $window.gapi.analytics.auth.on(&quot;success&quot;, response =&gt; { 
+                    console.log(&quot;Auth success.&quot;);
+                    deferred.resolve(true);
+
+                    if (redirectOptions &amp;&amp; redirectOptions.success) {
+                        console.log(&quot;Requested redirect on auth success... redirecting&quot;);
+                        $state.go(redirectOptions.success);
+                    }
+                });
+
+                $window.gapi.analytics.auth.on(&quot;error&quot;, response =&gt; { 
+                    console.log(&quot;Auth failed.&quot;);
+                    deferred.reject(false);
+
+                    if (redirectOptions &amp;&amp; redirectOptions.failed) {
+                        console.log(&quot;Requested redirect on auth failure... redirecting&quot;);
+                        $state.go(redirectOptions.failed);
+                    }
+                });
+
+                $window.gapi.analytics.auth.authorize({
+                    clientid: clientId,
+                    scope: scopes,
+                    container: &quot;embed-api-auth-container&quot;, 
+                    cookie_policy: &quot;single_host_origin&quot;
+                }); 
+            } catch (error) {
+                console.log(&quot;Error in callAnalyticsAuthOnce:&quot;, error);
+                deferred.reject(error);
+            }
+        } else {
+             deferred.resolve(true);
+        }
+       
+        return deferred.promise;
+    };</code></pre>
+          <section id="loader">
+            <h1>loader</h1>
+            <h5 class="subheader"></h5>
+            <p>
+              <div class="label label-success radius ctx-type">declaration</div><span>loader</span> -><span>Promise</span>
+            </p>
+          </section>
+          <div class="description"><p>Loads all specified APIs into gapi as part of the initial procedure of hooking up gapi into $window.</p> </div>
+          <pre><code class="language-javascript">var loader = () =&gt; {
+        var deferred = $q.defer();
+
+        generateLoadPromise(&quot;oauth2&quot;, &quot;v2&quot;)
+            .then(() =&gt; { return generateLoadPromise(&quot;analytics&quot;, &quot;v3&quot;); })
+            .then(deferred.resolve, deferred.reject);
+
+        return deferred.promise;
+    };</code></pre>
+          <div class="description"><p>The actual service we are returning</p> </div>
+          <pre><code class="language-javascript">return {
+        generate: generate,
+        loadApis: loader,
+        callAnalyticsAuthOnce: callAnalyticsAuthOnce,
+        clientId: clientId,
+        scopes: scopes
+    };
+};
+service.$inject = [ &quot;$q&quot;, &quot;$window&quot;, &quot;$state&quot; ];
+service.serviceName = &quot;gapiservice&quot;;
+
+angular
+    .module(name)
+    .service(service.serviceName, service);</code></pre>
         </div>
       </div>
     </div>

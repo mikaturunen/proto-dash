@@ -71,7 +71,7 @@
       <div class="row">
         <div class="span3 bs-docs-sidebar">
           <ul class="nav nav-list bs-docs-sidenav affix-top">
-            <li class="active"><a href="//index.html">Main</a></li>
+            <li><a href="//index.html">Main</a></li>
             <li><a href="//client/dependency-map.js.html">dependency-map.js</a></li>
             <li><a href="//client/index.js.html">index.js</a></li>
             <li><a href="//client/company/company-directive.js.html">company/company-directive.js</a></li>
@@ -85,7 +85,7 @@
             <li><a href="//client/socket/socket-service.js.html">socket/socket-service.js</a></li>
             <li><a href="//client/widgets/widget-analytics-controller.js.html">widgets/widget-analytics-controller.js</a></li>
             <li><a href="//client/widgets/widget-analytics-directive.js.html">widgets/widget-analytics-directive.js</a></li>
-            <li><a href="//client/widgets/widget-frame-directive.js.html">widgets/widget-frame-directive.js</a></li>
+            <li class="active"><a href="//client/widgets/widget-frame-directive.js.html">widgets/widget-frame-directive.js</a></li>
             <li><a href="//client/widgets/widget-image-directive.js.html">widgets/widget-image-directive.js</a></li>
             <li><a href="//server/app.js.html">app.js</a></li>
             <li><a href="//server/config/config.js.html">config/config.js</a></li>
@@ -97,13 +97,171 @@
           </ul>
           <div class="scrollspy">
             <ul class="nav nav-list bs-docs-sidenav affix-top">
+              <li><a href="#elementDirective"><i class="alert alert-success"></i><span>elementDirective</span></a>
+              </li>
+              <li><a href="#elementDirectiveLink"><i class="alert alert-success"></i><span>elementDirectiveLink</span></a>
+              </li>
+              <li><a href="#elementOnloadDirective"><i class="alert alert-success"></i><span>elementOnloadDirective</span></a>
+              </li>
             </ul>
           </div>
         </div>
         <div class="span9">
-          <section id="Main"><h1>proto-dash</h1>
-<p>Prototype of a widget based dashboard</p><h1>TODOs</h1>
-<p><a href="TODO.md">Link to TODO</a></p></section>
+          <div class="description"><p>global gapi, console, require, angular, document, window, $</p> </div>
+          <div class="description"><p>jslint node: true</p> </div>
+          <div class="description"><p>jshint esnext: true</p> </div>
+          <pre><code class="language-javascript">&quot;use strict&quot;;
+
+var name = &quot;dash.widgets&quot;;
+var dependencyMap = require(&quot;../dependency-map&quot;).add(name);
+var constants = require(&quot;../../server/utilities/constants&quot;);</code></pre>
+          <section id="elementDirective">
+            <h1>elementDirective</h1>
+            <h5 class="subheader"></h5>
+            <p>
+              <div class="label label-success radius ctx-type">declaration</div><span>elementDirective</span>
+            </p>
+          </section>
+          <table class="table table-bordered table-striped">
+            <thead>
+              <tr>
+                <th style="width:20%">Option name</th>
+                <th style="width:20%">Type</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>$sce</td>
+                <td>ng-service</td>
+                <td></td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="description"><p>Angular directive for Iframe based widgets to show external content on the Dashboard.</p> </div>
+          <pre><code class="language-javascript">var elementDirective = ($sce) =&gt; {
+    // 6? don't ask me why.. I'll look into it later :D I need to find the element that produces this so I can dynamically
+    // drop it out. For now this works and we need to move forward with the proto idea
+    var missingHeight = 12;</code></pre>
+          <section id="elementDirectiveLink">
+            <h1>elementDirectiveLink</h1>
+            <h5 class="subheader"></h5>
+            <p>
+              <div class="label label-success radius ctx-type">declaration</div><span>elementDirectiveLink</span>
+            </p>
+          </section>
+          <table class="table table-bordered table-striped">
+            <thead>
+              <tr>
+                <th style="width:20%">Option name</th>
+                <th style="width:20%">Type</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>scope</td>
+                <td>ng-scope</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>element</td>
+                <td>HtmlElement</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>attributes</td>
+                <td>Object</td>
+                <td></td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="description"><p>Linker function for the direcvite.</p> </div>
+          <pre><code class="language-javascript">var elementDirectiveLink = (scope, element, attributes) =&gt; {
+        if (!(scope.isActive = scope.component.type === &quot;IFRAME&quot;)) {
+            return;
+        }
+
+        scope.dynamicResize = () =&gt; {
+            console.log(&quot;Resizing the iframe to fill container..&quot;, element);
+            window.foobar = element;
+            
+            // IDEA behind the calculation: dynamically stretch the iframe to match containing div.
+            //    The widget is made of three elements, top title element, widget container (the iframe in this case)
+            //    and a span element for caption if the user so wishes. I need to supstract the size of the title + caption
+            //    from the whole size of the widget (the container with the three elements in) to get the size for the
+            //    widget div (iframe) and then apply that..
+            
+            var elements  = element.children()[0];
+            var divHeight = $(elements).outerHeight(true)  - 
+                (
+                    $(elements.children[0].children).outerHeight(true) +
+                    $(elements.children[2]).outerHeight(true) + missingHeight
+                );
+            
+            var outer = $(elements.children[1].children).outerHeight(true);
+            var inner =  $(elements.children[1].children).height();
+            var difference = outer - inner;
+            var iframeHeight = divHeight - difference;
+            
+            console.log(&quot;Calculated max div height is: &quot; + divHeight);
+            console.log(&quot;IFrame outer - inner = difference. &quot;, outer, &quot; - &quot;, inner, &quot; = &quot;, difference);
+            console.log(&quot;divHeight - difference = Iframe size. &quot;, divHeight, &quot; - &quot;, difference, &quot; = &quot;, iframeHeight);
+                        
+            // Setting the iframe containing div height 
+            // $(elements.children[1]).height(divHeight);
+            // Now setting the iframe height to grow into the div... this is absolutely idiotic.
+            // We calculate the difference between the outerHeight and the innerHeight (borders, margings, etc)
+            // TODO look into more reasonable CSS solution instead of mad javascript trickery, this is idiotic.
+            $(elements.children[1].children).height(iframeHeight);
+        };
+
+        scope.component.source = $sce.trustAsResourceUrl(scope.component.source);
+    };
+
+    return {
+        restrict: &quot;E&quot;,
+        scope: {
+            component: &quot;=&quot;
+        },
+        templateUrl: &quot;/public/html/widgets/widget-frame-template.html&quot;,
+        link: elementDirectiveLink
+    };
+};
+elementDirective.$inject = [ &quot;$sce&quot; ];
+elementDirective.directiveName = &quot;widgetFrame&quot;;
+
+// There is no direct way of binding angular to elements onload event (as javascript elements onload callback looks into
+// window.callback (global function scope)) and angular is extremely finicky with that and it does not work with the 
+// common way of thinking with angular. To avoid the issue we create simple angular directive that just takes care 
+// of the onload ballback of the iframe element and this way we get nicely wrapped onload functionality in angular :)</code></pre>
+          <section id="elementOnloadDirective">
+            <h1>elementOnloadDirective</h1>
+            <h5 class="subheader"></h5>
+            <p>
+              <div class="label label-success radius ctx-type">declaration</div><span>elementOnloadDirective</span>
+            </p>
+          </section>
+          <div class="description"><p>Creates a angular scope bound callback to allow easier angular style callbacks into specific elements onload callback<br />through the custom &#39;element-onload&#39; attribute.</p><p>Solves case:<br />    <iframe src="www.google.com" onload="callbackGlobalFunction()"></iframe></p><p>Example usage:<br />    <iframe src="www.google.com" element-onload="angularScopeCallback()"></iframe></p> </div>
+          <pre><code class="language-javascript">var elementOnloadDirective = () =&gt; {
+    return {
+        restrict: &quot;A&quot;,
+        scope: {
+            callback: &quot;&amp;elementOnload&quot;
+        },
+        link: (scope, element, attrs) =&gt; {
+            // hooking up the onload event
+            element.on(&quot;load&quot;, () =&gt; scope.callback());
+        }
+    };
+};
+elementOnloadDirective.$inject = [ ];
+elementOnloadDirective.directiveName = &quot;elementOnload&quot;;
+
+angular
+    .module(name)
+    .directive(elementOnloadDirective.directiveName, elementOnloadDirective)
+    .directive(elementDirective.directiveName, elementDirective);</code></pre>
         </div>
       </div>
     </div>

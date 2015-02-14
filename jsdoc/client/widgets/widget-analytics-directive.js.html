@@ -71,7 +71,7 @@
       <div class="row">
         <div class="span3 bs-docs-sidebar">
           <ul class="nav nav-list bs-docs-sidenav affix-top">
-            <li class="active"><a href="//index.html">Main</a></li>
+            <li><a href="//index.html">Main</a></li>
             <li><a href="//client/dependency-map.js.html">dependency-map.js</a></li>
             <li><a href="//client/index.js.html">index.js</a></li>
             <li><a href="//client/company/company-directive.js.html">company/company-directive.js</a></li>
@@ -84,7 +84,7 @@
             <li><a href="//client/login/login-controller.js.html">login/login-controller.js</a></li>
             <li><a href="//client/socket/socket-service.js.html">socket/socket-service.js</a></li>
             <li><a href="//client/widgets/widget-analytics-controller.js.html">widgets/widget-analytics-controller.js</a></li>
-            <li><a href="//client/widgets/widget-analytics-directive.js.html">widgets/widget-analytics-directive.js</a></li>
+            <li class="active"><a href="//client/widgets/widget-analytics-directive.js.html">widgets/widget-analytics-directive.js</a></li>
             <li><a href="//client/widgets/widget-frame-directive.js.html">widgets/widget-frame-directive.js</a></li>
             <li><a href="//client/widgets/widget-image-directive.js.html">widgets/widget-image-directive.js</a></li>
             <li><a href="//server/app.js.html">app.js</a></li>
@@ -101,9 +101,39 @@
           </div>
         </div>
         <div class="span9">
-          <section id="Main"><h1>proto-dash</h1>
-<p>Prototype of a widget based dashboard</p><h1>TODOs</h1>
-<p><a href="TODO.md">Link to TODO</a></p></section>
+          <div class="description"><p>global gapi, console, require, angular, document</p> </div>
+          <div class="description"><p>jslint node: true</p> </div>
+          <div class="description"><p>jshint esnext: true</p> </div>
+          <pre><code class="language-javascript">&quot;use strict&quot;;
+
+var name = &quot;dash.widgets&quot;;
+var dependencyMap = require(&quot;../dependency-map&quot;).add(name);
+var constants = require(&quot;../../server/utilities/constants&quot;);
+
+var directive = (gapiservice, $window, $timeout) =&gt; {
+    var link = (scope, element, attributes) =&gt; {
+        if (!(scope.isActive = scope.component.type === &quot;GOOGLE_ANALYTICS&quot;)) {
+            return;
+        }
+       
+        gapiservice.generate(scope.component.gapi);
+    };
+
+    return {
+        restrict: &quot;E&quot;,
+        scope: {
+            component: &quot;=&quot;
+        },
+        templateUrl: &quot;/public/html/widgets/widget-analytics-template.html&quot;,
+        link: link
+    };
+};
+directive.$inject = [ &quot;gapiservice&quot;, &quot;$window&quot;, &quot;$timeout&quot; ];
+directive.directiveName = &quot;widgetAnalytics&quot;;
+
+angular
+    .module(name)
+    .directive(directive.directiveName, directive);</code></pre>
         </div>
       </div>
     </div>
