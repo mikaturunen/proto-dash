@@ -37,6 +37,7 @@ var initRoutes = () => {
     });
 
     // From all other routes we return index.html for now... 
+    // TODO 404 instead of serving the rough index.html and letting JS sort itself out
     app.get("*", (request, response) => {
         var indexHtml = path.join(releaseDirectory, "client", "html", "index.html");
         response.sendFile(indexHtml);
