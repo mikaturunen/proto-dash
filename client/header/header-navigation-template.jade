@@ -1,20 +1,45 @@
-div.dash-header
-    //- I'm pretty sure we are not going to use the bootstrap colums here but I used em for now for place holding 
-    //- Logo / info area
-    div.float-left
-        span COMPANY_NAME_LOGO 
-    
-    //- logout
-    div.float-right.header-columns
-        button(type="button", ng-click="logout()").btn.btn-default
-            span Logout
-
-    //- Displaying the dropdown for the dashboards only in the situations where there are more than one of them
-    div.float-right.header-columns
-        div(dropdown).btn-group
-            button(type="button", dropdown-toggle).btn.btn-primary.dropdown-toggle
-                span Dashboard
-                span.caret
-            ul(role="menu").dropdown-menu
-                li(ng-repeat="dashboard in dashboards")
-                    a(href="#", ng-bind="dashboard.name", ng-click="select(dashboard);")
+nav.dash-header.navbar.navbar-inverse.navbar-fixed-top
+  div.container-fluid
+    div.navbar-header  
+      //- Logo
+      a(href="#").navbar-brand
+        span Berlytics Dashboard
+    div(dropdown).btn-group
+        button(type="button", dropdown-toggle).btn.btn-primary.dropdown-toggle
+            span Dashboard
+            span.caret
+        ul(role="menu").dropdown-menu
+            li(ng-repeat="dashboard in dashboards")
+                a(href="#", ng-bind="dashboard.name", ng-click="select(dashboard);")
+                
+    div(dropdown).btn-group
+        button(type="button").btn.btn-primary.dropdown-toggle
+            span Dashboard
+            span.caret
+        ul(role="menu").dropdown-menu
+            li(ng-repeat="dashboard in dashboards")
+                a(href="#", ng-bind="dashboard.name", ng-click="select(dashboard);")
+                
+    div.collapse.navbar-collapse
+      ul.nav.navbar-nav.navbar-right        
+        //- Displaying the dropdown for the dashboards only in the situations where there are more than one of them
+        li.dropdown
+          button(type="button", data-toggle="dropdown", role="button", id="dropdownMenu1").btn.btn-default.dropdown-toggle
+            span Kissa
+            span.caret
+          ul(role="menu",aria-labelledby="dropdownMenu1").dropdown-menu
+            li
+              a(href="#") Kissa 2                
+            
+        li(dropdown).dropdown
+          a(role="button", data-toggle="dropdown", data-target="#", href="#", aria-expanded="false", id="dashboard-menu").dropdown-toggle 
+            span Valitse dashboard
+            span.caret
+          ul(role="menu", aria-labelledby="dashboard-menu").dropdown-menu
+            li(ng-repeat="dashboard in dashboards")
+              a(href="#", ng-bind="dashboard.name", ng-click="select(dashboard);")
+        
+          //- logout
+          li
+            button(type="button", ng-click="logout()").btn.btn-primary.navbar-btn
+              span Kirjaudu ulos
