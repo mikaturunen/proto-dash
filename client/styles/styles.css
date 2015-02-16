@@ -1,8 +1,3 @@
-body {
-    background-color: #F2F2F2;
-
-}
-
 iframe {
     width: 100%;
     border: none;
@@ -55,9 +50,6 @@ img {
 }
 
 .widget-container {
-    border: 1px solid #EDEDED;
-    border-radius: 5px;
-    background-color: #FFFFFF;
 }
 
 .widget {

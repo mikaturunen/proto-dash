@@ -4,8 +4,8 @@ div.dash-footer
           p Yhteyshenkilösi: 
           ul
             li               
-              span(ng-bind="dashboard.customer_representive.first_name") 
-                span &nbsp;
+              span(ng-bind="dashboard.customer_representive.first_name")
+              span &nbsp;
               span(ng-bind="dashboard.customer_representive.last_name")
             li
               a(href="mailto:{{ dashboard.customer_representive.email }}", target="_top") {{ dashboard.customer_representive.email }}
