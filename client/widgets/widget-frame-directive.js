@@ -30,36 +30,7 @@ var elementDirective = ($sce) => {
 
         scope.dynamicResize = () => {
             console.log("Resizing the iframe to fill container..", element);
-            window.foobar = element;
-            
-            // IDEA behind the calculation: dynamically stretch the iframe to match containing div.
-            //    The widget is made of three elements, top title element, widget container (the iframe in this case)
-            //    and a span element for caption if the user so wishes. I need to supstract the size of the title + caption
-            //    from the whole size of the widget (the container with the three elements in) to get the size for the
-            //    widget div (iframe) and then apply that..
-            
-            var elements  = element.children()[0];
-            var divHeight = $(elements).outerHeight(true)  - 
-                (
-                    $(elements.children[0].children).outerHeight(true) +
-                    $(elements.children[2]).outerHeight(true) + missingHeight
-                );
-            
-            var outer = $(elements.children[1].children).outerHeight(true);
-            var inner =  $(elements.children[1].children).height();
-            var difference = outer - inner;
-            var iframeHeight = divHeight - difference;
-            
-            console.log("Calculated max div height is: " + divHeight);
-            console.log("IFrame outer - inner = difference. ", outer, " - ", inner, " = ", difference);
-            console.log("divHeight - difference = Iframe size. ", divHeight, " - ", difference, " = ", iframeHeight);
-                        
-            // Setting the iframe containing div height 
-            // $(elements.children[1]).height(divHeight);
-            // Now setting the iframe height to grow into the div... this is absolutely idiotic.
-            // We calculate the difference between the outerHeight and the innerHeight (borders, margings, etc)
-            // TODO look into more reasonable CSS solution instead of mad javascript trickery, this is idiotic.
-            $(elements.children[1].children).height(iframeHeight);
+            $(element).find("iframe").iFrameResize();
         };
 
         scope.component.source = $sce.trustAsResourceUrl(scope.component.source);
