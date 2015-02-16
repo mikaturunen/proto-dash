@@ -1,30 +1,16 @@
 iframe {
     width: 100%;
     border: none;
+    min-height: 500px;
 }
 
 img {
     width: 150px;
 }
 
-/*
-.dash-header {
-    position: fixed;
-    width: 100%;
-    left: 0;
-    top: 0;
-    z-index: 100;
-    border-top: 0;
-
-    height: 40px;
-    line-height: 40px;
-    vertical-align: middle;
-    color: #FFFFFF;
-    background-color: #444;
+.dash-content {
+    margin-top: 70px;
 }
-*/
-
-.dash-content {margin-top: 70px;}
 
 .dash-footer {
   background: #080808;
