@@ -12,7 +12,12 @@ The prototype served many purposes and one of them being to see what it would re
 There is a demo server available but we cannot provide you with access unfortunately. Why? To allow access to Berlytics, you would need to have access to the used Embed API views (this is completely handled by Google) before hand. As Google performs the authorization against the email you use the service with and if the analytics information owner has not provided you with access to the analytics data, you cannot view them. I would love to allow you to see it but as of now.. I cannot predict the future and I do not know your e-mail. :smile: Sorry.
 
 ### Pretty pictures
+Login screen
+![Berlytics Login screen](examples\dashboard-login.png)
 
+
+Example dashboard
+![Berlytics Example dashboard](examples\dashboard-example1.png)
 
 ## How far did it come?
 Berlytics has fairly good support for Embed api (v3 mainly) as that's what we used mainly in the prototype.
