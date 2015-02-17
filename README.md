@@ -18,7 +18,7 @@ There is a demo server available but we cannot provide you with access unfortuna
 Berlytics has fairly good support for Embed api (v3 mainly) as that's what we used mainly in the prototype.
 
  * Support for different types of widgets
-  * iframe
+  * iframe (for google docs mainly to view marketing information from shared excels etc.)
   * image
   * analytics (embed api based)
  * Per user customizable dashboards
@@ -35,18 +35,28 @@ Well, the prototype server its purpose and we are moving forward onto other proj
   * Javascript (EcmaScript 6!)
   * CSS
   * HTML5
+
+
  * Database
   * Mongodb
+
+
  * Backend
   * Node.js
+
+
  * Frontend
   * Google API (gapi)
   * AngularJS
   * Jade
   * Browserify
+
+
  * Package management / Handling
   * Bower
   * NPM
+
+
  * Heroku
 
 
