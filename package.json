@@ -21,8 +21,8 @@
   "start": "node server/app.js",
   "contributors": [
     {
-      "name": "",
-      "email": ""
+      "name": "Pirkka Rannikko",
+      "email": "mail@pirkkarannikko.com"
     }
   ],
   "license": "MIT",
