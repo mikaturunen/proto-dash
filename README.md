@@ -13,11 +13,11 @@ There is a demo server available but we cannot provide you with access unfortuna
 
 ### Pretty pictures
 Login screen
-![Berlytics Login screen](examples\dashboard-login.png)
+![Berlytics Login screen](examples/dashboard-login.png)
 
 
 Example dashboard
-![Berlytics Example dashboard](examples\dashboard-example1.png)
+![Berlytics Example dashboard](examples/dashboard-example1.png)
 
 ## How far did it come?
 Berlytics has fairly good support for Embed api (v3 mainly) as that's what we used mainly in the prototype.
