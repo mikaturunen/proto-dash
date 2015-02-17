@@ -68,3 +68,5 @@ Well, the prototype server its purpose and we are moving forward onto other proj
 
 # List of active TODO items
 <a href="TODO.md">Link to TODO</a>
+
+We could continue as far as we want with this project and there is A LOT more to be done to the project than the almost empty TODO list. But for now, this will do, the prototype has server its purpose and we can conclude: yes, it's fairly easy to throw together a customizable dashboard but it might not be reasonable or cost-effective to try and compete with SaaS-services that already do this :) Fur stuff nonetheless!
