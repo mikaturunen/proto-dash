@@ -25,6 +25,10 @@
       "email": "mail@pirkkarannikko.com"
     }
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mikaturunen/proto-dash.git"
+  },
   "license": "MIT",
   "dependencies": {
     "express": "4.10.7",
