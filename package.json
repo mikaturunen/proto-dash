@@ -1,6 +1,6 @@
 {
   "name": "proto-dash",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Prototype for more or less wild analytics board idea, allowing companies to define analytics dashboards for other users",
   "repository": "mikaturunen/proto-dash",
   "main": "release/server/app.js",
